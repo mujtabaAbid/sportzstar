@@ -22,21 +22,18 @@ class Palette {
     },
   );
 
-  static MaterialColor grayColor = const MaterialColor(
-    0xffF5F5F5,
-    <int, Color>{
-      50: Color.fromRGBO(245, 245, 245, 0.1), //10%
-      100: Color.fromRGBO(245, 245, 245, 0.2), //20%
-      200: Color.fromRGBO(245, 245, 245, 0.3), //30%
-      300: Color.fromRGBO(245, 245, 245, 0.4), //40%
-      400: Color.fromRGBO(245, 245, 245, 0.5), //50%
-      500: Color.fromRGBO(245, 245, 245, 0.6), //60%
-      600: Color.fromRGBO(245, 245, 245, 0.7), //70%
-      700: Color.fromRGBO(245, 245, 245, 0.8), //80%
-      800: Color.fromRGBO(245, 245, 245, 0.9), //90%
-      900: Color.fromRGBO(245, 245, 245, 1), //100%
-    },
-  );
+  static MaterialColor grayColor = const MaterialColor(0xffF5F5F5, <int, Color>{
+    50: Color.fromRGBO(245, 245, 245, 0.1), //10%
+    100: Color.fromRGBO(245, 245, 245, 0.2), //20%
+    200: Color.fromRGBO(245, 245, 245, 0.3), //30%
+    300: Color.fromRGBO(245, 245, 245, 0.4), //40%
+    400: Color.fromRGBO(245, 245, 245, 0.5), //50%
+    500: Color.fromRGBO(245, 245, 245, 0.6), //60%
+    600: Color.fromRGBO(245, 245, 245, 0.7), //70%
+    700: Color.fromRGBO(245, 245, 245, 0.8), //80%
+    800: Color.fromRGBO(245, 245, 245, 0.9), //90%
+    900: Color.fromRGBO(245, 245, 245, 1), //100%
+  });
   static const facebookColor = Color.fromRGBO(28, 72, 159, 1);
   static const orangeColor = Color.fromRGBO(255, 144, 0, 1);
   static const bodyColor = Colors.white;
@@ -49,15 +46,12 @@ class Palette {
 
   static const primaryGradient = LinearGradient(
     colors: [
-      Color.fromRGBO(110, 90, 244, 1.0),
-      Color.fromRGBO(199, 86, 204, 1.0),
+      Color.fromRGBO(231, 224, 12, 0.996),
+      Color.fromRGBO(194, 239, 69, 0.996),
     ],
   );
 
   static const secondaryGradient = LinearGradient(
-    colors: [
-      Color.fromRGBO(255, 169, 44, 1.0),
-      Color.fromRGBO(255, 197, 112, 1.0),
-    ],
+    colors: [Color.fromRGBO(143, 139, 16, 1), Color.fromRGBO(145, 179, 58, 1)],
   );
 }
