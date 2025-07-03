@@ -1,122 +1,153 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+import '../config/palette.dart';
+import '../provider/main_provider.dart';
+import '../screens/splash_screen.dart';
+
+import 'helper/form_field_border_style.dart';
+import 'routing/router.dart' as router;
+import 'screens/home_screen.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]).then((_) {
+  //   runApp(const MyApp());
+  // });
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+    return MultiProvider(
+      providers: [ChangeNotifierProvider(create: (context) => MainProvider())],
+      child: Consumer<MainProvider>(
+        builder:
+            (_, auth, __) => MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'SportzStar',
+              theme: ThemeData(
+                primarySwatch: Palette.primaryColor,
+                scaffoldBackgroundColor: Colors.black,
+                fontFamily: 'Poppins',
+                appBarTheme: const AppBarTheme(
+                  systemOverlayStyle: SystemUiOverlayStyle(
+                    statusBarColor: Color.fromARGB(255, 13, 12, 12),
+                    statusBarIconBrightness: Brightness.dark,
+                    systemNavigationBarIconBrightness: Brightness.dark,
+                    statusBarBrightness: Brightness.dark,
+                  ),
+                  backgroundColor: Color.fromARGB(200, 37, 37, 37),
+                ),
+                textTheme: const TextTheme(
+                  displayLarge: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 72,
+                    color: Palette.textHeadingColor,
+                    height: 1,
+                  ),
+                  displayMedium: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                  displaySmall: TextStyle(fontSize: 14, color: Colors.white),
+                  headlineLarge: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 48,
+                    color: Color.fromARGB(255, 255, 255, 255),
+                  ),
+                  headlineMedium: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 32,
+                    color: Palette.bodyColor,
+                  ),
+                  headlineSmall: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 24,
+                    color: Palette.bodyColor,
+                  ),
+                  bodyLarge: TextStyle(color: Palette.bodyColor),
+                  bodyMedium: TextStyle(
+                    color: Color.fromRGBO(133, 133, 133, 1),
+                    fontSize: 12,
+                  ),
+                ),
+                elevatedButtonTheme: const ElevatedButtonThemeData(
+                  style: ButtonStyle(
+                    textStyle: WidgetStatePropertyAll(
+                      TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+                inputDecorationTheme: InputDecorationTheme(
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 20,
+                  ),
+                  border: formFieldBorderStyle(context: context),
+                  enabledBorder: formFieldBorderStyle(context: context),
+                  focusedBorder: formFieldBorderStyle(
+                    context: context,
+                    isFocusState: true,
+                  ),
+                  errorBorder: formFieldBorderStyle(
+                    context: context,
+                    isError: true,
+                  ),
+                  focusedErrorBorder: formFieldBorderStyle(
+                    context: context,
+                    isError: true,
+                    isFocusState: true,
+                  ),
+                  labelStyle: const TextStyle(fontSize: 14),
+                  hintStyle: const TextStyle(fontSize: 14, color: Colors.grey),
+                  alignLabelWithHint: true,
+                ),
+                bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                  showUnselectedLabels: true,
+                  showSelectedLabels: true,
+                  unselectedIconTheme: const IconThemeData(size: 22),
+                  unselectedItemColor: const Color.fromARGB(
+                    255,
+                    0,
+                    0,
+                    0,
+                  ).withOpacity(.5),
+                  selectedItemColor: Colors.white,
+                  selectedIconTheme: const IconThemeData(
+                    color: Colors.white,
+                    size: 22,
+                  ),
+                  unselectedLabelStyle: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                    height: 1.5,
+                  ),
+                  selectedLabelStyle: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+              // initialRoute: splashScreeenRoute,
+              home: const SplashScreen(),
+              onGenerateRoute: router.generateRoute,
+              onUnknownRoute:
+                  (settings) =>
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
             ),
-          ],
-        ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
