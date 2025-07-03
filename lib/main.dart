@@ -20,6 +20,21 @@ void main() async {
   // });
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Color.fromARGB(255, 217, 211, 211),
+      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
+      systemNavigationBarColor: Color.fromARGB(
+        255,
+        255,
+        255,
+        255,
+      ), // light background
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ),
+  );
+
   runApp(const MyApp());
 }
 
@@ -37,17 +52,30 @@ class MyApp extends StatelessWidget {
               title: 'SportzStar',
               theme: ThemeData(
                 primarySwatch: Palette.primaryColor,
-                scaffoldBackgroundColor: Colors.black,
-                fontFamily: 'Poppins',
-                appBarTheme: const AppBarTheme(
-                  systemOverlayStyle: SystemUiOverlayStyle(
-                    statusBarColor: Color.fromARGB(255, 13, 12, 12),
-                    statusBarIconBrightness: Brightness.dark,
-                    systemNavigationBarIconBrightness: Brightness.dark,
-                    statusBarBrightness: Brightness.dark,
-                  ),
-                  backgroundColor: Color.fromARGB(200, 37, 37, 37),
+                scaffoldBackgroundColor: const Color.fromARGB(
+                  255,
+                  235,
+                  235,
+                  235,
                 ),
+                fontFamily: 'Poppins',
+
+                // appBarTheme: const AppBarTheme(
+                //   systemOverlayStyle: SystemUiOverlayStyle(
+                //     statusBarColor: Color.fromARGB(255, 249, 249, 249),
+                //     statusBarIconBrightness: Brightness.dark,
+                //     statusBarBrightness: Brightness.light,
+                //     systemNavigationBarColor: Color.fromARGB(
+                //       255,
+                //       249,
+                //       249,
+                //       249,
+                //     ), // ✅ ADDED
+                //     systemNavigationBarIconBrightness:
+                //         Brightness.dark, // ✅ UPDATED to dark
+                //   ),
+                //   backgroundColor: Color.fromARGB(198, 242, 241, 241),
+                // ),
                 textTheme: const TextTheme(
                   displayLarge: TextStyle(
                     fontWeight: FontWeight.w700,
