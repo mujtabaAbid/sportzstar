@@ -46,7 +46,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case resetPasswordScreenRoute:
       return MaterialPageRoute(builder: (_) => const ResetPasswordScreen());
     case signupScreenRoute:
-      return MaterialPageRoute(builder: (_) => const SignupScreen());
+      return MaterialPageRoute(builder: (_) => const SignUpScreen());
 
     // checkoutScreens
     case checkoutScreenRoute:
