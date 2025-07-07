@@ -36,15 +36,16 @@ class StartedScreen extends StatelessWidget {
               ),
               const SizedBox(height: 40),
               // Get Started Button
-              CustomButton(onPressed: () {
-                // Navigate to SignUp screen
-                pushNamedNavigate(
-                  context: context,
-                  pageName: signupScreenRoute,
-                );
+              CustomButton(
+                onPressed: () {
+                  // Navigate to SignUp screen
+                  pushNamedNavigate(
+                    context: context,
+                    pageName: signupScreenRoute,
+                  );
+                },
+              ),
 
-              },),
-            
               const SizedBox(height: 20),
               // Login Button
               SizedBox(
