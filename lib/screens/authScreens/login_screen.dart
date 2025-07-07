@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 pushNamedNavigate(context: context, pageName: bottomNavigationBarRoute);
                 
               },
-              text: 'Sign In',
+              text: Text('Sign In'),
               ),
 
               const SizedBox(height: 24),
