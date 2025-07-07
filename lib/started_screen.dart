@@ -48,7 +48,6 @@ class _StartedScreenState extends State<StartedScreen>
                 'assets/images/start.png',
                 height: 300,
                 width: 260,
-
               ),
             ),
 
@@ -81,6 +80,13 @@ class _StartedScreenState extends State<StartedScreen>
 
                     // Get Started Button
                     CustomButton(
+                      text: Text(
+                        'Get Started',
+                        style: TextStyle(
+                          color: const Color.fromRGBO(234, 238, 239, 1),
+                          fontSize: 16,
+                        ),
+                      ),
                       onPressed: () {
                         pushNamedNavigate(
                           context: context,
@@ -107,8 +113,7 @@ class _StartedScreenState extends State<StartedScreen>
                         ),
                         child: const Text(
                           'Login',
-                          style:
-                              TextStyle(fontSize: 16, color: Colors.black87),
+                          style: TextStyle(fontSize: 16, color: Colors.black87),
                         ),
                       ),
                     ),
