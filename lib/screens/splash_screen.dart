@@ -5,9 +5,8 @@ import 'package:sportzstar/started_screen.dart';
 
 import 'home_screen.dart';
 
+// SplashScreen with 3-second delayimport 'package:flutter/material.dart';
 
-
-// SplashScreen with 3-second delay
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -16,10 +15,20 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  bool _moveUp = false;
+
   @override
   void initState() {
     super.initState();
 
+    // Start animation after a short delay
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        _moveUp = true;
+      });
+    });
+
+    // Navigate to next screen after animation
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
@@ -31,12 +40,24 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text(
-          'Splash Screen',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
+      body: Stack(
+        children: [
+          AnimatedAlign(
+            duration: const Duration(seconds: 2),
+            curve: Curves.easeInOut,
+            alignment: _moveUp ? Alignment.topCenter : Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 80.0),
+              child: Image.asset(
+                'assets/images/start.png',
+                height: 200,
+                width: 200,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
+

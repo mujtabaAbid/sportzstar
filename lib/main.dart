@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:sportzstar/started_screen.dart';
 
 import '../config/palette.dart';
 import '../provider/main_provider.dart';
@@ -170,7 +171,7 @@ class MyApp extends StatelessWidget {
                 ),
               ),
               // initialRoute: splashScreeenRoute,
-              home: const SplashScreen(),
+              home: const StartedScreen(),
               onGenerateRoute: router.generateRoute,
               onUnknownRoute:
                   (settings) =>
