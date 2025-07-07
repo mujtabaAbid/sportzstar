@@ -17,7 +17,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-   bool _isLoading = false;
+  final bool _isLoading = false;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 80),
-               Image.asset('assets/images/start.png', height: 150, width: 150),
+              Image.asset('assets/images/start.png', height: 150, width: 150),
               const SizedBox(height: 40),
               InputWidget(
                 highlightErrorBorder: true,
@@ -42,62 +42,61 @@ class _LoginScreenState extends State<LoginScreen> {
                 onSaved: (value) {},
                 fieldType: InputType.email,
               ),
-        
-                      SizedBox(
-                        height: 20,
-                      ),
-                      InputWidget(
-                        highlightErrorBorder: true,
-                        onSaved: (value) {
-                          
-                        },
-                        validator: ValidationBuilder()
-                            .minLength(8, 'Minimum 8 Characters')
-                            .build(),
-                        keyboardType: TextInputType.visiblePassword,
-                        heading: 'Password',
-                        label: 'Password',
-                        // icon: 'assets/images/icons/key.png',
-                        controller: passwordController,
-                        obscureText: obscurePassword,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            obscurePassword
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Theme.of(context).primaryColorDark,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              obscurePassword = !obscurePassword;
-                            });
-                          },
-                        ),
-                      ),
-        
+
+              SizedBox(height: 20),
+              InputWidget(
+                highlightErrorBorder: true,
+                onSaved: (value) {},
+                validator:
+                    ValidationBuilder()
+                        .minLength(8, 'Minimum 8 Characters')
+                        .build(),
+                keyboardType: TextInputType.visiblePassword,
+                heading: 'Password',
+                label: 'Password',
+                // icon: 'assets/images/icons/key.png',
+                controller: passwordController,
+                obscureText: obscurePassword,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    obscurePassword ? Icons.visibility : Icons.visibility_off,
+                    color: Theme.of(context).primaryColorDark,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      obscurePassword = !obscurePassword;
+                    });
+                  },
+                ),
+              ),
+
               const SizedBox(height: 8),
-        
+
               // Forget Password Button
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                 
-                  onPressed: () {
-                  },
-                  child: const Text('Forget Password?', style: TextStyle(color: Colors.black)),
+                  onPressed: () {},
+                  child: const Text(
+                    'Forget Password?',
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ),
-              ),
-        
-              const SizedBox(height: 24),
-               CustomButton(onPressed: () {
-                pushNamedNavigate(context: context, pageName: bottomNavigationBarRoute);
-                
-              },
-              text: 'Sign In',
               ),
 
               const SizedBox(height: 24),
-        
+              CustomButton(
+                onPressed: () {
+                  pushNamedNavigate(
+                    context: context,
+                    pageName: bottomNavigationBarRoute,
+                  );
+                },
+                text: Text('Sign In'),
+              ),
+
+              const SizedBox(height: 24),
+
               // Sign Up Redirect
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -105,10 +104,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Text("Don't have an account? "),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignUpScreen()),
+                      );
                       // pushNamedNavigate(context: context, pageName: );
                     },
-                    child: const Text("Sign Up", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                    child: const Text(
+                      "Sign Up",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),

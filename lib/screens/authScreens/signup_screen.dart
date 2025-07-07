@@ -301,7 +301,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   pageName: bottomNavigationBarRoute,
                 );
               },
-              text: 'Sign Up',
+              text: Text('Sign Up'),
             ),
           ],
         ),
