@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
+import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
+import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -49,6 +51,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            SizedBox(height: 80),
             // First & Last Name in Row
            Row(
                   children: [
@@ -87,11 +90,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
             // Date of Birth Picker
             TextField(
+              style: const TextStyle(color: Colors.black),
               controller: dobController,
               readOnly: true,
               onTap: () => _selectDate(context),
               decoration: const InputDecoration(
                 labelText: "Date of Birth",
+                
+                hintText: "DD/MM/YYYY",
+                labelStyle: TextStyle(color: Colors.black,),
+                hintStyle: TextStyle(color: Colors.black),
                 border: OutlineInputBorder(),
                 suffixIcon: Icon(Icons.calendar_today),
               ),
@@ -117,9 +125,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 6),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       decoration: BoxDecoration(
-                        color: isSelected ? Colors.blue : Colors.white,
+                        color: isSelected ? const Color.fromARGB(255, 109, 185, 112) : Colors.white,
                         border: Border.all(
-                          color: isSelected ? Colors.blue : Colors.grey,
+                          color: isSelected ? const Color.fromRGBO(27, 104, 52, 1) : Colors.grey,
                           width: 2,
                         ),
                         borderRadius: BorderRadius.circular(12),
@@ -160,12 +168,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: [
                       Text(
                         'Phone',
-                        style: TextStyle(color: Colors.white, fontSize: 14),
+                        style: TextStyle(color: Colors.black, fontSize: 14),
                       ),
                       Text(
                         ' (Optional)',
                         style: TextStyle(
-                          color: Colors.grey,
+                          color: Colors.black,
                           fontSize: 14,
                           fontWeight: FontWeight.normal,
                         ),
@@ -200,12 +208,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: [
                       Text(
                         'Refferal Code',
-                        style: TextStyle(color: Colors.white, fontSize: 14),
+                        style: TextStyle(color: Colors.black, fontSize: 14),
                       ),
                       Text(
                         ' (Optional)',
                         style: TextStyle(
-                          color: Colors.grey,
+                          color: Colors.black,
                           fontSize: 14,
                           fontWeight: FontWeight.normal,
                         ),
@@ -288,15 +296,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(
                   height: 12,
                 ),
-                ElevatedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const BottomNavigationBarScreen()));
-              },
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 48),
-              ),
-              child: const Text("Sign Up"),
-            ),
+             CustomButton(onPressed: () {
+                  pushNamedNavigate(context: context, pageName: bottomNavigationBarRoute);
+                },
+                text: 'Sign Up',
+                ),
 
           ],
         ),
