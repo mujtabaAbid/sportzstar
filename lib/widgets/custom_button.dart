@@ -6,12 +6,12 @@ import 'package:sportzstar/config/palette.dart';
 
 class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
-  final Widget? text;
+  final String text;
 
   const CustomButton({
     super.key,
     required this.onPressed,
-     this.text ,
+    this.text = 'Get Started',
   });
 
   @override
@@ -34,7 +34,10 @@ class CustomButton extends StatelessWidget {
           ),
           child: Container(
             alignment: Alignment.center,
-            child: text
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 16, color: Colors.black),
+            ),
           ),
         ),
       ),
