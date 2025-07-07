@@ -1,6 +1,6 @@
 const String homeScreenRoute = '/home';
 const String splashScreeenRoute = '/';
-
+const String bottomNavigationBarRoute = '/bottom-navigation-bar';
 // authScreens
 const String forgetPasswordScreenRoute = '/forget-password';
 const String loginScreenRoute = '/login';
@@ -47,6 +47,7 @@ const String riderTrackingScreenRoute = '/rider-tracking-screen';
 // userScreens
 const String editProfileScreenRoute = '/edit-profile';
 const String userProfileScreenRoute = '/user-profile';
+const String settingsScreenRoute = '/settings-screen';
 
 // others (Not Implimented)
 const String changePasswordScreenRoute = '/change-password-screen';
@@ -56,3 +57,5 @@ const String uploadProfilePhotoScreenRoute = '/upload-profile-photo-screen';
 const String viewMyPublicProfileRoute = '/view-my-public-profile-screen';
 const String profileDetailsScreenRoute = '/profile-details-screen';
 const String notificationSettingsScreenRoute = '/notification-settings-screen';
+
+const String startedScreenRoute = '/started-screen';

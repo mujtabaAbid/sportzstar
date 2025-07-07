@@ -48,6 +48,7 @@ class MyApp extends StatelessWidget {
       child: Consumer<MainProvider>(
         builder:
             (_, auth, __) => MaterialApp(
+
               debugShowCheckedModeBanner: false,
               title: 'SportzStar',
               theme: ThemeData(
@@ -59,7 +60,7 @@ class MyApp extends StatelessWidget {
                   235,
                 ),
                 fontFamily: 'Poppins',
-
+                  
                 // appBarTheme: const AppBarTheme(
                 //   systemOverlayStyle: SystemUiOverlayStyle(
                 //     statusBarColor: Color.fromARGB(255, 249, 249, 249),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sportzstar/screens/bottom_navigation_bar.dart';
+import 'package:sportzstar/started_screen.dart';
 import '../screens/orderScreens/order_confirmation_screen.dart';
 import '../screens/orderScreens/order_details_screen.dart';
 import '../screens/orderScreens/order_review_screen.dart';
@@ -9,6 +11,7 @@ import '../screens/promotionScreens/promotions_screen.dart';
 import '../screens/riderScreens/rider_details_screen.dart';
 import '../screens/riderScreens/rider_tracking_screen.dart';
 import '../screens/userScreens/edit_profile_screen.dart';
+import '../screens/userScreens/settings_screen.dart';
 import '../screens/userScreens/user_profile_screen.dart';
 import '../screens/authScreens/forget_password_screen.dart';
 import '../screens/checkoutScreens/checkout_screen.dart';
@@ -37,6 +40,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const SplashScreen());
     case homeScreenRoute:
       return MaterialPageRoute(builder: (_) => const HomeScreen());
+      case bottomNavigationBarRoute:
+      return MaterialPageRoute(builder: (_) =>  BottomNavigationBarScreen());
 
     // authScreens
     case forgetPasswordScreenRoute:
@@ -113,7 +118,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const EditProfileScreen());
     case userProfileScreenRoute:
       return MaterialPageRoute(builder: (_) => const UserProfileScreen());
-
+    case settingsScreenRoute:
+      return MaterialPageRoute(builder: (_) => const SettingsScreen());
+    case startedScreenRoute:
+      return MaterialPageRoute(builder: (_) => const StartedScreen());
     // case confirmEmailScreenRoute:
     //   return MaterialPageRoute(
     //       builder: (_) => const ConfirmEmailScreen(),

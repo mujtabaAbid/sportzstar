@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sportzstar/config/palette.dart';
-import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
+import 'package:sportzstar/widgets/post_card_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,88 +9,99 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int selectedIndex = 0;
-
-  List<Widget> pages = const [
-    Center(child: Column(children: [Text('Home')])),
-    Center(child: Text('Star')),
-    Center(child: Text('wow')),
-    Center(child: Text('Style')),
-    Center(child: Text('Profile')),
+  // List of sports categories
+  final List<String> sportsCategories = [
+    'Badminton',
+    'Baseball',
+    'Cricket',
+    'Beach handball',
+    'Boxing',
+    'Cycling',
+    'Football',
+    'Golf',
+    'Hockey',
+    'NetBall',
   ];
+  final List<Map<String, dynamic>> posts = [
+    {
+      'username': 'zaheer',
+      'time': '16 Apr 2025, 06:25 am',
+      'text': 'hi everyone',
+      'image':
+          'https://yourdomain.com/zaheer_image.jpg', // Replace with real URL or Asset
+      'likes': 2,
+      'comments': 2,
+      'profileImage': 'https://yourdomain.com/profile1.jpg', // optional
+    },
+    {
+      'username': 'deemi testing',
+      'time': '07 Apr 2025, 05:21 pm',
+      'text': '',
+      'image':
+          'https://yourdomain.com/deemi_image.jpg', // Replace with real URL or Asset
+      'likes': 0,
+      'comments': 0,
+      'profileImage': 'https://yourdomain.com/profile2.jpg', // optional
+    },
+  ];
+  // Set default selected category to "Badminton"
+  String selectedCategory = 'Badminton';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: pages[selectedIndex],
-      floatingActionButton: Container(
-        width: 56.0,
-        height: 56.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient:
-              selectedIndex != 2
-                  ? Palette.primaryGradient
-                  : Palette.secondaryGradient,
-          boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 8)],
-        ),
-        child: FloatingActionButton(
-          shape: CircleBorder(),
-          onPressed: () {
-            setState(() {
-              selectedIndex = 2;
-            });
-          },
-          backgroundColor: const Color.fromARGB(52, 255, 255, 255),
-          elevation: 0,
-          child: const Icon(Icons.emoji_events_outlined, color: Colors.black),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: StylishBottomBar(
-        option: AnimatedBarOptions(
-          iconSize: 28,
-          barAnimation: BarAnimation.transform3D,
-          iconStyle: IconStyle.Default,
-        ),
-        fabLocation: StylishBarFabLocation.center,
-        hasNotch: false,
-        currentIndex: selectedIndex,
-        onTap: (index) {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
-        items: [
-          BottomBarItem(
-            icon: const Icon(Icons.home_outlined),
-            title: const Text('Home'),
-            selectedColor: Colors.pink,
+      appBar: AppBar(title: const Text('Home Screen')),
+      body: Column(
+        children: [
+          // Horizontal list
+          Container(
+            height: 50,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: sportsCategories.length,
+              itemBuilder: (BuildContext context, int index) {
+                String category = sportsCategories[index];
+                bool isSelected = selectedCategory == category;
+
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedCategory = category;
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    margin: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.blue : Colors.grey,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Center(
+                      child: Text(
+                        category,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
-          BottomBarItem(
-            icon: const Icon(Icons.star_border),
-            title: const Text('Star'),
-            selectedColor: Colors.pink,
-          ),
-          BottomBarItem(
-            icon: const Icon(Icons.add),
-            title: const Text('heart'),
-            unSelectedColor: Colors.transparent,
-            selectedColor: Colors.transparent,
-          ),
-          BottomBarItem(
-            icon: const Icon(Icons.style_outlined),
-            title: const Text('Style'),
-            selectedColor: Colors.pink,
-          ),
-          BottomBarItem(
-            icon: const Icon(Icons.person_outline),
-            title: const Text('Profile'),
-            selectedColor: Colors.pink,
+          // Display selected content
+          Expanded(
+            child: ListView.builder(
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                final post = posts[index];
+                return PostCard(post: post);
+              },
+            ),
           ),
         ],
       ),
     );
   }
 }
-

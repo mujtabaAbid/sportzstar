@@ -65,20 +65,25 @@ class _InputWidgetState extends State<InputWidget> {
     return Padding(
       padding: EdgeInsets.symmetric(
         // vertical: 12,
-        horizontal: widget.sidePadding ?? 0.0,
+        horizontal: widget.sidePadding ?? 6,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          widget.headingWidget ??
-              Text(
-                widget.heading ??
-                    (widget.fieldType == InputType.email
-                        ? 'Email Address'
-                        : ''),
-                style: widget.headingStyle ??
-                    const TextStyle(color: Colors.white, fontSize: 14),
-              ),
+          Row(
+            children: [
+              SizedBox(width: 4,),
+              widget.headingWidget ??
+                  Text(
+                    widget.heading ??
+                        (widget.fieldType == InputType.email
+                            ? 'Username or email'
+                            : ''),
+                    style: widget.headingStyle ??
+                        const TextStyle(color: Colors.black, fontSize: 14),
+                  ),
+            ],
+          ),
           const SizedBox(height: 6),
           Row(
             children: [
@@ -113,7 +118,7 @@ class _InputWidgetState extends State<InputWidget> {
                   },
                   decoration: InputDecoration(
                     labelStyle: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold),
                     hintText: widget.label ??
                         (widget.fieldType == InputType.email ? 'Email' : ''),
                     hintStyle: const TextStyle(color: Colors.grey),
@@ -122,11 +127,11 @@ class _InputWidgetState extends State<InputWidget> {
                     // ✅ This shows +XX prefix inside the input field
                     //  prefixText: widget.showCountryCodePicker ? '$selectedCountryCode ' : null,
                     prefixStyle: const TextStyle(
-                        color: Colors.white, fontSize: 14),
+                        color: Colors.black, fontSize: 14),
 
                     filled: true,
                     fillColor:
-                        widget.backgroundColor ?? const Color(0xFF2A2A2A),
+                        widget.backgroundColor ?? const Color.fromARGB(255, 224, 224, 224),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16.0),
                       borderSide: BorderSide.none,
@@ -143,7 +148,7 @@ class _InputWidgetState extends State<InputWidget> {
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 16.0, horizontal: 16.0),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black),
                 ),
               ),
             ],

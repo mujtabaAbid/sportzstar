@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sportzstar/screens/authScreens/login_screen.dart';
+import 'package:sportzstar/screens/bottom_navigation_bar.dart';
+import 'package:sportzstar/started_screen.dart';
 
 import 'home_screen.dart';
 
@@ -20,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const StartedScreen()),
       );
     });
   }

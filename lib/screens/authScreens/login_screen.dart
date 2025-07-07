@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
+import 'package:sportzstar/helper/page_navigate.dart';
+import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/authScreens/signup_screen.dart';
+import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
+import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,13 +27,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return MainLayoutWidget(
       isLoading: _isLoading,
-      appBar: AppBar(title: const Text("Login")),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const SizedBox(height: 80),
+               Image.asset('assets/images/start.png', height: 150, width: 150),
               const SizedBox(height: 40),
               InputWidget(
                 highlightErrorBorder: true,
@@ -76,23 +81,21 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
+                 
                   onPressed: () {
-                    // TODO: Implement forget password action
                   },
-                  child: const Text('Forget Password?'),
+                  child: const Text('Forget Password?', style: TextStyle(color: Colors.black)),
                 ),
               ),
         
               const SizedBox(height: 24),
-        
-              // Sign In Button
-              ElevatedButton(
-                onPressed: () {
-                  // TODO: Handle sign in logic
-                },
-                child: const Text('Sign In'),
+               CustomButton(onPressed: () {
+                pushNamedNavigate(context: context, pageName: bottomNavigationBarRoute);
+                
+              },
+              text: 'Sign In',
               ),
-        
+
               const SizedBox(height: 24),
         
               // Sign Up Redirect
@@ -105,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
                       // pushNamedNavigate(context: context, pageName: );
                     },
-                    child: const Text("Sign Up"),
+                    child: const Text("Sign Up", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),

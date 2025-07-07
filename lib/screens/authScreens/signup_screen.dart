@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
+import 'package:sportzstar/helper/page_navigate.dart';
+import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -25,6 +27,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   String? selectedGender;
 
+  final List<String> genders = ['Male', 'Female', 'Other'];
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -41,7 +45,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Sign Up")),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -55,10 +58,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         validator: ValidationBuilder().build(),
                         keyboardType: TextInputType.text,
                         onSaved: (value) {
-                          // handleSave('first_name', value);
-                          // Now we will get location from backend
-                          // handleSave('longitude', longitude.toString());
-                          // handleSave('latitude', latitude.toString());
+                          
                         },
                         heading: 'First Name',
                         label: 'First Name',
@@ -103,23 +103,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
               alignment: Alignment.centerLeft,
               child: Text("Gender", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             ),
-            RadioListTile<String>(
-              title: const Text("Male"),
-              value: "Male",
-              groupValue: selectedGender,
-              onChanged: (value) => setState(() => selectedGender = value),
-            ),
-            RadioListTile<String>(
-              title: const Text("Female"),
-              value: "Female",
-              groupValue: selectedGender,
-              onChanged: (value) => setState(() => selectedGender = value),
-            ),
-            RadioListTile<String>(
-              title: const Text("Other"),
-              value: "Other",
-              groupValue: selectedGender,
-              onChanged: (value) => setState(() => selectedGender = value),
+               Row(
+              children: genders.map((gender) {
+                final isSelected = selectedGender == gender;
+                return Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedGender = gender;
+                      });
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 6),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      decoration: BoxDecoration(
+                        color: isSelected ? Colors.blue : Colors.white,
+                        border: Border.all(
+                          color: isSelected ? Colors.blue : Colors.grey,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: Text(
+                          gender,
+                          style: TextStyle(
+                            color: isSelected ? Colors.white : Colors.black,
+                            fontWeight:
+                                isSelected ? FontWeight.bold : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
 
             const SizedBox(height: 8),
@@ -272,41 +290,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 ElevatedButton(
               onPressed: () {
-
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const BottomNavigationBarScreen()));
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 48),
               ),
               child: const Text("Sign Up"),
             ),
-                // Container(
-                //   padding: EdgeInsets.symmetric(vertical: buttonPadding),
-                //   child: CustomButton(
-                //     fullWidth: true,
-                //     rounded: 16.0,
-                //     padding: EdgeInsets.symmetric(vertical: buttonPadding),
-                //     bgColor: Palette.basicSecondaryColor,
-                //     onPressed: () {
-                    
-                //     },
-                //     widget: Row(
-                //       mainAxisAlignment: MainAxisAlignment.center,
-                //       children: [
-                //         const Text(
-                //           'Sign Up',
-                //           style: TextStyle(fontSize: 14, color: Colors.white),
-                //         ),
-                //         const SizedBox(
-                //           width: 6,
-                //         ),
-                //         Image.asset(
-                //           'assets/images/icons/sheart.png',
-                //           scale: 1.8,
-                //         )
-                //       ],
-                //     ),
-                //   ),
-                // ),
+
           ],
         ),
       ),
