@@ -163,7 +163,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   keyboardType: TextInputType.number,
                   onSaved: (value){},
                   showCountryCodePicker:
-                      true, // Enables dropdown for country codes
+                      false, // Enables dropdown for country codes
                   headingWidget: const Row(
                     children: [
                       Text(
@@ -249,7 +249,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       obscurePassword
                           ? Icons.visibility
                           : Icons.visibility_off,
-                      color: Theme.of(context).primaryColorDark,
+                      color: Colors.black,
                     ),
                     onPressed: () {
                       setState(() {
@@ -283,7 +283,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       obscureConfirmPassword
                           ? Icons.visibility
                           : Icons.visibility_off,
-                      color: Theme.of(context).primaryColorDark,
+                      color: Colors.black,
                     ),
                     onPressed: () {
                       setState(() {
