@@ -42,19 +42,22 @@ class _StartedScreenState extends State<StartedScreen>
             // Animated Image
             AnimatedPositioned(
               duration: const Duration(milliseconds: 800),
-              top: _moveUp ? 80 : MediaQuery.of(context).size.height / 2 - 100,
-              left: MediaQuery.of(context).size.width / 2 - 130,
+              top:
+                  _moveUp
+                      ? MediaQuery.of(context).size.height * 0.1
+                      : MediaQuery.of(context).size.height * 0.38,
+              left: (MediaQuery.of(context).size.width / 2) / 8,
               child: Image.asset(
                 'assets/images/start.png',
-                height: 300,
-                width: 260,
+                height: MediaQuery.of(context).size.height * 0.36,
+                // width: 260,
               ),
             ),
 
             // Animated Content
             AnimatedOpacity(
               opacity: _showContent ? 1 : 0,
-              duration: const Duration(milliseconds: 800),
+              duration: const Duration(milliseconds: 810),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
@@ -111,7 +114,7 @@ class _StartedScreenState extends State<StartedScreen>
                         ),
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                   ],
                 ),
               ),
