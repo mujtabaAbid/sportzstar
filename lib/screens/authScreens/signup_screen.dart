@@ -83,17 +83,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-
-            // Date of Birth Picker
+            // const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Date of Birth', style: TextStyle(color: Colors.black, fontSize: 14),),
+                ),
+              ],
+            ),
             TextField(
               style: const TextStyle(color: Colors.black),
               controller: dobController,
               readOnly: true,
               onTap: () => _selectDate(context),
               decoration: const InputDecoration(
-                labelText: "Date of Birth",
-
+                filled: true,
+                fillColor: Color.fromARGB(255, 224, 224, 224),
                 hintText: "DD/MM/YYYY",
                 labelStyle: TextStyle(color: Colors.black),
                 hintStyle: TextStyle(color: Colors.black),
@@ -101,14 +108,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 suffixIcon: Icon(Icons.calendar_today),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
 
             // Gender Selection
             const Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                "Gender",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              child: Padding(
+                padding: EdgeInsets.only(left: 8.0, bottom: 8.0),
+                child: Text(
+                  "Gender",
+                  style: TextStyle(color: Colors.black, fontSize: 14),
+                ),
               ),
             ),
             Row(
@@ -169,7 +179,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               highlightErrorBorder: true,
               keyboardType: TextInputType.number,
               onSaved: (value) {},
-              showCountryCodePicker: true, // Enables dropdown for country codes
+              showCountryCodePicker: false, // Enables dropdown for country codes
               headingWidget: const Row(
                 children: [
                   Text(
@@ -251,7 +261,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               suffixIcon: IconButton(
                 icon: Icon(
                   obscurePassword ? Icons.visibility : Icons.visibility_off,
-                  color: Theme.of(context).primaryColorDark,
+                  color: Colors.black
                 ),
                 onPressed: () {
                   setState(() {
@@ -283,7 +293,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   obscureConfirmPassword
                       ? Icons.visibility
                       : Icons.visibility_off,
-                  color: Theme.of(context).primaryColorDark,
+                  color: Colors.black,
                 ),
                 onPressed: () {
                   setState(() {

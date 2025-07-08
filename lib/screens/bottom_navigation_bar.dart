@@ -3,9 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/screens/home_screen.dart';
+import 'userScreens/user_profile_screen.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
-import 'userScreens/user_profile_screen.dart';
 class BottomNavigationBarScreen extends StatefulWidget {
   const BottomNavigationBarScreen({super.key});
 
