@@ -42,39 +42,34 @@ class _LoginScreenState extends State<LoginScreen> {
                 onSaved: (value) {},
                 fieldType: InputType.email,
               ),
-        
-                      SizedBox(
-                        height: 20,
-                      ),
-                      InputWidget(
-                        highlightErrorBorder: true,
-                        onSaved: (value) {
-                          
-                        },
-                        validator: ValidationBuilder()
-                            .minLength(8, 'Minimum 8 Characters')
-                            .build(),
-                        keyboardType: TextInputType.visiblePassword,
-                        heading: 'Password',
-                        label: 'Password',
-                        // icon: 'assets/images/icons/key.png',
-                        controller: passwordController,
-                        obscureText: obscurePassword,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            obscurePassword
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Theme.of(context).primaryColorDark,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              obscurePassword = !obscurePassword;
-                            });
-                          },
-                        ),
-                      ),
-        
+
+              SizedBox(height: 20),
+              InputWidget(
+                highlightErrorBorder: true,
+                onSaved: (value) {},
+                validator:
+                    ValidationBuilder()
+                        .minLength(8, 'Minimum 8 Characters')
+                        .build(),
+                keyboardType: TextInputType.visiblePassword,
+                heading: 'Password',
+                label: 'Password',
+                // icon: 'assets/images/icons/key.png',
+                controller: passwordController,
+                obscureText: obscurePassword,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    obscurePassword ? Icons.visibility : Icons.visibility_off,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      obscurePassword = !obscurePassword;
+                    });
+                  },
+                ),
+              ),
+
               const SizedBox(height: 8),
         
               // Forget Password Button

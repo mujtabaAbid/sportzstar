@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 class Palette {
   static Color basicColor = const Color.fromARGB(255, 0, 0, 0);
-  static Color basicgray = const Color.fromRGBO(115, 115, 115, 1);
-  static Color subtextColor = const Color.fromRGBO(115, 115, 115, 1);
+  static Color basicgray = const Color.fromARGB(255, 224, 224, 224);
+  static Color basicgreen = const Color.fromARGB(255, 109, 185, 112);
+  static Color darkgreen = const Color.fromRGBO(27, 104, 52, 1);
+
+  // static Color subtextColor = const Color.fromRGBO(115, 115, 115, 1);
   static Color basicSecondaryColor = const Color.fromARGB(255, 15, 15, 15);
 
   static MaterialColor primaryColor = const MaterialColor(
