@@ -80,13 +80,7 @@ class _StartedScreenState extends State<StartedScreen>
 
                     // Get Started Button
                     CustomButton(
-                      text: Text(
-                        'Get Started',
-                        style: TextStyle(
-                          color: const Color.fromRGBO(234, 238, 239, 1),
-                          fontSize: 16,
-                        ),
-                      ),
+                      text: 'Get Started',
                       onPressed: () {
                         pushNamedNavigate(
                           context: context,

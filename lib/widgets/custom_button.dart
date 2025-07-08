@@ -1,17 +1,18 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:sportzstar/config/palette.dart';
 
 class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
-  final Widget? text;
+  final String? text;
+  final Color? color;
+  final double? textsize;
 
   const CustomButton({
     super.key,
     required this.onPressed,
     this.text,
+    this.color,
+    this.textsize,
   });
 
   @override
@@ -34,7 +35,13 @@ class CustomButton extends StatelessWidget {
           ),
           child: Container(
             alignment: Alignment.center,
-            child: text
+            child: Text(
+              text ?? '',
+              style: TextStyle(
+                color: color ?? const Color.fromRGBO(234, 238, 239, 1),
+                fontSize: textsize ?? 16,
+              ),
+            ),
           ),
         ),
       ),
