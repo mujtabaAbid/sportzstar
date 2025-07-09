@@ -38,6 +38,7 @@ dependencies:
   form_validator: ^2.1.1
   provider: ^6.1.5
   stylish_bottom_bar: ^1.1.1
+  http: ^1.4.0
 
 dev_dependencies:
   flutter_test:

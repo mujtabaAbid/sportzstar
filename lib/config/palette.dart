@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class Palette {
   static Color basicColor = const Color.fromARGB(255, 0, 0, 0);
   static Color basicgray = const Color.fromARGB(255, 224, 224, 224);
+  static Color darkgray = const Color.fromARGB(255, 190, 190, 190);
   static Color basicgreen = const Color.fromARGB(255, 109, 185, 112);
   static Color darkgreen = const Color.fromRGBO(27, 104, 52, 1);
 

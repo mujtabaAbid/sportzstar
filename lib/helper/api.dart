@@ -1,68 +1,56 @@
 import 'package:flutter/foundation.dart';
 
-const basicUrl = kDebugMode
-    ? 'https://dev.spot-me.org/' // Debug server URL
-    : 'https://spot-me.org/'; // Production server URL
+const basicUrl =
+    kDebugMode
+        ? 'http://77.37.125.189/' // Debug server URL
+        : 'http://77.37.125.189/'; // Production server URL
 
 const apiUrl = '${basicUrl}api/';
+//users
+const registerUser = '${apiUrl}auth/signup/';
+const loginUser = '${apiUrl}auth/login/';
+const usersList = '${apiUrl}users/'; //get
+const updateUser = '${apiUrl}update-user/'; //patch
+const verifyEmail = '${apiUrl}verify-email/';
+const getCode = '${apiUrl}get_code/';
+const updatePassword = '${apiUrl}update_password/';
+const deleteUser =
+    '${apiUrl}auth/get_notifications/3/'; //<-- (delete) 3= userid
+const notifications = '${apiUrl}get_notifications/4/'; //get
+const readNotifications = '${apiUrl}notification_/read/20/'; //get
 
-const getIntrests = '${apiUrl}interests';
-const registerUser = '${apiUrl}register';
-const getUserOtp = '${apiUrl}otp';
-const login = '${apiUrl}login';
-const otpVerify = '${apiUrl}otp/verify';
-const resetPasswordApi = '${apiUrl}enter-new-password';
-const saveIntrest = '${apiUrl}user-interest';
-const updateUserProfileApi = '${apiUrl}update-profile';
-const sendMessageApi = '${apiUrl}send-message';
-const deviceTokenApi = '${apiUrl}device-token';
-const specificUserChatApi = '${apiUrl}user-chat';
-const allChatUsersApi = '${apiUrl}chats';
-const allAppUsersApi = '${apiUrl}users';
-const readMessageApi = '${apiUrl}read-status';
-const onlineStatusApi = '${apiUrl}online-status';
-const allNotificationsApi = '${apiUrl}show-notifications';
-const discoverApprovalApi = '${apiUrl}approval';
-const getExercisesApi = '${apiUrl}exercises';
-const createScheduleApi = '${apiUrl}schedules/create';
-const discoverUsersApi = '${apiUrl}discover-user-list';
-const discoverActionApi = '${apiUrl}discover';
-const notificationtAlertApi = '${apiUrl}notification-status';
-const scheduleApprovalApi = '${apiUrl}schedules/accept-reject';
-const scheduleDotsCounterApi = '${apiUrl}schedules/counter';
-const getScheduleDatewiseApi = '${apiUrl}schedules/get-schedule-date-wise';
-const notificationReadApi = '${apiUrl}read-notification';
-const logoutApi = '${apiUrl}logout';
-const privacyPolicyApi = '${apiUrl}privacy-policy';
-const appleLoginApi = '${apiUrl}login/apple';
-const googleLoginApi = '${apiUrl}login/google';
-const testingApi = '${apiUrl}testing';
-const termAndConditionApi = '${apiUrl}terms-and-conditions';
-const blockUserApi = '${apiUrl}block-user';
-const unblockUserApi = '${apiUrl}unblock-user';
-const blockUserListApi = '${apiUrl}block-user-list';
-const getUserDataByIdApi = '${apiUrl}get-user-data-by-id';
-const mcqsQuestionsApi = '${apiUrl}questions';
-const mcqsAnswerStoreApi = '${apiUrl}awnsers';
-const deleteAccountApi = '${apiUrl}users/deleted';
-const storeMultipleImagesApi = '${apiUrl}upload-images';
-const profilePercentageApi = '${apiUrl}profile-percentage';
-const humanVerifiedApi = '${apiUrl}humen/verified/at';
-const showUserMultipleImagesApi = '${apiUrl}show-multiple-images';
-const getDiscoverUserImagesApi = '${apiUrl}show-multiple-images/by/user';
-const storeFlageSystemApi = '${apiUrl}flage';
-const checkEmailApi = '${apiUrl}email/checked';
-const verifyAnswersApi = '${apiUrl}available/answer';
-const matchUserApi = '${apiUrl}match-users';
-const unmatchUserApi = '${apiUrl}un-match-user';
-const uploadProfileImageApi = '${apiUrl}change-profile-photo';
-const userDetailApi = '${apiUrl}user-details';
-const userUpdateAnswer = '${apiUrl}awnsers/update';
-const questionByIdApi = '${apiUrl}get-question-by-id';
-const updateUserImagesApi = '${apiUrl}update-user-images';
-const updateLocationApi = '${apiUrl}update-location';
-const feedbackApi = '${apiUrl}feedback';
-const getLocationApi = '${apiUrl}check/location';
-const saveSpotifyTokenApi = '${apiUrl}spotify/user-access-token';
+// posts
+const createPost = '${apiUrl}posts/create/';
+const updatePost = '${apiUrl}posts/update/1/'; //patch
+const deletePost = '${apiUrl}posts/delete/1/'; //del
+const allUserPost = '${apiUrl}posts/user/2/'; //get
+const allPosts = '${apiUrl}posts/'; //get
+const likePost = '${apiUrl}posts/like/';
+const unlikePost = '${apiUrl}posts/unlike/';
+const commentOnPost = '${apiUrl}posts/comment/';
+const deleteCommentOnPost = '${apiUrl}posts/comment/delete';
 
-// const getIntrests = '${apiUrl}apiNameHere';
+//stories
+const createStory = '${apiUrl}stories/create/';
+const updateStory = '${apiUrl}stories/update/1/'; //patch
+const deleteStory = '${apiUrl}stories/delete/<post_id>/'; //get
+const getStoryWithUserId = '${apiUrl}stories/2/'; //get
+const getAllStories = '${apiUrl}stories/'; //get
+
+//friends
+const addFriend = '${apiUrl}add-friend/';
+const getFriend = '${apiUrl}get-friends/1/'; //get
+const unfriend = '${apiUrl}unfriend/';
+const acceptFriend = '${apiUrl}accept-friend/';
+const rejectFriend = '${apiUrl}reject-friend/';
+
+//events
+const createEvent = '${apiUrl}create-event/';
+const listEvent = '${apiUrl}events/'; //get
+const getEventById = '${apiUrl}events/1/'; //get
+const deleteEventById = '${apiUrl}events/delete/1/'; //get
+const addGuestInEvent = '${apiUrl}add-event-guests/';
+
+//others
+const joinEvent = '${apiUrl}join-event/';
+const getSports = '${apiUrl}sports/'; //get

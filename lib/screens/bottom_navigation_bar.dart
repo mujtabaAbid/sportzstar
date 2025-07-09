@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/screens/home_screen.dart';
@@ -10,11 +8,12 @@ class BottomNavigationBarScreen extends StatefulWidget {
   const BottomNavigationBarScreen({super.key});
 
   @override
-  State<BottomNavigationBarScreen> createState() => _BottomNavigationBarScreenState();
+  State<BottomNavigationBarScreen> createState() =>
+      _BottomNavigationBarScreenState();
 }
 
 class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
-   int selectedIndex = 0;
+  int selectedIndex = 0;
 
   List<Widget> pages = const [
     HomeScreen(),
@@ -22,11 +21,11 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     Center(child: Text('Star')),
     Center(child: Text('wow')),
     Center(child: Text('Style')),
-    UserProfileScreen()
+    UserProfileScreen(),
     // Center(child: Text('Profile')),
   ];
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: pages[selectedIndex],
@@ -72,12 +71,12 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
           BottomBarItem(
             icon: const Icon(Icons.home_outlined),
             title: const Text('Home'),
-            selectedColor: Colors.pink,
+            selectedColor: Palette.basicgreen,
           ),
           BottomBarItem(
             icon: const Icon(Icons.star_border),
             title: const Text('Star'),
-            selectedColor: Colors.pink,
+            selectedColor: Palette.darkgreen,
           ),
           BottomBarItem(
             icon: const Icon(Icons.add),
@@ -88,12 +87,12 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
           BottomBarItem(
             icon: const Icon(Icons.style_outlined),
             title: const Text('Style'),
-            selectedColor: Colors.pink,
+            selectedColor: Palette.basicgray,
           ),
           BottomBarItem(
             icon: const Icon(Icons.person_outline),
             title: const Text('Profile'),
-            selectedColor: Colors.pink,
+            selectedColor: Palette.darkgray,
           ),
         ],
       ),

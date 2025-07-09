@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:sportzstar/provider/event_provider.dart';
+import 'package:sportzstar/provider/friends_provider.dart';
+import 'package:sportzstar/provider/other_provider.dart';
+import 'package:sportzstar/provider/post_provider.dart';
+import 'package:sportzstar/provider/stories_provider.dart';
+import 'package:sportzstar/provider/user_provider.dart';
 import 'package:sportzstar/started_screen.dart';
 
 import '../config/palette.dart';
@@ -23,15 +29,10 @@ void main() async {
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: Color.fromARGB(255, 217, 211, 211),
+      statusBarColor: Colors.white,
       statusBarIconBrightness: Brightness.dark,
       statusBarBrightness: Brightness.light,
-      systemNavigationBarColor: Color.fromARGB(
-        255,
-        255,
-        255,
-        255,
-      ), // light background
+      systemNavigationBarColor: Colors.white, // light background
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
@@ -45,23 +46,30 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context) => MainProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (context) => MainProvider()),
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => FriendsProvider()),
+        ChangeNotifierProvider(create: (context) => PostProvider()),
+        ChangeNotifierProvider(create: (context) => EventProvider()),
+        ChangeNotifierProvider(create: (context) => OtherProvider()),
+        ChangeNotifierProvider(create: (context) => StoriesProvider()),
+      ],
       child: Consumer<MainProvider>(
         builder:
             (_, auth, __) => MaterialApp(
-
               debugShowCheckedModeBanner: false,
               title: 'SportzStar',
               theme: ThemeData(
                 primarySwatch: Palette.primaryColor,
                 scaffoldBackgroundColor: const Color.fromARGB(
                   255,
-                  235,
-                  235,
-                  235,
+                  243,
+                  243,
+                  243,
                 ),
                 fontFamily: 'Poppins',
-                  
+
                 // appBarTheme: const AppBarTheme(
                 //   systemOverlayStyle: SystemUiOverlayStyle(
                 //     statusBarColor: Color.fromARGB(255, 249, 249, 249),
