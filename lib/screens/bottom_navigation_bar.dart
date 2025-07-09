@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sportzstar/chats/chat_list_screen.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/screens/home_screen.dart';
 import 'userScreens/user_profile_screen.dart';
@@ -20,8 +21,8 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     // Center(child: Text('Home')),
     Center(child: Text('Star')),
     Center(child: Text('wow')),
-    Center(child: Text('Style')),
-    UserProfileScreen(),
+    ChatListScreen(),
+    UserProfileScreen()
     // Center(child: Text('Profile')),
   ];
 
