@@ -15,205 +15,235 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
+      
         slivers: [
           SliverAppBar(
+            automaticallyImplyLeading: false,
             pinned: true,
-            expandedHeight: 250,
+            expandedHeight: 200,
             backgroundColor: Colors.white,
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
-                alignment: Alignment.bottomCenter,
+                clipBehavior: Clip.none,
                 children: [
-                  // Background Cover Image
                   Container(
-                    height: 250,
+                    margin: const EdgeInsets.only(top: 80),
+                    height: 180,
                     width: double.infinity,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/profile/oneImage.jpeg'),
+                        image: AssetImage('assets/profile/cover.png'),
                         fit: BoxFit.cover,
                       ),
-                    ),
-                  ),
-                  // Profile Picture
-                  Positioned(
-                    bottom: 0,
-                    left: 20, // push to the left
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Colors.white,
-                          child: const CircleAvatar(
-                            radius: 47,
-                            backgroundImage: AssetImage(
-                              'assets/profile/profile.jpeg',
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 80), // space between avatar and buttons
-                               IconButton(
-                          icon: const Icon(Icons.email_outlined, color: Colors.white,),
-                          onPressed: () {},
-                        ),
-                        const SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFCBFE15),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 10,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                          child: const Text(
-                            'Follow',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                 ],
               ),
             ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.notifications_none, color: Colors.black),
-                onPressed: () {},
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(80),
+              child: Transform.translate(
+                offset: const Offset(0, 40), // pushes down half image
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.white,
+                            child: const CircleAvatar(
+                              radius: 47,
+                              backgroundImage: AssetImage(
+                                'assets/profile/profile.jpeg',
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.email_outlined,
+                                    color: Colors.black,
+                                  ),
+                                  onPressed: () {},
+                                ),
+                                const SizedBox(width: 10),
+                                ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFFCBFE15),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 10,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'Follow',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              IconButton(
-                icon: const Icon(Icons.more_horiz, color: Colors.black),
-                onPressed: () {},
-              ),
-            ],
+            ),
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start, 
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+              ), // adjust top spacing
+
+              child: Stack(
                 children: [
-              
-                  const Text(
-                    'Aditya Prasodjo',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    '@aditya_prasodjo',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    '🎥 Content creator & Filmmaker',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  const Text(
-                    '📍 Surabaya, Indonesia',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(height: 12),
-              
-                  // Buttons Row
-                 
-              
-                  const SizedBox(height: 20),
-              
-                  // Stats
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: const [
-                      _StatItem(count: '200', label: 'Posts'),
-                      _StatItem(count: '97.5K', label: 'Followers'),
-                      _StatItem(count: '121', label: 'Following'),
-                      _StatItem(count: '3.25M', label: 'Likes'),
-                    ],
-                  ),
-              
-                  const SizedBox(height: 20),
-              
-                  // Tabs
-                  const Divider(),
-                  DefaultTabController(
-                    length: 3,
-                    child: Column(
-                      children: [
-                        const TabBar(
-                          labelColor: Colors.black,
-                          unselectedLabelColor: Colors.grey,
-                          indicatorColor: Colors.black,
-                          tabs: [
-                            Tab(icon: Icon(Icons.grid_on)),
-                            Tab(icon: Icon(Icons.video_collection_outlined)),
-                            Tab(icon: Icon(Icons.bookmark_border)),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 100), // Adjust height as needed
+                      // Rest of your profile content
+                      const Text(
+                        'Aditya Prasodjo',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        '@aditya_prasodjo',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        '🎥 Content creator & Filmmaker',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                      const Text(
+                        '📍 Surabaya, Indonesia',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+
+                      // Buttons Row
+                      const SizedBox(height: 20),
+
+                      // Stats
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: const [
+                          _StatItem(count: '200', label: 'Posts'),
+                          _StatItem(count: '97.5K', label: 'Followers'),
+                          _StatItem(count: '121', label: 'Following'),
+                          _StatItem(count: '3.25M', label: 'Likes'),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Tabs
+                      const Divider(),
+                      DefaultTabController(
+                        length: 3,
+                        child: Column(
+                          children: [
+                            const TabBar(
+                              labelColor: Colors.black,
+                              unselectedLabelColor: Colors.grey,
+                              indicatorColor: Colors.black,
+                              tabs: [
+                                Tab(icon: Icon(Icons.grid_on)),
+                                Tab(
+                                  icon: Icon(Icons.video_collection_outlined),
+                                ),
+                                Tab(icon: Icon(Icons.bookmark_border)),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 400,
+                              child: TabBarView(
+                                children: [
+                                  // Grid Posts
+                                  Padding(
+                                    padding: const EdgeInsets.all(6.0),
+                                    child: GridView.count(
+                                      crossAxisCount: 3,
+                                      crossAxisSpacing: 4,
+                                      mainAxisSpacing: 3,
+                                      childAspectRatio: 0.6,
+                                      children: const [
+                                        _PostTile(
+                                          imgPath:
+                                              'assets/profile/twoImage.jpeg',
+                                          likes: '95K',
+                                        ),
+                                        _PostTile(
+                                          imgPath:
+                                              'assets/profile/threeImage.jpeg',
+                                          likes: '99K',
+                                        ),
+                                        _PostTile(
+                                          imgPath:
+                                              'assets/profile/fourImage.jpeg',
+                                          likes: '126K',
+                                        ),
+                                        _PostTile(
+                                          imgPath:
+                                              'assets/profile/twoImage.jpeg',
+                                          likes: '95K',
+                                        ),
+                                        _PostTile(
+                                          imgPath:
+                                              'assets/profile/threeImage.jpeg',
+                                          likes: '99K',
+                                        ),
+                                        _PostTile(
+                                          imgPath:
+                                              'assets/profile/fourImage.jpeg',
+                                          likes: '126K',
+                                        ),
+                                        _PostTile(
+                                          imgPath:
+                                              'assets/profile/twoImage.jpeg',
+                                          likes: '95K',
+                                        ),
+                                        _PostTile(
+                                          imgPath:
+                                              'assets/profile/threeImage.jpeg',
+                                          likes: '99K',
+                                        ),
+                                        _PostTile(
+                                          imgPath:
+                                              'assets/profile/fourImage.jpeg',
+                                          likes: '126K',
+                                        ),
+
+                                        // Add more as needed
+                                      ],
+                                    ),
+                                  ),
+                                  Center(child: Text("Reels")),
+                                  Center(child: Text("Saved")),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
-                        SizedBox(
-                          height: 400,
-                          child: TabBarView(
-                            children: [
-                              // Grid Posts
-                              Padding(
-                                padding: const EdgeInsets.all(6.0),
-                                child: GridView.count(
-                                  crossAxisCount: 3,
-                                  crossAxisSpacing: 4,
-                                  mainAxisSpacing: 3,
-                                   childAspectRatio: 0.6,
-                                  children: const [
-                                    _PostTile(
-                                      imgPath: 'assets/profile/twoImage.jpeg',
-                                      likes: '95K',
-                                    ),
-                                    _PostTile(
-                                      imgPath: 'assets/profile/threeImage.jpeg',
-                                      likes: '99K',
-                                    ),
-                                    _PostTile(
-                                      imgPath: 'assets/profile/fourImage.jpeg',
-                                      likes: '126K',
-                                    ),
-                                    _PostTile(
-                                      imgPath: 'assets/profile/twoImage.jpeg',
-                                      likes: '95K',
-                                    ),
-                                    _PostTile(
-                                      imgPath: 'assets/profile/threeImage.jpeg',
-                                      likes: '99K',
-                                    ),
-                                    _PostTile(
-                                      imgPath: 'assets/profile/fourImage.jpeg',
-                                      likes: '126K',
-                                    ),
-                                    _PostTile(
-                                      imgPath: 'assets/profile/twoImage.jpeg',
-                                      likes: '95K',
-                                    ),
-                                    _PostTile(
-                                      imgPath: 'assets/profile/threeImage.jpeg',
-                                      likes: '99K',
-                                    ),
-                                    _PostTile(
-                                      imgPath: 'assets/profile/fourImage.jpeg',
-                                      likes: '126K',
-                                    ),
-
-                                    // Add more as needed
-                                  ],
-                                ),
-                              ),
-                              Center(child: Text("Reels")),
-                              Center(child: Text("Saved")),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -258,7 +288,7 @@ class _PostTile extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(imgPath,),
+              image: AssetImage(imgPath),
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(8),

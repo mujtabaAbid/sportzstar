@@ -59,3 +59,6 @@ const String profileDetailsScreenRoute = '/profile-details-screen';
 const String notificationSettingsScreenRoute = '/notification-settings-screen';
 
 const String startedScreenRoute = '/started-screen';
+
+//chats screen 
+const String chatListScreenRoute = '/chat-list-screen';
