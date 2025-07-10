@@ -86,8 +86,8 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
             selectedColor: Colors.transparent,
           ),
           BottomBarItem(
-            icon: const Icon(Icons.style_outlined),
-            title: const Text('Style'),
+            icon: const Icon(Icons.chat_bubble),
+            title: const Text('Chats'),
             selectedColor: Palette.basicgray,
           ),
           BottomBarItem(
