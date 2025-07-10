@@ -62,6 +62,7 @@ class MyApp extends StatelessWidget {
               title: 'SportzStar',
               theme: ThemeData(
                 primarySwatch: Palette.primaryColor,
+
                 scaffoldBackgroundColor: const Color.fromARGB(
                   255,
                   243,
