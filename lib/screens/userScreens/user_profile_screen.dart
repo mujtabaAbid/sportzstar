@@ -15,20 +15,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
-      
+        physics: NeverScrollableScrollPhysics(),
         slivers: [
           SliverAppBar(
             automaticallyImplyLeading: false,
-            pinned: true,
+            pinned: false,
             expandedHeight: 200,
-            backgroundColor: Colors.white,
+            backgroundColor: const Color.fromARGB(255, 250, 248, 248),
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
                 clipBehavior: Clip.none,
                 children: [
                   Container(
                     margin: const EdgeInsets.only(top: 80),
-                    height: 180,
+                    // height: 180,
                     width: double.infinity,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
@@ -43,9 +43,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(80),
               child: Transform.translate(
-                offset: const Offset(0, 40), // pushes down half image
+                offset: const Offset(0, 50), // pushes down half image
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 26.0),
                   child: Column(
                     children: [
                       Row(
@@ -77,10 +77,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   onPressed: () {},
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFCBFE15),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 24,
-                                      vertical: 10,
-                                    ),
+                                    // padding: const EdgeInsets.symmetric(
+                                    //   horizontal: 24,
+                                    //   vertical: 10,
+                                    // ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     ),
@@ -103,9 +103,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(
-                left: 16.0,
-                right: 16.0,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
               ), // adjust top spacing
 
               child: Stack(
@@ -114,13 +113,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 100), // Adjust height as needed
+                      const SizedBox(height: 60), // Adjust height as needed
                       // Rest of your profile content
                       const Text(
                         'Aditya Prasodjo',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
+                          color: Colors.black,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -155,7 +155,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       const SizedBox(height: 20),
 
                       // Tabs
-                      const Divider(),
+                      // const Divider(),
                       DefaultTabController(
                         length: 3,
                         child: Column(
@@ -267,7 +267,11 @@ class _StatItem extends StatelessWidget {
       children: [
         Text(
           count,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: Colors.black,
+          ),
         ),
         Text(label, style: const TextStyle(color: Colors.grey)),
       ],
