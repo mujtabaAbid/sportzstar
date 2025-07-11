@@ -1,13 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:provider/provider.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
+import 'package:sportzstar/helper/close_keyboard.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
+import 'package:sportzstar/provider/user_provider.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/authScreens/signup_screen.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
+
+import '../../widgets/alerts/alert_notification_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,9 +24,72 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-   bool _isLoading = false;
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  bool _isLoading = false;
+  // final TextEditingController emailController = TextEditingController();
+  // final TextEditingController passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final Map<String, String> _formData = {};
+
+  String handleSave(String type, String value) {
+    print('object------------->>>$type and $value');
+    return _formData[type] = value;
+  }
+
+  Future<void> handleSubmit() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      _formKey.currentState?.save();
+
+      closeKeyboard(context: context);
+      setState(() {
+        _isLoading = true;
+      });
+
+      print('object--->$_formData');
+      try {
+        final response = await Provider.of<UserProvider>(
+          context,
+          listen: false,
+        ).loginFunction(formData: _formData);
+
+        // print('responmses 2342---->>>>  ${response.body}');
+        if (response.statusCode == 200) {
+          print('all response -fgdrgfd--> ${response.body}');
+
+          alertNotification(
+            context: context,
+            message: 'Login successful!',
+            messageType: AlertMessageType.success,
+          );
+
+          pushNamedAndRemoveUntilNavigate(
+            pageName: homeScreenRoute,
+            context: context,
+          );
+        } else {
+          final message = json.decode(response.body);
+          final msg = message['detail'];
+
+          alertNotification(
+            context: context,
+            message: msg,
+            messageType: AlertMessageType.error,
+          );
+        }
+      } catch (e) {
+        print('error---------> ${e.toString()}');
+      }
+    } else {
+      print('Form is not valid');
+      alertNotification(
+        context: context,
+        message: 'Something went wrong, try again later.',
+        messageType: AlertMessageType.error,
+      );
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   bool obscurePassword = true;
 
@@ -34,65 +104,83 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 80),
-               Image.asset('assets/images/start.png', height: 150, width: 150),
+              Image.asset('assets/images/start.png', height: 150, width: 150),
               const SizedBox(height: 40),
-              InputWidget(
-                highlightErrorBorder: true,
-                controller: emailController,
-                onSaved: (value) {},
-                fieldType: InputType.email,
-              ),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    InputWidget(
+                      // validator: ,
+                      highlightErrorBorder: true,
+                      // controller: emailController,
+                      onSaved: (value) {
+                        print('email value =$value');
+                        handleSave('email', value);
+                      },
+                      fieldType: InputType.email,
+                    ),
 
-              SizedBox(height: 20),
-              InputWidget(
-                highlightErrorBorder: true,
-                onSaved: (value) {},
-                validator:
-                    ValidationBuilder()
-                        .minLength(8, 'Minimum 8 Characters')
-                        .build(),
-                keyboardType: TextInputType.visiblePassword,
-                heading: 'Password',
-                label: 'Password',
-                // icon: 'assets/images/icons/key.png',
-                controller: passwordController,
-                obscureText: obscurePassword,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    obscurePassword ? Icons.visibility : Icons.visibility_off,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      obscurePassword = !obscurePassword;
-                    });
-                  },
+                    SizedBox(height: 20),
+                    InputWidget(
+                      highlightErrorBorder: true,
+                      onSaved: (value) => handleSave('password', value),
+                      validator:
+                          ValidationBuilder()
+                              .minLength(8, 'Minimum 8 Characters')
+                              .build(),
+                      keyboardType: TextInputType.visiblePassword,
+                      heading: 'Password',
+                      label: 'Password',
+                      // icon: 'assets/images/icons/key.png',
+                      // controller: passwordController,
+                      obscureText: obscurePassword,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          obscurePassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            obscurePassword = !obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // Forget Password Button
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {},
+                        child: const Text(
+                          'Forget Password?',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+                    CustomButton(
+                      onPressed: () {
+                        handleSubmit();
+                        // pushNamedNavigate(
+                        //   context: context,
+                        //   pageName: bottomNavigationBarRoute,
+                        // );
+                      },
+                      text: 'Sign In',
+                    ),
+                  ],
                 ),
               ),
 
-              const SizedBox(height: 8),
-        
-              // Forget Password Button
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                 
-                  onPressed: () {
-                  },
-                  child: const Text('Forget Password?', style: TextStyle(color: Colors.black)),
-                ),
-              ),
-        
               const SizedBox(height: 24),
-               CustomButton(onPressed: () {
-                pushNamedNavigate(context: context, pageName: bottomNavigationBarRoute);
-                
-              },
-              text :  'Sign In' ,
-              ),
 
-              const SizedBox(height: 24),
-        
               // Sign Up Redirect
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -100,10 +188,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Text("Don't have an account? "),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => SignUpScreen()),
+                      // );
                       // pushNamedNavigate(context: context, pageName: );
                     },
-                    child: const Text("Sign Up", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                    child: const Text(
+                      "Sign Up",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),

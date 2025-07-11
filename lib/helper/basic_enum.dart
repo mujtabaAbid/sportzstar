@@ -9,3 +9,10 @@ enum InputType {
   url,
   password,
 }
+
+enum AlertMessageType {
+  success,
+  error,
+  warning,
+  info,
+}

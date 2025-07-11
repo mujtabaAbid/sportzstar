@@ -8,40 +8,39 @@ import 'package:sportzstar/helper/http_exception.dart';
 import '../helper/api.dart';
 
 class UserProvider with ChangeNotifier {
-  Future<dynamic> loginFunction({required Map<String, String> formData}) async {
-    String authToken = '';
-    Map<String, dynamic> userData = {};
-    String deviceToken = '';
+  String refresh = '';
+  String access = '';
+  Map<String, dynamic> userData = {};
 
-    formData.addAll({'deviceToken': deviceToken});
+  Future<dynamic> loginFunction({required Map<String, String> formData}) async {
+    print('loginfunction ---->> $formData');
     try {
       final response = await http.post(
         Uri.parse(loginUser),
         headers: {'Accept': 'application/json'},
         body: formData,
       );
-      final responseData = json.decode(response.body);
 
-      if (responseData['status'] == true) {
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
         final SharedPreferences provider =
             await SharedPreferences.getInstance();
-        provider.setString(
-          'userData',
-          json.encode(responseData['data']['user']),
-        );
-        await provider.setString(
-          'authToken',
-          responseData['data']['auth_token'],
-        );
+        provider.setString('userData', json.encode(responseData['user']));
+        await provider.setString('refresh', responseData['refresh']);
+        await provider.setString('access', responseData['access']);
 
-        authToken = responseData['data']['auth_token'];
-        userData = responseData['data']['user'];
+        refresh = responseData['refresh'];
+        access = responseData['access'];
+
         print(
           '------------------login Successfully------------------> $responseData',
         );
-        return responseData;
+        return response;
       } else {
-        return responseData;
+        print(
+          '------------------login error------------------> ${response.body}',
+        );
+        return response;
       }
     } on HttpExpectionString catch (error) {
       print(
