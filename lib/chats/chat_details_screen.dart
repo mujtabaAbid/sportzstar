@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:sportzstar/widgets/input_widget.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final String name;
@@ -88,14 +89,12 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextFormField(
+                  child: InputWidget(
+                    // heading: 'Type a message...',
+                    label: 'Type a message...',
+                    backgroundColor: Colors.grey.shade200,
+                    onSaved: (){},
                     controller: _messageController,
-                    decoration: InputDecoration(
-                      label: const Text('Type a message...'),
-                      // hintText: 'Type a message...',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
                   ),
                 ),
                 IconButton(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
 
@@ -10,6 +11,35 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
+  String selectedCategory = 'Grid'; // 👈 default selected is 'Grid'
+
+  final List<Map<String, dynamic>> sportsCategories = [
+    {'name': 'Grid', 'icon': Icons.grid_on},
+    {'name': 'Videos', 'icon': Icons.video_collection_outlined},
+    {'name': 'Bookmarks', 'icon': Icons.bookmark_border},
+  ];
+
+  final List<Map<String, dynamic>> posts = [
+    {
+      'category': 'Grid',
+
+      'image': 'assets/profile/twoImage.jpeg', // Replace with real URL or Asset
+      'likes': '96k',
+    },
+    {
+      'category': 'Videos',
+
+      'image': 'assets/profile/oneImage.jpeg', // Replace with real URL or Asset
+      'likes': '66k',
+    },
+    {
+      'category': 'Bookmarks',
+
+      'image': 'assets/profile/threeImage.jpeg', // Replace with real URL or Asset
+      'likes': '100k',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,10 +107,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   onPressed: () {},
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFCBFE15),
-                                    // padding: const EdgeInsets.symmetric(
-                                    //   horizontal: 24,
-                                    //   vertical: 10,
-                                    // ),
+
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     ),
@@ -153,95 +180,125 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       ),
 
                       const SizedBox(height: 20),
-
-                      // Tabs
-                      // const Divider(),
-                      DefaultTabController(
-                        length: 3,
-                        child: Column(
-                          children: [
-                            const TabBar(
-                              labelColor: Colors.black,
-                              unselectedLabelColor: Colors.grey,
-                              indicatorColor: Colors.black,
-                              tabs: [
-                                Tab(icon: Icon(Icons.grid_on)),
-                                Tab(
-                                  icon: Icon(Icons.video_collection_outlined),
-                                ),
-                                Tab(icon: Icon(Icons.bookmark_border)),
-                              ],
+                      Column(
+                        children: [
+                          Container(
+                            color: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: SizedBox(
+                              height: 70,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children:
+                                    sportsCategories.map((category) {
+                                      final isSelected =
+                                          selectedCategory == category['name'];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedCategory = category['name'];
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                            vertical: 8,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color:
+                                                    isSelected
+                                                        ? Colors.black
+                                                        : Colors.transparent,
+                                                width: 2,
+                                              ),
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            category['icon'],
+                                            color:
+                                                isSelected
+                                                    ? Colors.black
+                                                    : Colors.grey,
+                                            size: 28,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                              ),
                             ),
-                            SizedBox(
-                              height: 400,
-                              child: TabBarView(
-                                children: [
-                                  // Grid Posts
-                                  Padding(
-                                    padding: const EdgeInsets.all(6.0),
-                                    child: GridView.count(
-                                      crossAxisCount: 3,
-                                      crossAxisSpacing: 4,
-                                      mainAxisSpacing: 3,
-                                      childAspectRatio: 0.6,
-                                      children: const [
-                                        _PostTile(
-                                          imgPath:
-                                              'assets/profile/twoImage.jpeg',
-                                          likes: '95K',
-                                        ),
-                                        _PostTile(
-                                          imgPath:
-                                              'assets/profile/threeImage.jpeg',
-                                          likes: '99K',
-                                        ),
-                                        _PostTile(
-                                          imgPath:
-                                              'assets/profile/fourImage.jpeg',
-                                          likes: '126K',
-                                        ),
-                                        _PostTile(
-                                          imgPath:
-                                              'assets/profile/twoImage.jpeg',
-                                          likes: '95K',
-                                        ),
-                                        _PostTile(
-                                          imgPath:
-                                              'assets/profile/threeImage.jpeg',
-                                          likes: '99K',
-                                        ),
-                                        _PostTile(
-                                          imgPath:
-                                              'assets/profile/fourImage.jpeg',
-                                          likes: '126K',
-                                        ),
-                                        _PostTile(
-                                          imgPath:
-                                              'assets/profile/twoImage.jpeg',
-                                          likes: '95K',
-                                        ),
-                                        _PostTile(
-                                          imgPath:
-                                              'assets/profile/threeImage.jpeg',
-                                          likes: '99K',
-                                        ),
-                                        _PostTile(
-                                          imgPath:
-                                              'assets/profile/fourImage.jpeg',
-                                          likes: '126K',
-                                        ),
+                          ),
 
-                                        // Add more as needed
+                          GridView.builder(
+                            shrinkWrap: true,
+                            // physics: const NeverScrollableScrollPhysics(),
+                            padding: const EdgeInsets.all(12),
+                            itemCount:
+                                posts
+                                    .where(
+                                      (post) =>
+                                          post['category'] == selectedCategory,
+                                    )
+                                    .length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  mainAxisSpacing: 6,
+                                  crossAxisSpacing: 6,
+                                  childAspectRatio: 1,
+                                ),
+                            itemBuilder: (context, index) {
+                              final filteredPosts =
+                                  posts
+                                      .where(
+                                        (post) =>
+                                            post['category'] ==
+                                            selectedCategory,
+                                      )
+                                      .toList();
+                              final post = filteredPosts[index];
+                              return Stack(
+                                children: [
+                                  Container(
+                                    height: 150,
+                                    width: 150,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(post['image']),
+                                        fit: BoxFit.cover,
+
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 6,
+                                    left: 6,
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.favorite,
+                                          size: 14,
+                                          color: Colors.white,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          post['likes'],
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
-                                  Center(child: Text("Reels")),
-                                  Center(child: Text("Saved")),
                                 ],
-                              ),
-                            ),
-                          ],
-                        ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -279,40 +336,40 @@ class _StatItem extends StatelessWidget {
   }
 }
 
-class _PostTile extends StatelessWidget {
-  final String imgPath;
-  final String likes;
+// class _PostTile extends StatelessWidget {
+//   final String imgPath;
+//   final String likes;
 
-  const _PostTile({required this.imgPath, required this.likes});
+//   const _PostTile({required this.imgPath, required this.likes});
 
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(imgPath),
-              fit: BoxFit.cover,
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        Positioned(
-          bottom: 6,
-          left: 6,
-          child: Row(
-            children: [
-              const Icon(Icons.favorite, size: 14, color: Colors.white),
-              const SizedBox(width: 4),
-              Text(
-                likes,
-                style: const TextStyle(color: Colors.white, fontSize: 12),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Stack(
+//       children: [
+//         Container(
+//           decoration: BoxDecoration(
+//             image: DecorationImage(
+//               image: AssetImage(imgPath),
+//               fit: BoxFit.cover,
+//             ),
+//             borderRadius: BorderRadius.circular(8),
+//           ),
+//         ),
+//         Positioned(
+//           bottom: 6,
+//           left: 6,
+//           child: Row(
+//             children: [
+//               const Icon(Icons.favorite, size: 14, color: Colors.white),
+//               const SizedBox(width: 4),
+//               Text(
+//                 likes,
+//                 style: const TextStyle(color: Colors.white, fontSize: 12),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }

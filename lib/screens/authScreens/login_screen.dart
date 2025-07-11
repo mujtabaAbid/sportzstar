@@ -3,6 +3,7 @@ import 'package:form_validator/form_validator.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
+import 'package:sportzstar/screens/authScreens/forget_password_screen.dart';
 import 'package:sportzstar/screens/authScreens/signup_screen.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
@@ -78,8 +79,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: TextButton(
                  
                   onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ForgetPasswordScreen()),
+                    );
+
                   },
-                  child: const Text('Forget Password?', style: TextStyle(color: Colors.black)),
+                  child: const Text('Forgot Password?', style: TextStyle(color: Colors.black)),
                 ),
               ),
         

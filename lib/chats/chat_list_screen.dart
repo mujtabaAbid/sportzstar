@@ -44,7 +44,7 @@ class ChatListScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final chat = chatData[index];
           return ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16,),
             leading: CircleAvatar(
               radius: 25,
               backgroundImage: AssetImage(chat['image']),

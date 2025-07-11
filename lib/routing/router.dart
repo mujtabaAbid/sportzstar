@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sportzstar/chats/chat_list_screen.dart';
+import 'package:sportzstar/explore/event_/tabbar_screen.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/started_screen.dart';
 import '../screens/orderScreens/order_confirmation_screen.dart';
@@ -125,6 +126,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const StartedScreen());
     case chatListScreenRoute:
       return MaterialPageRoute(builder: (_) => const ChatListScreen());
+    case eventScreenRoute:
+      return MaterialPageRoute(builder: (_) => const EventScreen());
     // case confirmEmailScreenRoute:
     //   return MaterialPageRoute(
     //       builder: (_) => const ConfirmEmailScreen(),
