@@ -193,6 +193,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
+
+              TextButton(onPressed: (){
+
+                pushNamedNavigate(context: context, pageName: resetPasswordScreenRoute);
+              }, child: Text('Reset Password'))
             ],
           ),
         ),

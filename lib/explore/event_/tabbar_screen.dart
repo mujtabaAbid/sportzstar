@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/explore/event_/add_event_screen.dart';
+import 'package:sportzstar/helper/page_navigate.dart';
+import 'package:sportzstar/routing/routing_constrants.dart';
 
 class EventScreen extends StatefulWidget {
   const EventScreen({super.key});
@@ -60,11 +62,7 @@ class _EventScreenState extends State<EventScreen> with SingleTickerProviderStat
         tooltip: 'Add Event',
         backgroundColor: Palette.darkgreen,
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const AddEventScreen(),
-            ),
-          );
+         pushNamedNavigate(context: context, pageName: addEventScreenRoute);
         },
         child: const Icon(Icons.add, color: Colors.white),
       )

@@ -63,3 +63,4 @@ const String startedScreenRoute = '/started-screen';
 //chats screen
 const String chatListScreenRoute = '/chat-list-screen';
 const String eventScreenRoute = '/event-screen';
+const String addEventScreenRoute = '/add-event-screen';
