@@ -32,7 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final Map<String, String> _formData = {};
 
   String handleSave(String type, String value) {
-    print('object------------->>>$type and $value');
     return _formData[type] = value;
   }
 
@@ -112,16 +111,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   children: [
                     InputWidget(
-                      // validator: ,
                       highlightErrorBorder: true,
-                      // controller: emailController,
                       onSaved: (value) {
-                        print('email value =$value');
                         handleSave('email', value);
                       },
                       fieldType: InputType.email,
                     ),
-
                     SizedBox(height: 20),
                     InputWidget(
                       highlightErrorBorder: true,
@@ -133,8 +128,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       keyboardType: TextInputType.visiblePassword,
                       heading: 'Password',
                       label: 'Password',
-                      // icon: 'assets/images/icons/key.png',
-                      // controller: passwordController,
                       obscureText: obscurePassword,
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -150,14 +143,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                     ),
-
                     const SizedBox(height: 8),
-
                     // Forget Password Button
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed:
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => const ForgetPasswordScreen(),
+                              ),
+                            ),
                         child: const Text(
                           'Forget Password?',
                           style: TextStyle(color: Colors.black),
@@ -169,37 +167,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     CustomButton(
                       onPressed: () {
                         handleSubmit();
-                        // pushNamedNavigate(
-                        //   context: context,
-                        //   pageName: bottomNavigationBarRoute,
-                        // );
                       },
                       text: 'Sign In',
                     ),
                   ],
                 ),
               ),
-
               const SizedBox(height: 8),
-        
-              // Forget Password Button
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                 
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ForgetPasswordScreen()),
-                    );
-
-                  },
-                  child: const Text('Forgot Password?', style: TextStyle(color: Colors.black)),
-                ),
-              ),
-        
-              const SizedBox(height: 24),
-
               // Sign Up Redirect
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -207,11 +181,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Text("Don't have an account? "),
                   TextButton(
                     onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => SignUpScreen()),
-                      // );
-                      // pushNamedNavigate(context: context, pageName: );
+                      pushNamedNavigate(
+                        context: context,
+                        pageName: signupScreenRoute,
+                      );
                     },
                     child: const Text(
                       "Sign Up",

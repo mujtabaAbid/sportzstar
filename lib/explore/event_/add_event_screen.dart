@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
+// import 'package:image_picker/image_picker.dart';
+// import 'package:intl/intl.dart';
 
 class AddEventScreen extends StatefulWidget {
   const AddEventScreen({super.key});
@@ -13,9 +13,9 @@ class AddEventScreen extends StatefulWidget {
 }
 
 class _AddEventScreenState extends State<AddEventScreen> {
-  final ImagePicker _picker = ImagePicker();
-  List<XFile> _images = [];
-      final _formKey = GlobalKey<FormState>();
+  // final ImagePicker _picker = ImagePicker();
+  // List<XFile> _images = [];
+  //     final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _aboutController = TextEditingController();
@@ -24,16 +24,16 @@ class _AddEventScreenState extends State<AddEventScreen> {
   final TextEditingController _hostController = TextEditingController();
 
   DateTime? _selectedDate;
-   int currentImageIndex = 0;
+  int currentImageIndex = 0;
 
-  Future<void> _pickImages() async {
-    final picked = await _picker.pickMultiImage();
-    if (picked != null) {
-      setState(() {
-        _images = picked.take(5).toList();
-      });
-    }
-  }
+  // Future<void> _pickImages() async {
+  //   final picked = await _picker.pickMultiImage();
+  //   if (picked != null) {
+  //     setState(() {
+  //       _images = picked.take(5).toList();
+  //     });
+  //   }
+  // }
 
   Future<void> _selectDate(BuildContext context) async {
     final pickedDate = await showDatePicker(
@@ -49,22 +49,21 @@ class _AddEventScreenState extends State<AddEventScreen> {
       });
     }
   }
-  
 
-// Updated pick single image at specific index
-Future<void> _pickImageAtIndex(int index) async {
-  final picked = await _picker.pickImage(source: ImageSource.gallery);
-  if (picked != null) {
-    setState(() {
-      if (_images.length > index) {
-        _images[index] = picked;
-      } else {
-        _images.add(picked);
-      }
-      currentImageIndex = index;
-    });
-  }
-}
+  // Updated pick single image at specific index
+  // Future<void> _pickImageAtIndex(int index) async {
+  //   final picked = await _picker.pickImage(source: ImageSource.gallery);
+  //   if (picked != null) {
+  //     setState(() {
+  //       if (_images.length > index) {
+  //         _images[index] = picked;
+  //       } else {
+  //         _images.add(picked);
+  //       }
+  //       currentImageIndex = index;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -75,62 +74,66 @@ Future<void> _pickImageAtIndex(int index) async {
         child: Column(
           children: [
             // TOP MAIN CONTAINER
-GestureDetector(
-  onTap: () {
-    if (_images.length < 5) {
-      _pickImageAtIndex(_images.length); // Pick new image at next index
-    } else {
-      // Optionally show dialog: limit reached
-    }
-  },
-  child: Container(
-    height: 150,
-    width: double.infinity,
-    decoration: BoxDecoration(
-      color: Colors.grey[200],
-      borderRadius: BorderRadius.circular(12),
-      image: _images.isNotEmpty
-          ? DecorationImage(
-              image: FileImage(File(_images[currentImageIndex].path)),
-              fit: BoxFit.cover,
-            )
-          : null,
-    ),
-    child: _images.isEmpty
-        ? const Center(child: Icon(Icons.add, size: 40))
-        : null,
-  ),
-),
-const SizedBox(height: 10),
+            GestureDetector(
+              onTap: () {
+                // if (_images.length < 5) {
+                //   _pickImageAtIndex(_images.length); // Pick new image at next index
+                // } else {
+                //   // Optionally show dialog: limit reached
+                // }
+              },
+              child: Container(
+                height: 150,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(12),
+                  image:
+                      // _images.isNotEmpty
+                      // ? DecorationImage(
+                      //     image: FileImage(File(_images[currentImageIndex].path)),
+                      //     fit: BoxFit.cover,
+                      //   )
+                      // :
+                      null,
+                ),
+                // child: _images.isEmpty
+                // ? const Center(child: Icon(Icons.add, size: 40))
+                // : null,
+              ),
+            ),
+            const SizedBox(height: 10),
 
-// BOTTOM 5 IMAGE SELECTORS
-Row(
-  mainAxisAlignment: MainAxisAlignment.spaceAround,
-  children: List.generate(5, (index) {
-    return GestureDetector(
-      onTap: () {
-        _pickImageAtIndex(index);
-      },
-      child: Container(
-        height: 50,
-        width: 50,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.grey[300],
-          image: _images.length > index
-              ? DecorationImage(
-                  image: FileImage(File(_images[index].path)),
-                  fit: BoxFit.cover,
-                )
-              : null,
-        ),
-        child: _images.length <= index
-            ? const Icon(Icons.image, color: Colors.black54)
-            : null,
-      ),
-    );
-  }),
-),
+            // BOTTOM 5 IMAGE SELECTORS
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(5, (index) {
+                return GestureDetector(
+                  onTap: () {
+                    // _pickImageAtIndex(index);
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.grey[300],
+                      image:
+                          //  _images.length > index
+                          // ? DecorationImage(
+                          //     image: FileImage(File(_images[index].path)),
+                          //     fit: BoxFit.cover,
+                          //   )
+                          // :
+                          null,
+                    ),
+                    // child: _images.length <= index
+                    //     ? const Icon(Icons.image, color: Colors.black54)
+                    //     : null,
+                  ),
+                );
+              }),
+            ),
 
             const SizedBox(height: 20),
             _buildTextField("Title Of Event", _titleController),
@@ -147,22 +150,34 @@ Row(
                     border: OutlineInputBorder(),
                   ),
                   controller: TextEditingController(
-                    text: _selectedDate != null
-                        ? DateFormat.yMMMMd().format(_selectedDate!)
-                        : '',
+                    text: '',
+                    // _selectedDate
+                    // != null
+                    //     // ? DateFormat.yMMMMd().format(_selectedDate!)
+                    //     // :
+                    //     '',
                   ),
                 ),
               ),
             ),
             const SizedBox(height: 10),
-            _buildTextField("Enter time Of Event", _timeController,
-                hint: "5:30 PM to 9:00 PM"),
+            _buildTextField(
+              "Enter time Of Event",
+              _timeController,
+              hint: "5:30 PM to 9:00 PM",
+            ),
             const SizedBox(height: 10),
-            _buildTextField("Location", _locationController,
-                hint: "Bahria Town VII Islamabad"),
+            _buildTextField(
+              "Location",
+              _locationController,
+              hint: "Bahria Town VII Islamabad",
+            ),
             const SizedBox(height: 10),
-            _buildTextField("Host Details", _hostController,
-                hint: "host name here"),
+            _buildTextField(
+              "Host Details",
+              _hostController,
+              hint: "host name here",
+            ),
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
@@ -176,15 +191,19 @@ Row(
                 },
                 child: const Text("Create Now", style: TextStyle(fontSize: 18)),
               ),
-            )
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller,
-      {int maxLines = 1, String? hint}) {
+  Widget _buildTextField(
+    String label,
+    TextEditingController controller, {
+    int maxLines = 1,
+    String? hint,
+  }) {
     return TextFormField(
       controller: controller,
       maxLines: maxLines,
@@ -195,5 +214,4 @@ Row(
       ),
     );
   }
-  }
-
+}

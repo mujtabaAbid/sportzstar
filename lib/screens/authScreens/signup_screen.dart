@@ -299,6 +299,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             const SizedBox(height: 16),
             CustomButton(
               onPressed: () {
+                print('object-----sam,i');
                 Navigator.push(
                   context,
                   MaterialPageRoute(

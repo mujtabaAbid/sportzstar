@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
+import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
 
@@ -18,26 +19,23 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
   void _sendResetLink() {
     final email = _emailController.text.trim();
+
     if (email.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Reset link sent to $email')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Reset link sent to $email')));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your email')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please enter your email')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return MainLayoutWidget(
-       
       isLoading: false,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.grey.shade50,
-      //   title: const Text('Forgot Password'),
-      // ),
+
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
@@ -46,8 +44,12 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 60),
-              const Center(
-                child: Icon(Icons.lock_reset, size: 80, color: Colors.blue),
+              Center(
+                child: Icon(
+                  Icons.lock_reset,
+                  size: 80,
+                  color: Palette.basicgreen,
+                ),
               ),
               const SizedBox(height: 20),
               const Text(
@@ -60,33 +62,30 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 30),
-              InputWidget(onSaved: (value) {}, 
+              InputWidget(
+                onSaved: (value) {},
                 highlightErrorBorder: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Email is required';
+                  }
+                  final emailRegex = RegExp(
+                    r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$",
+                  );
+                  if (!emailRegex.hasMatch(value)) {
+                    return 'Enter a valid email';
+                  }
+                  return null;
+                },
                 controller: _emailController,
                 heading: 'Email Address',
                 label: 'Email Address',
                 // icon: 'assets/images/icons/email.png',
               ),
-              // TextField(
-              //   controller: _emailController,
-              //   keyboardType: TextInputType.emailAddress,
-              //   decoration: const InputDecoration(
-              //     labelText: 'Email Address',
-              //     border: OutlineInputBorder(),
-              //     prefixIcon: Icon(Icons.email),
-              //   ),
-              // ),
+
               const SizedBox(height: 20),
-              CustomButton(onPressed: _sendResetLink, text: 'Send Reset Link', 
-               
-              ),
-              // SizedBox(
-              //   width: double.infinity,
-              //   child: ElevatedButton(
-              //     onPressed: _sendResetLink,
-              //     child: const Text('Send Reset Link'),
-              //   ),
-              // ),
+              CustomButton(onPressed: _sendResetLink, text: 'Send Reset Link'),
+
               const SizedBox(height: 20),
               Center(
                 child: GestureDetector(
@@ -95,9 +94,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   },
                   child: const Text(
                     'Back to Login',
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(color: Colors.black),
                   ),
                 ),
               ),
@@ -108,4 +105,3 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     );
   }
 }
-
