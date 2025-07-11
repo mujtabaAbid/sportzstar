@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sportzstar/chats/chat_list_screen.dart';
 import 'package:sportzstar/config/palette.dart';
-import 'package:sportzstar/explore/event_/tabbar_screen.dart';
+import 'package:sportzstar/explore/tabbar_screen.dart';
 import 'package:sportzstar/screens/home_screen.dart';
 import 'userScreens/user_profile_screen.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';

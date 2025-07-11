@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sportzstar/chats/chat_list_screen.dart';
-import 'package:sportzstar/explore/event_/add_event_screen.dart' show AddEventScreen;
-import 'package:sportzstar/explore/event_/tabbar_screen.dart';
+import 'package:sportzstar/explore/add_event_screen.dart' show AddEventScreen;
+import 'package:sportzstar/explore/tabbar_screen.dart';
 import 'package:sportzstar/screens/authScreens/otp_verify_screen.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/started_screen.dart';
