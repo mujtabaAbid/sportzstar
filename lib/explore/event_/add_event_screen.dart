@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
+import 'package:sportzstar/widgets/custom_button.dart';
+import 'package:sportzstar/widgets/input_widget.dart';
 
 class AddEventScreen extends StatefulWidget {
   const AddEventScreen({super.key});
@@ -15,8 +18,8 @@ class AddEventScreen extends StatefulWidget {
 class _AddEventScreenState extends State<AddEventScreen> {
   final ImagePicker _picker = ImagePicker();
   List<XFile> _images = [];
-      final _formKey = GlobalKey<FormState>();
-
+  final _formKey = GlobalKey<FormState>();
+  bool _isloading = false;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _aboutController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
@@ -67,7 +70,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MainLayoutWidget(
+      isLoading: _isloading,
       appBar: AppBar(title: const Text("Create Event")),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -77,7 +81,9 @@ class _AddEventScreenState extends State<AddEventScreen> {
             GestureDetector(
               onTap: () {
                 if (_images.length < 5) {
-                  _pickImageAtIndex(_images.length); // Pick new image at next index
+                  _pickImageAtIndex(
+                    _images.length,
+                  ); // Pick new image at next index
                 } else {
                   // Optionally show dialog: limit reached
                 }
@@ -86,20 +92,22 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 height: 150,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Colors.grey[200],
+                  color: Color.fromARGB(255, 224, 224, 224),
                   borderRadius: BorderRadius.circular(12),
                   image:
                       _images.isNotEmpty
-                      ? DecorationImage(
-                          image: FileImage(File(_images[currentImageIndex].path)),
-                          fit: BoxFit.cover,
-                        )
-                      :
-                      null,
+                          ? DecorationImage(
+                            image: FileImage(
+                              File(_images[currentImageIndex].path),
+                            ),
+                            fit: BoxFit.cover,
+                          )
+                          : null,
                 ),
-                child: _images.isEmpty
-                ? const Center(child: Icon(Icons.add, size: 40))
-                : null,
+                child:
+                    _images.isEmpty
+                        ? const Center(child: Icon(Icons.add, size: 40))
+                        : null,
               ),
             ),
             const SizedBox(height: 10),
@@ -117,101 +125,88 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     width: 50,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: Colors.grey[300],
+                      color: Color.fromARGB(255, 224, 224, 224),
                       image:
-                           _images.length > index
-                          ? DecorationImage(
-                              image: FileImage(File(_images[index].path)),
-                              fit: BoxFit.cover,
-                            )
-                          :
-                          null,
+                          _images.length > index
+                              ? DecorationImage(
+                                image: FileImage(File(_images[index].path)),
+                                fit: BoxFit.cover,
+                              )
+                              : null,
                     ),
-                    child: _images.length <= index
-                        ? const Icon(Icons.image, color: Colors.black54)
-                        : null,
+                    child:
+                        _images.length <= index
+                            ? const Icon(Icons.image, color: Colors.black54)
+                            : null,
                   ),
                 );
               }),
             ),
 
-            const SizedBox(height: 20),
-            _buildTextField("Title Of Event", _titleController),
             const SizedBox(height: 10),
-            _buildTextField("About Event", _aboutController, maxLines: 4),
+            InputWidget(
+              heading: 'Title of Event',
+              label: 'Title of Event',
+              controller: _titleController,
+              onSaved: (value) {},
+            ),
             const SizedBox(height: 10),
             GestureDetector(
               onTap: () => _selectDate(context),
               child: AbsorbPointer(
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: "Select Date",
-                    suffixIcon: const Icon(Icons.calendar_today),
-                    border: OutlineInputBorder(),
-                  ),
+                child: InputWidget(
+                  suffixIcon: const Icon(Icons.calendar_today),
+                  onSaved: (value) {},
+                  heading: 'Select Date',
+                  label: 'Select Date',
                   controller: TextEditingController(
-                    text: 
-                    _selectedDate
-                    != null
-                        ? DateFormat.yMMMMd().format(_selectedDate!)
-                        :
-                        '',
+                    text:
+                        _selectedDate != null
+                            ? DateFormat.yMMMMd().format(_selectedDate!)
+                            : '',
                   ),
                 ),
               ),
             ),
             const SizedBox(height: 10),
-            _buildTextField(
-              "Enter time Of Event",
-              _timeController,
-              hint: "5:30 PM to 9:00 PM",
+            InputWidget(
+              heading: 'Title of Event',
+              label: 'Title of Event',
+              controller: _titleController,
+              onSaved: (value) {},
             ),
             const SizedBox(height: 10),
-            _buildTextField(
-              "Location",
-              _locationController,
-              hint: "Bahria Town VII Islamabad",
+            InputWidget(
+              heading: 'Enter time Of Event',
+              label: 'Enter time Of Event',
+              controller: _timeController,
+              onSaved: (value) {},
             ),
+          
+             const SizedBox(height: 10),
+            InputWidget(
+              heading: 'Location',
+              label: 'Add Location',
+              controller: _locationController,
+              onSaved: (value) {},
+            ),
+
             const SizedBox(height: 10),
-            _buildTextField(
-              "Host Details",
-              _hostController,
-              hint: "host name here",
+             const SizedBox(height: 10),
+            InputWidget(
+              heading: 'Host Details',
+              label: 'Host Details',
+              controller: _titleController,
+              onSaved: (value) {},
             ),
+
             const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.lightBlue,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                onPressed: () {
-                  // Submit event logic here
-                },
-                child: const Text("Create Now", style: TextStyle(fontSize: 18)),
-              ),
-            ),
+         CustomButton(onPressed: (){}, text: 'Create Now',)
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTextField(
-    String label,
-    TextEditingController controller, {
-    int maxLines = 1,
-    String? hint,
-  }) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint ?? "Please enter $label".toLowerCase(),
-        border: OutlineInputBorder(),
-      ),
-    );
-  }
+ 
 }
