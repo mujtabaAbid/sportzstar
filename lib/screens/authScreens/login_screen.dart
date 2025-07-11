@@ -149,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed:
-                            () => pushNamedNavigate(
+                            () => pushNamedAndRemoveUntilNavigate(
                               context: context,
                               pageName: forgetPasswordScreenRoute,
                             ),
@@ -194,10 +194,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
 
-              TextButton(onPressed: (){
-
-                pushNamedNavigate(context: context, pageName: resetPasswordScreenRoute);
-              }, child: Text('Reset Password'))
+              TextButton(
+                onPressed: () {
+                  pushNamedNavigate(
+                    context: context,
+                    pageName: resetPasswordScreenRoute,
+                  );
+                },
+                child: Text('Reset Password'),
+              ),
             ],
           ),
         ),
