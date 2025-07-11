@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class AddEventScreen extends StatefulWidget {
   const AddEventScreen({super.key});
@@ -13,9 +13,9 @@ class AddEventScreen extends StatefulWidget {
 }
 
 class _AddEventScreenState extends State<AddEventScreen> {
-  // final ImagePicker _picker = ImagePicker();
-  // List<XFile> _images = [];
-  //     final _formKey = GlobalKey<FormState>();
+  final ImagePicker _picker = ImagePicker();
+  List<XFile> _images = [];
+      final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _aboutController = TextEditingController();
@@ -26,14 +26,14 @@ class _AddEventScreenState extends State<AddEventScreen> {
   DateTime? _selectedDate;
   int currentImageIndex = 0;
 
-  // Future<void> _pickImages() async {
-  //   final picked = await _picker.pickMultiImage();
-  //   if (picked != null) {
-  //     setState(() {
-  //       _images = picked.take(5).toList();
-  //     });
-  //   }
-  // }
+  Future<void> _pickImages() async {
+    final picked = await _picker.pickMultiImage();
+    if (picked != null) {
+      setState(() {
+        _images = picked.take(5).toList();
+      });
+    }
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final pickedDate = await showDatePicker(
@@ -51,19 +51,19 @@ class _AddEventScreenState extends State<AddEventScreen> {
   }
 
   // Updated pick single image at specific index
-  // Future<void> _pickImageAtIndex(int index) async {
-  //   final picked = await _picker.pickImage(source: ImageSource.gallery);
-  //   if (picked != null) {
-  //     setState(() {
-  //       if (_images.length > index) {
-  //         _images[index] = picked;
-  //       } else {
-  //         _images.add(picked);
-  //       }
-  //       currentImageIndex = index;
-  //     });
-  //   }
-  // }
+  Future<void> _pickImageAtIndex(int index) async {
+    final picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        if (_images.length > index) {
+          _images[index] = picked;
+        } else {
+          _images.add(picked);
+        }
+        currentImageIndex = index;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,11 +76,11 @@ class _AddEventScreenState extends State<AddEventScreen> {
             // TOP MAIN CONTAINER
             GestureDetector(
               onTap: () {
-                // if (_images.length < 5) {
-                //   _pickImageAtIndex(_images.length); // Pick new image at next index
-                // } else {
-                //   // Optionally show dialog: limit reached
-                // }
+                if (_images.length < 5) {
+                  _pickImageAtIndex(_images.length); // Pick new image at next index
+                } else {
+                  // Optionally show dialog: limit reached
+                }
               },
               child: Container(
                 height: 150,
@@ -89,17 +89,17 @@ class _AddEventScreenState extends State<AddEventScreen> {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(12),
                   image:
-                      // _images.isNotEmpty
-                      // ? DecorationImage(
-                      //     image: FileImage(File(_images[currentImageIndex].path)),
-                      //     fit: BoxFit.cover,
-                      //   )
-                      // :
+                      _images.isNotEmpty
+                      ? DecorationImage(
+                          image: FileImage(File(_images[currentImageIndex].path)),
+                          fit: BoxFit.cover,
+                        )
+                      :
                       null,
                 ),
-                // child: _images.isEmpty
-                // ? const Center(child: Icon(Icons.add, size: 40))
-                // : null,
+                child: _images.isEmpty
+                ? const Center(child: Icon(Icons.add, size: 40))
+                : null,
               ),
             ),
             const SizedBox(height: 10),
@@ -110,7 +110,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
               children: List.generate(5, (index) {
                 return GestureDetector(
                   onTap: () {
-                    // _pickImageAtIndex(index);
+                    _pickImageAtIndex(index);
                   },
                   child: Container(
                     height: 50,
@@ -119,17 +119,17 @@ class _AddEventScreenState extends State<AddEventScreen> {
                       borderRadius: BorderRadius.circular(8),
                       color: Colors.grey[300],
                       image:
-                          //  _images.length > index
-                          // ? DecorationImage(
-                          //     image: FileImage(File(_images[index].path)),
-                          //     fit: BoxFit.cover,
-                          //   )
-                          // :
+                           _images.length > index
+                          ? DecorationImage(
+                              image: FileImage(File(_images[index].path)),
+                              fit: BoxFit.cover,
+                            )
+                          :
                           null,
                     ),
-                    // child: _images.length <= index
-                    //     ? const Icon(Icons.image, color: Colors.black54)
-                    //     : null,
+                    child: _images.length <= index
+                        ? const Icon(Icons.image, color: Colors.black54)
+                        : null,
                   ),
                 );
               }),
@@ -150,12 +150,12 @@ class _AddEventScreenState extends State<AddEventScreen> {
                     border: OutlineInputBorder(),
                   ),
                   controller: TextEditingController(
-                    text: '',
-                    // _selectedDate
-                    // != null
-                    //     // ? DateFormat.yMMMMd().format(_selectedDate!)
-                    //     // :
-                    //     '',
+                    text: 
+                    _selectedDate
+                    != null
+                        ? DateFormat.yMMMMd().format(_selectedDate!)
+                        :
+                        '',
                   ),
                 ),
               ),
