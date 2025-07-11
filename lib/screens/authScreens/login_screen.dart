@@ -80,11 +80,11 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } else {
       print('Form is not valid');
-      alertNotification(
-        context: context,
-        message: 'Something went wrong, try again later.',
-        messageType: AlertMessageType.error,
-      );
+      // alertNotification(
+      //   context: context,
+      //   message: 'Please Fill the form.',
+      //   messageType: AlertMessageType.error,
+      // );
     }
     setState(() {
       _isLoading = false;

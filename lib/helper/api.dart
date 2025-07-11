@@ -7,50 +7,50 @@ const basicUrl =
 
 const apiUrl = '${basicUrl}api/';
 //users
-const registerUser = '${apiUrl}auth/signup/';
-const loginUser = '${apiUrl}auth/login/';
-const usersList = '${apiUrl}users/'; //get
-const updateUser = '${apiUrl}update-user/'; //patch
-const verifyEmail = '${apiUrl}verify-email/';
-const getCode = '${apiUrl}get_code/';
-const updatePassword = '${apiUrl}update_password/';
-const deleteUser =
+const registerUserApi = '${apiUrl}auth/signup/';
+const loginUserApi = '${apiUrl}auth/login/';
+const usersListApi = '${apiUrl}users/'; //get
+const updateUserApi = '${apiUrl}update-user/'; //patch
+const verifyEmailApi = '${apiUrl}verify-email/';
+const getCodeApi = '${apiUrl}get_code/';
+const updatePasswordApi = '${apiUrl}update_password/';
+const deleteUserApi =
     '${apiUrl}auth/get_notifications/3/'; //<-- (delete) 3= userid
-const notifications = '${apiUrl}get_notifications/4/'; //get
-const readNotifications = '${apiUrl}notification_/read/20/'; //get
+const notificationsApi = '${apiUrl}get_notifications/4/'; //get
+const readNotificationsApi = '${apiUrl}notification_/read/20/'; //get
 
 // posts
-const createPost = '${apiUrl}posts/create/';
-const updatePost = '${apiUrl}posts/update/1/'; //patch
-const deletePost = '${apiUrl}posts/delete/1/'; //del
-const allUserPost = '${apiUrl}posts/user/2/'; //get
-const allPosts = '${apiUrl}posts/'; //get
-const likePost = '${apiUrl}posts/like/';
-const unlikePost = '${apiUrl}posts/unlike/';
-const commentOnPost = '${apiUrl}posts/comment/';
-const deleteCommentOnPost = '${apiUrl}posts/comment/delete';
+const createPostApi = '${apiUrl}posts/create/';
+const updatePostApi = '${apiUrl}posts/update/1/'; //patch
+const deletePostApi = '${apiUrl}posts/delete/1/'; //del
+const allUserPostApi = '${apiUrl}posts/user/2/'; //get
+const allPostsApi = '${apiUrl}posts/'; //get
+const likePostApi = '${apiUrl}posts/like/';
+const unlikePostApi = '${apiUrl}posts/unlike/';
+const commentOnPostApi = '${apiUrl}posts/comment/';
+const deleteCommentOnPostApi = '${apiUrl}posts/comment/delete';
 
 //stories
-const createStory = '${apiUrl}stories/create/';
-const updateStory = '${apiUrl}stories/update/1/'; //patch
-const deleteStory = '${apiUrl}stories/delete/<post_id>/'; //get
-const getStoryWithUserId = '${apiUrl}stories/2/'; //get
-const getAllStories = '${apiUrl}stories/'; //get
+const createStoryApi = '${apiUrl}stories/create/';
+const updateStoryApi = '${apiUrl}stories/update/1/'; //patch
+const deleteStoryApi = '${apiUrl}stories/delete/<post_id>/'; //get
+const getStoryWithUserIdApi = '${apiUrl}stories/2/'; //get
+const getAllStoriesApi = '${apiUrl}stories/'; //get
 
 //friends
-const addFriend = '${apiUrl}add-friend/';
-const getFriend = '${apiUrl}get-friends/1/'; //get
-const unfriend = '${apiUrl}unfriend/';
-const acceptFriend = '${apiUrl}accept-friend/';
-const rejectFriend = '${apiUrl}reject-friend/';
+const addFriendApi = '${apiUrl}add-friend/';
+const getFriendApi = '${apiUrl}get-friends/1/'; //get
+const unfriendApi = '${apiUrl}unfriend/';
+const acceptFriendApi = '${apiUrl}accept-friend/';
+const rejectFriendApi = '${apiUrl}reject-friend/';
 
 //events
-const createEvent = '${apiUrl}create-event/';
-const listEvent = '${apiUrl}events/'; //get
-const getEventById = '${apiUrl}events/1/'; //get
-const deleteEventById = '${apiUrl}events/delete/1/'; //get
-const addGuestInEvent = '${apiUrl}add-event-guests/';
+const createEventApi = '${apiUrl}create-event/';
+const listEventApi = '${apiUrl}events/'; //get
+const getEventByIdApi = '${apiUrl}events/1/'; //get
+const deleteEventByIdApi = '${apiUrl}events/delete/1/'; //get
+const addGuestInEventApi = '${apiUrl}add-event-guests/';
 
 //others
-const joinEvent = '${apiUrl}join-event/';
-const getSports = '${apiUrl}sports/'; //get
+const joinEventApi = '${apiUrl}join-event/';
+const getSportsApi = '${apiUrl}sports/'; //get
