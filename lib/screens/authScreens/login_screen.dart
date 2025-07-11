@@ -8,6 +8,7 @@ import 'package:sportzstar/helper/close_keyboard.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/provider/user_provider.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
+import 'package:sportzstar/screens/authScreens/forget_password_screen.dart';
 import 'package:sportzstar/screens/authScreens/signup_screen.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
@@ -179,6 +180,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
+              const SizedBox(height: 8),
+        
+              // Forget Password Button
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                 
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ForgetPasswordScreen()),
+                    );
+
+                  },
+                  child: const Text('Forgot Password?', style: TextStyle(color: Colors.black)),
+                ),
+              ),
+        
               const SizedBox(height: 24),
 
               // Sign Up Redirect

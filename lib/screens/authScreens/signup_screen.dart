@@ -4,6 +4,7 @@ import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
+import 'package:sportzstar/screens/authScreens/verify_email_screen.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
@@ -298,9 +299,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
             const SizedBox(height: 16),
             CustomButton(
               onPressed: () {
-                pushNamedNavigate(
-                  context: context,
-                  pageName: bottomNavigationBarRoute,
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const VerifyEmailScreen(),
+                  ),
                 );
               },
               text: 'Sign Up',
