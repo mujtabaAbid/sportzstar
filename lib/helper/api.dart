@@ -8,7 +8,7 @@ const basicUrl =
 const apiUrl = '${basicUrl}api/';
 //users
 const registerUserApi = '${apiUrl}auth/signup/';
-const loginUserApi = '${apiUrl}auth/login/';
+const loginUserApi = '${apiUrl}auth/login/'; 
 const usersListApi = '${apiUrl}users/'; //get
 const updateUserApi = '${apiUrl}update-user/'; //patch
 const verifyEmailApi = '${apiUrl}verify-email/';

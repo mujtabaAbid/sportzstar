@@ -53,10 +53,40 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<dynamic> getCode({required Map<String, String> formData}) async {
-    print('loginfunction ---->> $formData');
+    print('getCode ---->> $formData');
     try {
       final response = await http.post(
         Uri.parse(getCodeApi),
+        headers: {'Accept': 'application/json'},
+        body: formData,
+      );
+      final responseData = json.decode(response.body);
+      if (responseData['status'] == true) {
+        print(
+          '------------------getCode Successfully------------------> $responseData',
+        );
+        return responseData;
+      } else {
+        print(
+          '------------------getCode error------------------> $responseData',
+        );
+        return responseData;
+      }
+    } on HttpExpectionString catch (error) {
+      print(
+        'error in login function HttpExpectionString-----getCode--------->  $error',
+      );
+      return error.toString();
+    } catch (e) {
+      print('error in getCode function-------------->  $e');
+    }
+  }
+
+  Future<dynamic> verifyOTP({required Map<String, String> formData}) async {
+    print('verifyOTP ---->> $formData');
+    try {
+      final response = await http.post(
+        Uri.parse(verifyEmailApi),
         headers: {'Accept': 'application/json'},
         body: formData,
       );

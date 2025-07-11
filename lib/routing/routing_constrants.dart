@@ -4,6 +4,7 @@ const String bottomNavigationBarRoute = '/bottom-navigation-bar';
 // authScreens
 const String forgetPasswordScreenRoute = '/forget-password';
 const String loginScreenRoute = '/login';
+const String otpScreenRoute = '/otp-screen';
 const String resetPasswordScreenRoute = '/reset-password';
 const String signupScreenRoute = '/signup';
 
@@ -51,7 +52,6 @@ const String settingsScreenRoute = '/settings-screen';
 
 // others (Not Implimented)
 const String changePasswordScreenRoute = '/change-password-screen';
-const String otpOptionScreenRoute = '/reset-otp-option-screen';
 const String passwordResetSuccessScreenRoute = '/password-reset-success-screen';
 const String uploadProfilePhotoScreenRoute = '/upload-profile-photo-screen';
 const String viewMyPublicProfileRoute = '/view-my-public-profile-screen';
@@ -60,6 +60,6 @@ const String notificationSettingsScreenRoute = '/notification-settings-screen';
 
 const String startedScreenRoute = '/started-screen';
 
-//chats screen 
+//chats screen
 const String chatListScreenRoute = '/chat-list-screen';
 const String eventScreenRoute = '/event-screen';

@@ -1,7 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:sportzstar/helper/basic_enum.dart';
+import 'package:sportzstar/helper/page_navigate.dart';
+import 'package:sportzstar/provider/user_provider.dart';
+import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
+import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
+import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
 
 class OTPScreen extends StatefulWidget {
   const OTPScreen({super.key});
@@ -11,13 +18,15 @@ class OTPScreen extends StatefulWidget {
 }
 
 class _OTPScreenState extends State<OTPScreen> {
-    final List<TextEditingController> _controllers =
-      List.generate(4, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes =
-      List.generate(4, (_) => FocusNode());
+  final List<TextEditingController> _controllers = List.generate(
+    4,
+    (_) => TextEditingController(),
+  );
+  final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
   late Timer _timer;
   int _remainingTime = 60;
   bool _canResend = false;
+  final bool _isLoading = false;
 
   @override
   void initState() {
@@ -40,9 +49,67 @@ class _OTPScreenState extends State<OTPScreen> {
     });
   }
 
-  void _resendOTP() {
-    // Logic to resend OTP here
+  Future<void> resendOTP(String email) async {
+    try {
+      final response = await Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).getCode(formData: {'email': email});
+
+      if (response['status'] == true) {
+        print('osfjsoifj--->>> ${response['details'][0]}');
+        alertNotification(
+          context: context,
+          message: response['details'][0],
+          messageType: AlertMessageType.success,
+        );
+      } else {
+        final msg = response['details'];
+
+        alertNotification(
+          context: context,
+          message: msg,
+          messageType: AlertMessageType.error,
+        );
+      }
+    } catch (e) {
+      print('error in resendOtp function--->>>>$e');
+    }
     _startTimer();
+  }
+
+  Future<void> verifyOtp(String email, String otp) async {
+    // Logic to resend OTP here
+    print('verifyOtp email---->>>>   $email and $otp');
+    try {
+      final response = await Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).verifyOTP(formData: {'email': email, 'code': otp});
+
+      if (response['status'] == true) {
+        print('verifyOtp--->>> ${response['details']}');
+        alertNotification(
+          context: context,
+          message: response['details'],
+          messageType: AlertMessageType.success,
+        );
+        pushNamedAndRemoveUntilNavigate(
+          pageName: loginScreenRoute,
+          context: context,
+        );
+      } else {
+        final msg = response['details'];
+
+        alertNotification(
+          context: context,
+          message: msg,
+          messageType: AlertMessageType.error,
+        );
+      }
+    } catch (e) {
+      print('error in verifyOtp function--->>>>$e');
+    }
   }
 
   @override
@@ -74,7 +141,11 @@ class _OTPScreenState extends State<OTPScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final arguments = ModalRoute.of(context)?.settings.arguments as String;
+
+    print("Received arguments: $arguments");
+    return MainLayoutWidget(
+      isLoading: _isLoading,
       appBar: AppBar(title: const Text("Verify OTP")),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -107,12 +178,16 @@ class _OTPScreenState extends State<OTPScreen> {
                         counterText: '',
                         enabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
-                              color: Colors.black, width: 2),
+                            color: Colors.black,
+                            width: 2,
+                          ),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
-                              color: Colors.black, width: 2),
+                            color: Colors.black,
+                            width: 2,
+                          ),
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
@@ -125,7 +200,7 @@ class _OTPScreenState extends State<OTPScreen> {
             const SizedBox(height: 20),
             _canResend
                 ? TextButton(
-                  onPressed: _resendOTP,
+                  onPressed: () => resendOTP(arguments),
                   child: const Text("Resend OTP"),
                 )
                 : Text(
@@ -135,13 +210,16 @@ class _OTPScreenState extends State<OTPScreen> {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const BottomNavigationBarScreen(),
-                  ),
-                );
                 String otp = _controllers.map((c) => c.text).join();
+                if (otp.length < 4) {
+                  alertNotification(
+                    context: context,
+                    message: 'Please Enter 4 digit OTP',
+                    messageType: AlertMessageType.error,
+                  );
+                } else {
+                  verifyOtp(arguments, otp);
+                }
                 print("Entered OTP: $otp");
                 // Add OTP verification logic here
               },
