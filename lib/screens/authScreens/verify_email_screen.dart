@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
+import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/authScreens/otp_verify_screen.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
+import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
+
+import '../../helper/close_keyboard.dart';
+import '../../helper/page_navigate.dart';
+import '../../widgets/alerts/alert_notification_widget.dart';
 
 class VerifyEmailScreen extends StatefulWidget {
   const VerifyEmailScreen({super.key});
@@ -13,30 +19,51 @@ class VerifyEmailScreen extends StatefulWidget {
 }
 
 class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
-  bool isEmailSent = false;
+  bool _isLoading = false;
+  final _formKey = GlobalKey<FormState>();
+  final Map<String, String> _formData = {};
 
-  void _resendEmail() {
-    setState(() {
-      isEmailSent = true;
-    });
-      _continue();
-    // TODO: Add actual resend logic (e.g., Firebase)
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Verification email resent')));
+  String handleSave(String type, String value) {
+    return _formData[type] = value;
   }
 
-  void _continue() {
-    // TODO: Check if email is verified before allowing navigation
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const OTPScreen()),
-    );
+  Future<void> handleSubmit() async {
+    setState(() {
+      _isLoading = true;
+    });
+    if (_formKey.currentState?.validate() ?? false) {
+      _formKey.currentState?.save();
+
+      closeKeyboard(context: context);
+
+      print('object--->$_formData');
+
+      // pushNamedAndRemoveUntilNavigate(
+      //   pageName: otpScreenRoute,
+      //   argument: {'email': _formData['email'].toString()},
+      //   context: context,
+      // );
+    } else {
+      print('Form is not valid');
+      alertNotification(
+        context: context,
+        message: 'Please Enter Valid Email.',
+        messageType: AlertMessageType.error,
+      );
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final arguments = ModalRoute.of(context)?.settings.arguments as String;
+
+    print("Received arguments: $arguments");
+
+    return MainLayoutWidget(
+      isLoading: _isLoading,
       appBar: AppBar(title: const Text('Verify Email')),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -58,28 +85,27 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
               ),
               const SizedBox(height: 30),
               InputWidget(
+                // initialValue: arguments,
+                onSaved: (value) => handleSave('email', value),
                 highlightErrorBorder: true,
-                onSaved: (value) {
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Email is required';
+                  }
+                  final emailRegex = RegExp(
+                    r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$",
+                  );
+                  if (!emailRegex.hasMatch(value)) {
+                    return 'Enter a valid email';
+                  }
+                  return null;
                 },
-                fieldType: InputType.email,
+                heading: 'Email Address',
+                label: 'Email Address',
               ),
-          
-              if (isEmailSent) ...[
-                const SizedBox(height: 10),
-                const Text(
-                  'Verification email has been resent.',
-                  style: TextStyle(color: Colors.green),
-                ),
-              ],
-                  const SizedBox(height: 40),
-                  CustomButton(onPressed: _resendEmail, text: 'Continue'),
-              // SizedBox(
-              //   width: double.infinity,
-              //   child: ElevatedButton(
-              //     onPressed: _continue,
-              //     child: const Text('Continue'),
-              //   ),
-              // ),
+
+              const SizedBox(height: 40),
+              CustomButton(onPressed: () => handleSubmit(), text: 'Continue'),
             ],
           ),
         ),

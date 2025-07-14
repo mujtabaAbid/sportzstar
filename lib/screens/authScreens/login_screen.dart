@@ -69,11 +69,48 @@ class _LoginScreenState extends State<LoginScreen> {
           final message = json.decode(response.body);
           final msg = message['detail'];
 
-          alertNotification(
-            context: context,
-            message: msg,
-            messageType: AlertMessageType.error,
-          );
+          // alertNotification(
+          //   context: context,
+          //   message: msg,
+          //   messageType: AlertMessageType.error,
+          // );
+          if (msg == 'Please verify your email') {
+            try {
+              final responsee = await Provider.of<UserProvider>(
+                context,
+                listen: false,
+              ).getCode(formData: _formData);
+              if (responsee['status'] == true) {
+                alertNotification(
+                  context: context,
+                  message: 'Verification code sent to email.',
+                  messageType: AlertMessageType.success,
+                );
+
+                pushNamedNavigate(
+                  pageName: otpScreenRoute,
+                  argument: {
+                    'email': _formData['email'].toString(),
+                    'route': 'emailverify',
+                  },
+                  context: context,
+                );
+              } else {
+                alertNotification(
+                  context: context,
+                  message: 'Something Went wrong, |Try again later',
+                  messageType: AlertMessageType.info,
+                );
+              }
+            } catch (e) {
+              print('error---------> ${e.toString()}');
+            }
+            // pushNamedAndRemoveUntilNavigate(
+            //   pageName: otpScreenRoute,
+            //   argument: {'email': _formData['email'], 'route': 'emailverify'},
+            //   context: context,
+            // );
+          }
         }
       } catch (e) {
         print('error---------> ${e.toString()}');
@@ -194,15 +231,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
 
-              TextButton(
-                onPressed: () {
-                  pushNamedNavigate(
-                    context: context,
-                    pageName: resetPasswordScreenRoute,
-                  );
-                },
-                child: Text('Reset Password'),
-              ),
+              // TextButton(
+              //   onPressed: () {
+              //     pushNamedNavigate(
+              //       context: context,
+              //       pageName: resetPasswordScreenRoute,
+              //     );
+              //   },
+              //   child: Text('Reset Password'),
+              // ),
             ],
           ),
         ),

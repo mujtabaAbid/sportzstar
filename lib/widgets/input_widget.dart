@@ -27,6 +27,7 @@ class InputWidget extends StatefulWidget {
     this.headingWidget, // Default value added
     this.showCountryCodePicker = false,
     this.maxLines,
+    // this.initialValue,
   });
   final String? heading;
   final TextStyle? headingStyle;
@@ -51,6 +52,7 @@ class InputWidget extends StatefulWidget {
   final Widget? headingWidget;
   final bool showCountryCodePicker;
   final int? maxLines;
+  // final String? initialValue;
 
   @override
   State<InputWidget> createState() => _InputWidgetState();

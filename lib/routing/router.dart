@@ -3,6 +3,7 @@ import 'package:sportzstar/chats/chat_list_screen.dart';
 import 'package:sportzstar/explore/add_event_screen.dart' show AddEventScreen;
 import 'package:sportzstar/explore/tabbar_screen.dart';
 import 'package:sportzstar/screens/authScreens/otp_verify_screen.dart';
+import 'package:sportzstar/screens/authScreens/verify_email_screen.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/started_screen.dart';
 import '../screens/orderScreens/order_confirmation_screen.dart';
@@ -58,9 +59,17 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         settings: RouteSettings(arguments: settings.arguments),
       );
     case resetPasswordScreenRoute:
-      return MaterialPageRoute(builder: (_) => const ResetPasswordScreen());
+      return MaterialPageRoute(
+        builder: (_) => const ResetPasswordScreen(),
+        settings: RouteSettings(arguments: settings.arguments),
+      );
     case signupScreenRoute:
       return MaterialPageRoute(builder: (_) => const SignUpScreen());
+    case verifyEmailScreenRoute:
+      return MaterialPageRoute(
+        builder: (_) => const VerifyEmailScreen(),
+        settings: RouteSettings(arguments: settings.arguments),
+      );
 
     // checkoutScreens
     case checkoutScreenRoute:
@@ -135,7 +144,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const ChatListScreen());
     case eventScreenRoute:
       return MaterialPageRoute(builder: (_) => const EventScreen());
-    case addEventScreenRoute: 
+    case addEventScreenRoute:
       return MaterialPageRoute(builder: (_) => const AddEventScreen());
     // case confirmEmailScreenRoute:
     //   return MaterialPageRoute(

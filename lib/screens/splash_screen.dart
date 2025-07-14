@@ -30,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // Navigate to next screen after animation
     Future.delayed(const Duration(seconds: 3), () {
+      print('first 00000000000');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const StartedScreen()),
@@ -60,4 +61,3 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-

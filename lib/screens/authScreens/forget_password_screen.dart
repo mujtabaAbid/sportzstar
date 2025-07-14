@@ -41,44 +41,38 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         _isLoading = true;
       });
 
-      print('object--->$_formData');
-      pushNamedNavigate(
-        pageName: otpScreenRoute,
-        argument: _formData['email'],
-        context: context,
-      );
-      // try {
-      //   final response = await Provider.of<UserProvider>(
-      //     context,
-      //     listen: false,
-      //   ).getCode(formData: _formData);
+      try {
+        final response = await Provider.of<UserProvider>(
+          context,
+          listen: false,
+        ).getCode(formData: _formData);
 
-      //   // print('responmses 2342---->>>>  ${response.body}');
-      //   if (response['status'] == true) {
-      //     print('osfjsoifj--->>> ${response['details'][0]}');
-      //     alertNotification(
-      //       context: context,
-      //       message: response['details'][0],
-      //       messageType: AlertMessageType.success,
-      //     );
+        // print('responmses 2342---->>>>  ${response.body}');
+        if (response['status'] == true) {
+          print('osfjsoifj--->>> ${response['details'][0]}');
+          alertNotification(
+            context: context,
+            message: response['details'][0],
+            messageType: AlertMessageType.success,
+          );
 
-      //     pushNamedNavigate(
-      //       pageName: otpScreenRoute,
-      //       argument: _formData['email'],
-      //       context: context,
-      //     );
-      //   } else {
-      //     final msg = response['details'];
+          pushNamedNavigate(
+            pageName: otpScreenRoute,
+            argument:  {'email' :_formData['email'].toString(), 'route': 'forgetPassword'},
+            context: context,
+          );
+        } else {
+          final msg = response['details'];
 
-      //     alertNotification(
-      //       context: context,
-      //       message: msg,
-      //       messageType: AlertMessageType.error,
-      //     );
-      //   }
-      // } catch (e) {
-      //   print('error---------> ${e.toString()}');
-      // }
+          alertNotification(
+            context: context,
+            message: msg,
+            messageType: AlertMessageType.error,
+          );
+        }
+      } catch (e) {
+        print('error---------> ${e.toString()}');
+      }
     } else {
       print('Form is not valid');
       // alertNotification(

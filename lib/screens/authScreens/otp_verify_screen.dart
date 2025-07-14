@@ -78,14 +78,14 @@ class _OTPScreenState extends State<OTPScreen> {
     _startTimer();
   }
 
-  Future<void> verifyOtp(String email, String otp) async {
+  Future<void> verifyOtp(Map args, String otp) async {
     // Logic to resend OTP here
-    print('verifyOtp email---->>>>   $email and $otp');
+    print('verifyOtp email---->>>>   ${args['email']} and $otp');
     try {
       final response = await Provider.of<UserProvider>(
         context,
         listen: false,
-      ).verifyOTP(formData: {'email': email, 'code': otp});
+      ).verifyOTP(formData: {'email': args['email'], 'code': otp});
 
       if (response['status'] == true) {
         print('verifyOtp--->>> ${response['details']}');
@@ -94,10 +94,17 @@ class _OTPScreenState extends State<OTPScreen> {
           message: response['details'],
           messageType: AlertMessageType.success,
         );
-        pushNamedAndRemoveUntilNavigate(
-          pageName: loginScreenRoute,
-          context: context,
-        );
+        args['route'] == 'forgetPassword'
+            ? pushNamedAndRemoveUntilNavigate(
+              pageName: resetPasswordScreenRoute,
+              argument: args['email'],
+              context: context,
+            )
+            : pushNamedAndRemoveUntilNavigate(
+              pageName: loginScreenRoute,
+              argument: args['email'],
+              context: context,
+            );
       } else {
         final msg = response['details'];
 
@@ -141,7 +148,7 @@ class _OTPScreenState extends State<OTPScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute.of(context)?.settings.arguments as String;
+    final arguments = ModalRoute.of(context)?.settings.arguments as Map;
 
     print("Received arguments: $arguments");
     return MainLayoutWidget(
@@ -200,7 +207,7 @@ class _OTPScreenState extends State<OTPScreen> {
             const SizedBox(height: 20),
             _canResend
                 ? TextButton(
-                  onPressed: () => resendOTP(arguments),
+                  onPressed: () => resendOTP(arguments['email']),
                   child: const Text("Resend OTP"),
                 )
                 : Text(

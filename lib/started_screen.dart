@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
@@ -20,16 +21,26 @@ class _StartedScreenState extends State<StartedScreen>
   @override
   void initState() {
     super.initState();
+    _whereToGo();
+  }
 
-    // Delay for image to stay centered, then move and show content
-    Future.delayed(const Duration(milliseconds: 1000), () {
+  Future<void> _whereToGo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final aaa = prefs.getString('access');
+    print('shared preferences==access token==>>>>$aaa');
+
+    if (aaa != null) {
+      pushNamedAndRemoveUntilNavigate(
+        pageName: homeScreenRoute,
+        context: context,
+      );
+    } else {
+      await Future.delayed(const Duration(milliseconds: 1000));
       setState(() => _moveUp = true);
 
-      // Show content after image animation
-      Future.delayed(const Duration(milliseconds: 800), () {
-        setState(() => _showContent = true);
-      });
-    });
+      await Future.delayed(const Duration(milliseconds: 800));
+      setState(() => _showContent = true);
+    }
   }
 
   @override
@@ -84,7 +95,7 @@ class _StartedScreenState extends State<StartedScreen>
                     // Get Started Button
                     CustomButton(
                       text: 'Get Started',
-                      onPressed: () {
+                      onPressed: () async {
                         pushNamedNavigate(
                           context: context,
                           pageName: signupScreenRoute,

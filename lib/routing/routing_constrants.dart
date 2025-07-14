@@ -6,6 +6,7 @@ const String forgetPasswordScreenRoute = '/forget-password';
 const String loginScreenRoute = '/login';
 const String otpScreenRoute = '/otp-screen';
 const String resetPasswordScreenRoute = '/reset-password';
+const String verifyEmailScreenRoute = '/verify-email';
 const String signupScreenRoute = '/signup';
 
 // checkoutScreens
