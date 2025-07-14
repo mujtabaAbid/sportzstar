@@ -31,7 +31,7 @@ class _StartedScreenState extends State<StartedScreen>
 
     if (aaa != null) {
       pushNamedAndRemoveUntilNavigate(
-        pageName: homeScreenRoute,
+        pageName: bottomNavigationBarRoute,
         context: context,
       );
     } else {

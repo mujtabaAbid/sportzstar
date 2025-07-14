@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
           );
 
           pushNamedAndRemoveUntilNavigate(
-            pageName: homeScreenRoute,
+            pageName: bottomNavigationBarRoute,
             context: context,
           );
         } else {
