@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
+import 'package:sportzstar/screens/userScreens/edit_profile_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -35,7 +36,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     {
       'category': 'Bookmarks',
 
-      'image': 'assets/profile/threeImage.jpeg', // Replace with real URL or Asset
+      'image':
+          'assets/profile/threeImage.jpeg', // Replace with real URL or Asset
       'likes': '100k',
     },
   ];
@@ -80,16 +82,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
+                          const CircleAvatar(
                             radius: 50,
                             backgroundColor: Colors.white,
-                            child: const CircleAvatar(
+                            child: CircleAvatar(
                               radius: 47,
                               backgroundImage: AssetImage(
                                 'assets/profile/profile.jpeg',
                               ),
                             ),
                           ),
+
                           const SizedBox(width: 20),
                           Expanded(
                             child: Row(
@@ -107,7 +110,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   onPressed: () {},
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFCBFE15),
-
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     ),
@@ -127,6 +129,27 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
               ),
             ),
+            actions: [
+              GestureDetector(
+                onTap: () {
+                  pushNamedNavigate(
+                    context: context,
+                    pageName: editProfileScreenRoute,
+                  );
+                },
+                child: Container(
+                  margin: EdgeInsets.only(right: 30),
+                  height: 24,
+                  width: 24,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.grey.shade400),
+                  ),
+                  child: const Icon(Icons.edit, size: 14, color: Colors.black),
+                ),
+              ),
+            ],
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -268,7 +291,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       image: DecorationImage(
                                         image: AssetImage(post['image']),
                                         fit: BoxFit.cover,
-
                                       ),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
