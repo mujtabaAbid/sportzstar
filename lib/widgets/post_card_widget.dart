@@ -74,7 +74,7 @@ class _PostCardState extends State<PostCard> {
         likesList.addAll(lists); // = response;
       });
 
-      print('total likes  toggle calll---likesList--->>>>>$likesList');
+      print('total likes  toggle calll---likesList--->>>>>$likes');
       print('like function toggle calll---likesList--->>>>>$likesList');
     } catch (e) {
       print('like function toggle calll- error----->>>>>$e');
