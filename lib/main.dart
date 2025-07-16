@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sportzstar/provider/event_provider.dart';
 import 'package:sportzstar/provider/friends_provider.dart';
+import 'package:sportzstar/provider/home_provider.dart';
 import 'package:sportzstar/provider/other_provider.dart';
 import 'package:sportzstar/provider/post_provider.dart';
 import 'package:sportzstar/provider/stories_provider.dart';
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => EventProvider()),
         ChangeNotifierProvider(create: (context) => OtherProvider()),
         ChangeNotifierProvider(create: (context) => StoriesProvider()),
+        ChangeNotifierProvider(create: (context) => HomeProvider()),
       ],
       child: Consumer<MainProvider>(
         builder:
