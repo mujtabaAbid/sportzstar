@@ -1,8 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sportzstar/config/palette.dart';
+import 'package:sportzstar/helper/close_keyboard.dart';
+import 'package:sportzstar/helper/local_storage.dart';
 import 'package:sportzstar/provider/home_provider.dart';
+import 'package:sportzstar/widgets/input_widget.dart';
+
+import '../helper/basic_enum.dart';
+import 'alerts/alert_notification_widget.dart';
 
 class PostCard extends StatefulWidget {
   final Map<String, dynamic> post;
@@ -17,20 +26,29 @@ class _PostCardState extends State<PostCard> {
   bool isExpanded = false;
   bool isLiked = false;
   int alphabetCount = 0;
-  List<Map<String, dynamic>> likesList = [];
-  int likes = 0;
+  Map<String, dynamic> userData = {};
+  bool addComment = false;
+  final TextEditingController _commentController = TextEditingController();
+  bool _isLoading = false;
+  final _formKey = GlobalKey<FormState>();
+  final Map<String, String> _formData = {};
 
-  void countLikes() {
-    setState(() {
-      likes = widget.post['total_likes'] ?? 0;
+  Future<void> allpostsdata() async {
+    try {
+      final pref = await getDataFromLocalStorage(name: 'userData');
+      userData = json.decode(pref);
+      print('userData =====>>>${userData['id']}');
 
-      final rawLikes = widget.post['likes_list'];
-      if (rawLikes is List) {
-        likesList = List<Map<String, dynamic>>.from(rawLikes);
-      } else {
-        likesList = [];
-      }
-    });
+      setState(() {
+        isLiked = (widget.post['likes_list'] as List).any(
+          (like) => like['userId'] == userData['id'],
+        );
+      });
+
+      print('isLiked =====>>>$isLiked');
+    } catch (e) {
+      print('allposts error-------------->>>>>>>$e');
+    }
   }
 
   Future<void> textCount() async {
@@ -56,7 +74,6 @@ class _PostCardState extends State<PostCard> {
       isLiked = !isLiked;
     });
     try {
-      likesList.clear();
       final response =
           isLiked
               ? await Provider.of<HomeProvider>(
@@ -67,25 +84,91 @@ class _PostCardState extends State<PostCard> {
                 context,
                 listen: false,
               ).unlikePost(postId);
-      final lists = List<Map<String, dynamic>>.from(response['likes_list']);
-
       setState(() {
-        likes = response['total_likes'];
-        likesList.addAll(lists); // = response;
+        widget.post['total_likes'] = response['total_likes'];
+        widget.post['likes_list'] = response['likes_list'];
       });
 
-      print('total likes  toggle calll---likesList--->>>>>$likes');
-      print('like function toggle calll---likesList--->>>>>$likesList');
+      print(
+        'like function toggle calll---likesList--->>>>>${widget.post['likes_list']}',
+      );
     } catch (e) {
       print('like function toggle calll- error----->>>>>$e');
     }
   }
 
+  void deleteComment(String commentId) async {
+    try {
+      final response = Provider.of<HomeProvider>(
+        context,
+        listen: false,
+      ).deleteComment(commentId);
+      print('responser of delete comment function --------->>>>>>$response');
+    } catch (e) {
+      print('responser of delete comment function --------->>>>>>$e');
+    }
+  }
+
+  void commentToggle() async {
+    setState(() {
+      addComment = !addComment;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    allpostsdata();
     textCount();
-    countLikes();
+  }
+
+  String handleSave(String type, String value) {
+    return _formData[type] = value;
+  }
+
+  Future<void> handleSubmit(StateSetter setModalState) async {
+    setState(() {
+      _isLoading = true;
+    });
+    if (_formKey.currentState?.validate() ?? false) {
+      _formKey.currentState?.save();
+      closeKeyboard(context: context);
+
+      try {
+        final response = await Provider.of<HomeProvider>(
+          context,
+          listen: false,
+        ).uploadComments(formData: _formData);
+
+        setModalState(() {
+          widget.post['comments_list'] = response;
+        });
+
+        // alertNotification(
+        //   context: context,
+        //   message: 'Comment Saved',
+        //   messageType: AlertMessageType.success,
+        // );
+      } catch (e) {
+        alertNotification(
+          context: context,
+          message: 'Something went wrong, try again later.',
+          messageType: AlertMessageType.error,
+        );
+        print('Error saving comment: $e');
+      }
+      _commentController.clear();
+    } else {
+      alertNotification(
+        context: context,
+        message: 'Please enter a valid comment.',
+        messageType: AlertMessageType.error,
+      );
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -102,13 +185,54 @@ class _PostCardState extends State<PostCard> {
         children: [
           // Header
           ListTile(
-            trailing: const Icon(Icons.more_horiz_rounded, size: 24),
+            trailing:
+                userData['id'] == post['user_id']
+                    ? PopupMenuButton<String>(
+                      icon: Icon(Icons.more_horiz_rounded, size: 24),
+                      onSelected: (String value) {
+                        if (value == 'delete') {
+                          // Call your delete post function here
+                          // deletePost();
+                          print('---delete post function call button--------');
+                        } else if (value == 'update') {
+                          print('---update post function call button--------');
+                        } else {
+                          print('---Nothing call--------');
+                        }
+                      },
+                      itemBuilder:
+                          (BuildContext context) => [
+                            PopupMenuItem<String>(
+                              value: 'delete',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.delete, color: Colors.red),
+                                  SizedBox(width: 8),
+                                  Text('Delete'),
+                                ],
+                              ),
+                            ),
+                            PopupMenuItem<String>(
+                              value: 'update',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.update_sharp,
+                                    color: Palette.basicgreen,
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text('Update'),
+                                ],
+                              ),
+                            ),
+                          ],
+                    )
+                    : null,
             leading: CircleAvatar(
               radius: 24,
               backgroundImage: NetworkImage(
                 post['user_profile'] ??
                     'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
-                // 'https://plus.unsplash.com/premium_photo-1664203067979-47448934fd97?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aHVtYW58ZW58MHx8MHx8fDA%3D',
               ),
             ),
             title: Text(
@@ -148,7 +272,7 @@ class _PostCardState extends State<PostCard> {
           if (post['post_description'] != null &&
               post['post_description'].toString().isNotEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -191,7 +315,9 @@ class _PostCardState extends State<PostCard> {
 
           const SizedBox(height: 8),
 
-          // Likes & Comments count
+          // Likes & Comments & uploadand & copy
+          // !addComment
+          //     ?
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Row(
@@ -199,6 +325,7 @@ class _PostCardState extends State<PostCard> {
               children: [
                 Row(
                   children: [
+                    // post like section
                     TextButton(
                       onPressed: () {
                         toggle(post['post_id'].toString());
@@ -223,23 +350,13 @@ class _PostCardState extends State<PostCard> {
                                       ),
                                     ),
                                     const SizedBox(height: 12),
-                                    // ListView with shrinkWrap inside Flexible
                                     Flexible(
                                       child: ListView.builder(
                                         shrinkWrap: true,
-                                        itemCount:
-                                            // likesList.isNotEmpty
-                                            //     ?
-                                            likesList.length,
-                                        //     :
-                                        // post['likes_list'].length,
+                                        itemCount: post['likes_list'].length,
                                         itemBuilder: (context, index) {
                                           final like =
-                                              // likesList.isNotEmpty
-                                              //     ?
-                                              likesList[index];
-                                          //     :
-                                          // post['likes_list'][index];
+                                              post['likes_list'][index];
                                           return ListTile(
                                             leading: CircleAvatar(
                                               backgroundImage:
@@ -264,16 +381,7 @@ class _PostCardState extends State<PostCard> {
                                         },
                                       ),
                                     ),
-                                    // if (isLiked) ...[
-                                    //   const SizedBox(height: 8),
-                                    //   Text(
-                                    //     'And You',
-                                    //     style: TextStyle(
-                                    //       color: Colors.black,
-                                    //       fontSize: 16,
-                                    //     ),
-                                    //   ),
-                                    // ],
+
                                     const SizedBox(height: 10),
                                     TextButton(
                                       onPressed: () {
@@ -296,91 +404,264 @@ class _PostCardState extends State<PostCard> {
                             Icons.thumb_up_alt,
                             size: 20,
                             color:
-                                isLiked
+                                (post['likes_list'] as List).any(
+                                      (like) =>
+                                          like['userId'] == userData['id'],
+                                    )
                                     ? Palette.darkgreen
-                                    : post['total_likes'] == 0
-                                    ? Palette.darkgray
-                                    : Palette.basicgreen,
+                                    : Palette.darkgray,
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            // 'sdf',
-                            likes.toString(),
-                            // '${isLiked ? post['total_likes'] + 1 : post['total_likes']} Likes',
-                          ),
+                          Text(post['total_likes'].toString()),
                         ],
                       ),
                     ),
-
+                    // post comment section
                     TextButton(
-                      onPressed: () {},
+                      onLongPress: () {
+                        commentToggle();
+                        // toggle(post['post_id'].toString());
+                        // by clicking on it i will show text field
+                      },
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled:
+                              true, // optional, if content is large
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(16),
+                            ),
+                          ),
+                          isDismissible: true,
+                          builder: (BuildContext context) {
+                            return StatefulBuilder(
+                              builder: (
+                                BuildContext context,
+                                StateSetter setModalState,
+                              ) {
+                                return FractionallySizedBox(
+                                  heightFactor: 0.8,
+                                  // widthFactor: MediaQuery.of(context).size.width,
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                      top: 30,
+                                      // left: 16,
+                                      // right: 16,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        const Text(
+                                          'Comments By',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 16,
+                                            horizontal: 18,
+                                          ),
+                                          child: Form(
+                                            key: _formKey,
+                                            child: TextFormField(
+                                              keyboardType:
+                                                  TextInputType.multiline,
+                                              maxLines: null,
+                                              controller: _commentController,
+                                              minLines: 1,
+                                              onSaved: (value) {
+                                                handleSave('comment', value!);
+                                              },
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                              decoration: InputDecoration(
+                                                suffixIcon: IconButton(
+                                                  icon: Icon(
+                                                    Icons.send,
+                                                    color: Colors.black,
+                                                  ),
+                                                  onPressed: () {
+                                                    // Navigator.of(context).pop();
+                                                    handleSave(
+                                                      'post_id',
+                                                      post['post_id']
+                                                          .toString(),
+                                                    );
+                                                    handleSubmit(setModalState);
+
+                                                    print('Post button tapped');
+                                                  },
+                                                ),
+                                                hintText: 'Comments',
+                                                filled: true,
+                                                fillColor: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 12),
+
+                                        Flexible(
+                                          child: ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount:
+                                                post['comments_list'].length,
+                                            itemBuilder: (context, index) {
+                                              final comment =
+                                                  post['comments_list'][index];
+                                              return ListTile(
+                                                leading: CircleAvatar(
+                                                  radius: 26,
+                                                  backgroundImage:
+                                                      comment['user_profile'] !=
+                                                                  null &&
+                                                              comment['user_profile']
+                                                                  .toString()
+                                                                  .isNotEmpty
+                                                          ? NetworkImage(
+                                                            comment['user_profile'],
+                                                          )
+                                                          : AssetImage(
+                                                                'assets/profile/user.png',
+                                                              )
+                                                              as ImageProvider,
+                                                ),
+                                                trailing:
+                                                    (comment['userId'] ??
+                                                                comment['user_id']) ==
+                                                            userData['id']
+                                                        ? IconButton(
+                                                          onPressed: () {
+                                                            print(
+                                                              '-------------function created but commented due to some changes required in backend-----------',
+                                                            );
+                                                            // deleteComment(
+                                                            //   comment['comment_id'] ??
+                                                            //       comment['id'],
+                                                            // );
+                                                          },
+                                                          icon: Icon(
+                                                            Icons.delete,
+                                                            color: Colors.red,
+                                                          ),
+                                                        )
+                                                        : SizedBox(),
+                                                title: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      comment['user_name'],
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      '${comment['comment']} dskjfhdfuh ruiefhiergheuri gheiu gfheiruhuiehfuiewhfuidewhfuiwehfhw',
+                                                    ),
+                                                  ],
+                                                ),
+                                                subtitle: Text(
+                                                  formatDate(
+                                                    comment['created_at'],
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 10),
+                                        // TextButton(
+                                        //   onPressed: () {
+                                        //     Navigator.of(
+                                        //       context,
+                                        //     ).pop(); // Close dialog
+                                        //   },
+                                        //   child: const Text('Close'),
+                                        // ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
                       child: Row(
                         children: [
-                          // const SizedBox(width: 6),
                           Icon(
                             Icons.comment,
                             size: 20,
-                            color:
-                                post['total_comments'] == 0
-                                    ? Palette.darkgray
-                                    : Colors.black,
+                            color: Palette.darkgray,
                           ),
                           const SizedBox(width: 4),
-                          Text('${post['total_comments']} Comments'),
+                          Text('Comments'),
                         ],
                       ),
                     ),
                   ],
                 ),
-
                 SizedBox(),
                 SizedBox(),
                 Row(
                   children: [
-                    Icon(
-                      Icons.file_upload_outlined,
-                      // color:
-                      //     post['likes'] == 0
-                      //         ? Palette.darkgray
-                      //         : Palette.basicgreen,
-                      size: 20,
-                    ),
-                    // const SizedBox(width: 4),
-                    // Text('${post['likes']}'),
+                    Icon(Icons.file_upload_outlined, size: 20),
                     const SizedBox(width: 16),
-                    Icon(
-                      Icons.bookmarks_outlined,
-                      size: 20,
-                      // color:
-                      //     post['comments'] == 0
-                      //         ? Palette.darkgray
-                      //         : Colors.black,
-                    ),
-                    // const SizedBox(width: 4),
-                    // Text('${post['comments']}'),
+                    Icon(Icons.bookmarks_outlined, size: 20),
                   ],
                 ),
               ],
             ),
           ),
-
-          // const Divider(),
-
-          // Like and Comment buttons
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 16),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // : Padding(
+          //   padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+          //   // padding: const EdgeInsets.symmetric(horizontal: 16),
+          //   child: Stack(
           //     children: [
-          //       TextButton.icon(
-          //         onPressed: () {},
-          //         icon: const Icon(Icons.favorite_border),
-          //         label: const Text('Like'),
+          //       Container(
+          //         // color: Colors.amber,
+          //         // margin: EdgeInsets.only(top: 36),
+          //         child: TextFormField(
+          //           decoration: InputDecoration(hintText: 'Comment'),
+          //           // highlightErrorBorder: true,
+          //           // validator: ValidationBuilder().build(),
+          //           keyboardType: TextInputType.text,
+          //           onSaved: (value) {
+          //             print('mu val ===>>>$value');
+          //           },
+          //           style: const TextStyle(color: Colors.black),
+          //           // heading: 'User Name',
+          //           // hintText: 'User Name',
+          //           // icon: 'assets/images/icons/user.png',
+          //           textCapitalization: TextCapitalization.words,
+          //         ),
           //       ),
-          //       TextButton.icon(
-          //         onPressed: () {},
-          //         icon: const Icon(Icons.comment_outlined),
-          //         label: const Text('Comment'),
+          //       Positioned(
+          //         top: 0,
+          //         // bottom: 30,
+          //         right: 20,
+          //         child: SizedBox(
+          //           width: 10, // or any fixed size you want
+          //           height: 10,
+          //           child: IconButton(
+          //             onPressed: () {
+          //               print('drgrdg');
+          //               setState(() {
+          //                 commentToggle();
+          //               });
+          //             },
+          //             icon: Icon(
+          //               Icons.cancel_outlined,
+          //               color: Colors.red,
+          //               size: 30,
+          //             ),
+          //           ),
+          //         ),
           //       ),
           //     ],
           //   ),

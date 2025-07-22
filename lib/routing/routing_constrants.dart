@@ -9,9 +9,6 @@ const String resetPasswordScreenRoute = '/reset-password';
 const String verifyEmailScreenRoute = '/verify-email';
 const String signupScreenRoute = '/signup';
 
-// checkoutScreens
-const String checkoutScreenRoute = '/checkout';
-
 // generalScreens
 const String aboutUsScreenRoute = '/about-us';
 const String contactUsScreenRoute = '/contact-us';
@@ -19,32 +16,11 @@ const String feedbackScreenRoute = '/feedback';
 const String privacyPolicyRoute = '/privacy-policy';
 const String termAndConditionsScreenRoute = '/term-conditions';
 
-//nenuScreens
-const String categoryScreenRoute = '/categories';
-const String itemDetailsScreenRoute = '/item-details';
-const String itemReviewScreenRoute = '/item-review';
-const String menuScreenRoute = '/menu';
-
 // NotificationScreens
 const String notificationScreenRoute = '/notification';
 
-// orderScreens
-const String cartScreenRoute = '/cart';
-const String orderConfirmationScreenRoute = '/order-confirmation-screen';
-const String orderDetailsScreenRoute = '/order-details-screen';
-const String orderReviewScreenRoute = '/order-review-screen';
-const String orderhistoryScreenRoute = '/order-history-screen';
-
-// paymentMethodScreens
-const String paymentGatewayScreenRoute = '/payment-gateway-screen';
-const String paymentMethodScreenRoute = '/payment-method-screen';
-
-// promotionScreens
-const String promotionsScreenRoute = '/promotions-screen';
-
-// riderScreens
-const String riderDetailsScreenRoute = '/rider-details-screen';
-const String riderTrackingScreenRoute = '/rider-tracking-screen';
+//PostScreens
+const String postDetailScreenRoute = '/post-details';
 
 // userScreens
 const String editProfileScreenRoute = '/edit-profile';

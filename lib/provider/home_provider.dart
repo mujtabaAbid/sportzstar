@@ -7,6 +7,43 @@ import 'package:sportzstar/helper/api.dart';
 import '../helper/local_storage.dart';
 
 class HomeProvider with ChangeNotifier {
+  Future<dynamic> getAllNotifications() async {
+    final user = await userData();
+    try {
+      final response = await http.get(
+        Uri.parse(notificationApi(id: user['id'])),
+        headers: {'Accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print('getAllNotifications -------->>>> $responseData');
+
+        final notifications = responseData['notifications'] as List<dynamic>;
+
+        final unreadNotificationCount =
+            notifications
+                .where((notification) => notification['is_read'] == false)
+                .length;
+        print(
+          'getAllNotifications ----only length---->>>> ${responseData['notifications'].length}',
+        );
+        print(
+          'Unread notifications:--------------------->> $unreadNotificationCount',
+        );
+        final notificationsData = {
+          'unread': unreadNotificationCount,
+          'notifications': responseData['notifications'],
+        };
+        return notificationsData;
+      } else {
+        print('getAllNotifications --2-error->>>> ${response.body}');
+      }
+    } catch (e) {
+      print('getAllNotifications  error --e-->>>> $e');
+    }
+  }
+
   Future<dynamic> usersList() async {
     try {
       final authToken = await getDataFromLocalStorage(name: 'access');
@@ -45,20 +82,37 @@ class HomeProvider with ChangeNotifier {
         final responseData = json.decode(response.body);
         print('getAllPosts --1-->>>> $responseData');
 
-        // Assuming responseData is a List of posts
         List<dynamic> posts = responseData;
 
-        // If the posts are inside a key like 'data' or 'posts', adjust accordingly:
-        // List<dynamic> posts = responseData['posts'];
-
-        // Sort by created_at descending (latest first)
+        // Sort posts by created_at (latest first)
         posts.sort(
           (a, b) => DateTime.parse(
             b['created_at'],
           ).compareTo(DateTime.parse(a['created_at'])),
         );
 
-        print('Sorted posts -->> $posts');
+        // Sort each post's comments_list and likes_list
+        for (var post in posts) {
+          // Sort comments by created_at descending
+          if (post['comments_list'] != null && post['comments_list'] is List) {
+            post['comments_list'].sort(
+              (a, b) => DateTime.parse(
+                b['created_at'],
+              ).compareTo(DateTime.parse(a['created_at'])),
+            );
+          }
+
+          // Sort likes by created_at descending
+          if (post['likes_list'] != null && post['likes_list'] is List) {
+            post['likes_list'].sort(
+              (a, b) => DateTime.parse(
+                b['created_at'],
+              ).compareTo(DateTime.parse(a['created_at'])),
+            );
+          }
+        }
+
+        print('Sorted posts with sorted comments and likes -->> $posts');
         return posts;
       } else {
         print('getAllPosts --2-error->>>> ${response.body}');
@@ -142,6 +196,65 @@ class HomeProvider with ChangeNotifier {
       }
     } catch (e) {
       print('unlikePost  error --e-->>>> $e');
+    }
+  }
+
+  Future<dynamic> uploadComments({
+    required Map<String, String> formData,
+  }) async {
+    final user = await userData();
+    formData.addAll({'user_id': user['id'].toString()});
+    print('uploadComments----->>>>>$formData');
+    try {
+      final response = await http.post(
+        Uri.parse(saveCommentApi),
+        headers: {'Accept': 'application/json'},
+        body: json.encode(formData),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print('uploadComments ----->>>> $responseData');
+
+        List<dynamic> comments = responseData;
+
+        comments.sort(
+          (a, b) => DateTime.parse(
+            b['created_at'],
+          ).compareTo(DateTime.parse(a['created_at'])),
+        );
+
+        return comments;
+      } else {
+        print('uploadComments -----error->>>> ${response.body}');
+      }
+    } catch (e) {
+      print('uploadComments  error --e-->>>> $e');
+    }
+  }
+
+  Future<dynamic> deleteComment(String commentId) async {
+    final user = await userData();
+    try {
+      final response = await http.post(
+        Uri.parse(deleteCommentOnPostApi),
+        headers: {'Accept': 'application/json'},
+        body: {'comment_id': commentId, 'user_id': user['id'].toString()},
+      );
+
+      if (response.statusCode == 200) {
+        // final resp = await getAllPosts();
+        return {
+          'message':
+              '-----------This api was not checked properly due to some changes in backend-----------',
+        };
+      } else {
+        print(
+          '-------comment not deleted, Something went wrong---------->>>>>>${response.body}',
+        );
+      }
+    } catch (e) {
+      print('--------comment not deleted, Something went wrong------------>$e');
     }
   }
 }

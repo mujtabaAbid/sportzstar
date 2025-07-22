@@ -177,5 +177,9 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-
+  Future<dynamic> updateUserProfile({
+    required Map<String, String> formData,
+  }) async {
+    print('form data in update user profilw----------->>>>$formData');
+  }
 }

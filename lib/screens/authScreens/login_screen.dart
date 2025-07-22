@@ -44,23 +44,18 @@ class _LoginScreenState extends State<LoginScreen> {
         _isLoading = true;
       });
 
-      print('object--->$_formData');
       try {
         final response = await Provider.of<UserProvider>(
           context,
           listen: false,
         ).loginFunction(formData: _formData);
-
-        // print('responmses 2342---->>>>  ${response.body}');
         if (response.statusCode == 200) {
           print('all response -fgdrgfd--> ${response.body}');
-
           alertNotification(
             context: context,
             message: 'Login successful!',
             messageType: AlertMessageType.success,
           );
-
           pushNamedAndRemoveUntilNavigate(
             pageName: bottomNavigationBarRoute,
             context: context,
@@ -69,11 +64,6 @@ class _LoginScreenState extends State<LoginScreen> {
           final message = json.decode(response.body);
           final msg = message['detail'];
 
-          // alertNotification(
-          //   context: context,
-          //   message: msg,
-          //   messageType: AlertMessageType.error,
-          // );
           if (msg == 'Please verify your email') {
             try {
               final responsee = await Provider.of<UserProvider>(
@@ -86,7 +76,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   message: 'Verification code sent to email.',
                   messageType: AlertMessageType.success,
                 );
-
                 pushNamedNavigate(
                   pageName: otpScreenRoute,
                   argument: {
@@ -98,30 +87,43 @@ class _LoginScreenState extends State<LoginScreen> {
               } else {
                 alertNotification(
                   context: context,
-                  message: 'Something Went wrong, |Try again later',
+                  message:
+                      'Something Went wrong, OTP verification error, Try again later',
                   messageType: AlertMessageType.info,
                 );
               }
             } catch (e) {
               print('error---------> ${e.toString()}');
+              alertNotification(
+                context: context,
+                message:
+                    'Something Went wrong, OTP verification error, Try again later.',
+                messageType: AlertMessageType.info,
+              );
             }
-            // pushNamedAndRemoveUntilNavigate(
-            //   pageName: otpScreenRoute,
-            //   argument: {'email': _formData['email'], 'route': 'emailverify'},
-            //   context: context,
-            // );
+          } else {
+            alertNotification(
+              context: context,
+              message: msg,
+              messageType: AlertMessageType.warning,
+            );
           }
         }
       } catch (e) {
         print('error---------> ${e.toString()}');
+        alertNotification(
+          context: context,
+          message: 'Something Went wrong, Try again later',
+          messageType: AlertMessageType.info,
+        );
       }
     } else {
       print('Form is not valid');
-      // alertNotification(
-      //   context: context,
-      //   message: 'Please Fill the form.',
-      //   messageType: AlertMessageType.error,
-      // );
+      alertNotification(
+        context: context,
+        message: 'Form is not valid',
+        messageType: AlertMessageType.error,
+      );
     }
     setState(() {
       _isLoading = false;

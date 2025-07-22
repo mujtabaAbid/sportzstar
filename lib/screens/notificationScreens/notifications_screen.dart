@@ -1,10 +1,136 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:sportzstar/config/palette.dart';
+import 'package:sportzstar/helper/page_navigate.dart';
+import 'package:sportzstar/routing/routing_constrants.dart';
+import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 
-class NotificationsScreen extends StatelessWidget {
+import '../../provider/home_provider.dart';
+
+class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
 
   @override
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State<NotificationsScreen> {
+  bool _isLoading = false;
+  List<Map<String, dynamic>> chatData = [];
+  @override
+  void initState() {
+    super.initState();
+    getNotifications();
+  }
+
+  Future<void> getNotifications() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final response =
+          await Provider.of<HomeProvider>(
+            context,
+            listen: false,
+          ).getAllNotifications();
+
+      chatData.addAll(response['notifications'].cast<Map<String, dynamic>>());
+      chatData.sort((a, b) {
+        return (a['is_read'] == false ? 0 : 1).compareTo(
+          b['is_read'] == false ? 0 : 1,
+        );
+      });
+
+      print('✅ All getNotifications:-------------------> $response');
+    } catch (e) {
+      print('❌ Error getNotifications:--------e---------> $e');
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  String _formatDateOrTime(String dateTimeStr) {
+    final dateTime = DateTime.parse(dateTimeStr);
+    final now = DateTime.now();
+
+    if (dateTime.year == now.year &&
+        dateTime.month == now.month &&
+        dateTime.day == now.day) {
+      // Show time if it's today
+      return DateFormat.jm().format(dateTime); // e.g., 5:08 PM
+    } else {
+      // Show date otherwise
+      return DateFormat.yMMMMd().format(dateTime); // e.g., July 21, 2025
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Center(child: Text('NotificationsScreen'));
+    return MainLayoutWidget(
+      isLoading: _isLoading,
+      appBar: AppBar(
+        title: Text(
+          'Notifications',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
+      body: Container(
+        child: ListView.builder(
+          itemCount: chatData.length,
+          itemBuilder: (context, index) {
+            final chat = chatData[index];
+            return Column(
+              children: [
+                Container(
+                  color:
+                      chat['is_read']
+                          ? const Color.fromARGB(255, 201, 200, 200)
+                          : Colors.transparent,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                    leading: CircleAvatar(
+                      radius: 25,
+                      backgroundImage: NetworkImage(
+                        'http://77.37.125.189/${chat['profile']}',
+                      ),
+                      child:
+                          ((chat['profile'] == null) || (chat['profile'] == ''))
+                              ? Icon(
+                                chat['notification_type'] == 'like'
+                                    ? Icons.thumb_up
+                                    : chat['notification_type'] == 'comment'
+                                    ? Icons.comment
+                                    : chat['notification_type'] == 'send_equest'
+                                    ? Icons.drive_file_move_rounded
+                                    : chat['notification_type'] == 'event'
+                                    ? Icons.event
+                                    : Icons.person_add,
+                              )
+                              : null,
+                    ),
+                    title: Text(
+                      chat['full_name'],
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(chat['message']),
+                    trailing: Text(_formatDateOrTime(chat['created_at'])),
+                    onTap: () {
+                      pushNamedNavigate(
+                        context: context,
+                        pageName: postDetailScreenRoute,
+                      );
+                    },
+                  ),
+                ),
+                Divider(),
+              ],
+            );
+          },
+        ),
+      ),
+    );
   }
 }

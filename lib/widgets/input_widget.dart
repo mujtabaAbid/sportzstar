@@ -27,7 +27,8 @@ class InputWidget extends StatefulWidget {
     this.headingWidget, // Default value added
     this.showCountryCodePicker = false,
     this.maxLines,
-    // this.initialValue,
+    this.initialValue,
+    this.textInputAction = TextInputAction.next,
   });
   final String? heading;
   final TextStyle? headingStyle;
@@ -52,7 +53,8 @@ class InputWidget extends StatefulWidget {
   final Widget? headingWidget;
   final bool showCountryCodePicker;
   final int? maxLines;
-  // final String? initialValue;
+  final String? initialValue;
+  final TextInputAction? textInputAction;
 
   @override
   State<InputWidget> createState() => _InputWidgetState();
@@ -64,7 +66,7 @@ class _InputWidgetState extends State<InputWidget> {
     return Padding(
       padding: EdgeInsets.symmetric(
         // vertical: 12,
-        horizontal: widget.sidePadding ?? 6,
+        horizontal: widget.sidePadding ?? 0,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,6 +97,8 @@ class _InputWidgetState extends State<InputWidget> {
 
               Expanded(
                 child: TextFormField(
+                  textInputAction: widget.textInputAction,
+                  initialValue: widget.initialValue,
                   maxLines:
                       (widget.obscureText ?? false)
                           ? 1

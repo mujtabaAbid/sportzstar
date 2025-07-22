@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sportzstar/config/palette.dart';
+import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/provider/home_provider.dart';
+import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/post_card_widget.dart';
@@ -17,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    getNotifications();
     getSports();
     allUsers();
     getPosts();
@@ -25,7 +28,27 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Map<String, dynamic>> allUsersList = [];
   List<Map<String, dynamic>> posts = [];
   List<String> sportsCategories = [];
+  int notificationCount = 0;
   bool _isLoading = false;
+
+  Future<void> getNotifications() async {
+    try {
+      final response =
+          await Provider.of<HomeProvider>(
+            context,
+            listen: false,
+          ).getAllNotifications();
+
+      notificationCount = response['unread'];
+
+      print(
+        '✅ All getNotifications count:-------------------> $notificationCount',
+      );
+    } catch (e) {
+      print('❌ Error getNotifications:--------e---------> $e');
+    }
+  }
+
   Future<void> getSports() async {
     try {
       final response =
@@ -214,12 +237,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   Stack(
                     children: [
                       IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.notifications_none ?? Icons.notifications,
-
-                          size: 30,
-                        ),
+                        onPressed: () {
+                          pushNamedNavigate(
+                            context: context,
+                            pageName: notificationScreenRoute,
+                          );
+                        },
+                        icon: Icon(Icons.notifications_none, size: 30),
                       ),
                       Positioned(
                         top: 6,
@@ -234,33 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            '12',
-                            style: TextStyle(color: Colors.white, fontSize: 8),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Stack(
-                    children: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.inbox_outlined, size: 30),
-                      ),
-                      Positioned(
-                        top: 6,
-                        right: 8,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 2,
-                            horizontal: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            '12',
+                            notificationCount.toString(),
                             style: TextStyle(color: Colors.white, fontSize: 8),
                           ),
                         ),
@@ -268,6 +266,32 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
 
+                  // Stack(
+                  //   children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.add_a_photo_outlined, size: 30),
+                  ),
+                  //     Positioned(
+                  //       top: 6,
+                  //       right: 8,
+                  //       child: Container(
+                  //         padding: EdgeInsets.symmetric(
+                  //           vertical: 2,
+                  //           horizontal: 3,
+                  //         ),
+                  //         decoration: BoxDecoration(
+                  //           color: Colors.red,
+                  //           borderRadius: BorderRadius.circular(20),
+                  //         ),
+                  //         child: Text(
+                  //           '12',
+                  //           style: TextStyle(color: Colors.white, fontSize: 8),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   SizedBox(width: 20),
                 ],
               ),
@@ -455,6 +479,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             )
                             .toList();
                     final post = filteredPosts[index];
+
                     if (post.isNotEmpty) {
                       return PostCard(post: post);
                     } else {
@@ -476,13 +501,13 @@ class _HomeScreenState extends State<HomeScreen> {
             //     ),
             //   ),
             // ),
-            // CustomButton(
-            //   onPressed: () {
-            //     print('dlgfdhjjg');
-            //     getSports();
-            //   },
-            //   text: 'ewfsefs',
-            // ),
+            CustomButton(
+              onPressed: () {
+                print('dlgfdhjjg');
+                getNotifications();
+              },
+              text: 'ewfsefs',
+            ),
           ],
         ),
       ),

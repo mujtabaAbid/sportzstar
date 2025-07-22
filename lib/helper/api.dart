@@ -8,7 +8,7 @@ const basicUrl =
 const apiUrl = '${basicUrl}api/';
 //users
 const registerUserApi = '${apiUrl}auth/signup/';
-const loginUserApi = '${apiUrl}auth/login/'; 
+const loginUserApi = '${apiUrl}auth/login/';
 const usersListApi = '${apiUrl}users/'; //get
 const updateUserApi = '${apiUrl}update-user/'; //patch
 const verifyEmailApi = '${apiUrl}verify-email/';
@@ -16,7 +16,10 @@ const getCodeApi = '${apiUrl}get_code/';
 const updatePasswordApi = '${apiUrl}update_password/';
 const deleteUserApi =
     '${apiUrl}auth/get_notifications/3/'; //<-- (delete) 3= userid
-const notificationsApi = '${apiUrl}get_notifications/4/'; //get
+// const notificationsApi = '${apiUrl}get_notifications/1/'; //get
+String notificationApi({required int id}) {
+  return '${apiUrl}get_notifications/$id/';
+}
 const readNotificationsApi = '${apiUrl}notification_/read/20/'; //get
 
 // posts
@@ -27,7 +30,7 @@ const allUserPostApi = '${apiUrl}posts/user/2/'; //get
 const allPostsApi = '${apiUrl}posts/'; //get
 const likePostApi = '${apiUrl}posts/like/';
 const unlikePostApi = '${apiUrl}posts/unlike/';
-const commentOnPostApi = '${apiUrl}posts/comment/';
+const saveCommentApi = '${apiUrl}posts/comment/';
 const deleteCommentOnPostApi = '${apiUrl}posts/comment/delete';
 
 //stories
