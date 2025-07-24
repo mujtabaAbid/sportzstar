@@ -17,9 +17,8 @@ import 'alerts/alert_notification_widget.dart';
 
 enum PostDisplayType { text, image, video }
 
-
 class PostCard extends StatefulWidget {
-   final Map<String, dynamic> post;
+  final Map<String, dynamic> post;
   final PostDisplayType displayType; // ✅ Add this
 
   const PostCard({required this.post, super.key, required this.displayType});
@@ -62,14 +61,14 @@ class _PostCardState extends State<PostCard> {
     alphabetCount = RegExp(r'[a-zA-Z]').allMatches(text).length;
   }
 
-    String formatDate(String isoDateString) {
-      DateTime utcDate = DateTime.parse(isoDateString);
+  String formatDate(String isoDateString) {
+    DateTime utcDate = DateTime.parse(isoDateString);
 
-      DateTime localDate = utcDate.toLocal();
-      String formattedDate = DateFormat('dd MMM yyyy, hh:mm a').format(localDate);
+    DateTime localDate = utcDate.toLocal();
+    String formattedDate = DateFormat('dd MMM yyyy, hh:mm a').format(localDate);
 
-      return formattedDate;
-    }
+    return formattedDate;
+  }
 
   void toggle(String postId) async {
     setState(() {
@@ -170,23 +169,22 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
-   final String postType = post['post_type'] ?? '';
-  final String? imageUrl = post['image_url'];
-  final String? videoUrl = post['video_url'];
-  final String? description = post['post_description'];
+    final String postType = post['post_type'] ?? '';
+    final String? imageUrl = post['image_url'];
+    final String? videoUrl = post['video_url'];
+    final String? description = post['post_description'];
 
-  final bool isTextPost = postType == 'text' && imageUrl == null && videoUrl == null;
-  final bool isImagePost = postType == 'image' && videoUrl == null;
-  final bool isVideoPost = postType == 'video' && imageUrl == null;
+    final bool isTextPost =
+        postType == 'text' && imageUrl == null && videoUrl == null;
+    final bool isImagePost = postType == 'image' && videoUrl == null;
+    final bool isVideoPost = postType == 'video' && imageUrl == null;
     return GestureDetector(
       onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => PostDetailScreen(post: post),
-      ),
-    );
-  },
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => PostDetailScreen(post: post)),
+        );
+      },
       child: Card(
         color: Colors.white,
         margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -205,9 +203,13 @@ class _PostCardState extends State<PostCard> {
                           if (value == 'delete') {
                             // Call your delete post function here
                             // deletePost();
-                            print('---delete post function call button--------');
+                            print(
+                              '---delete post function call button--------',
+                            );
                           } else if (value == 'update') {
-                            print('---update post function call button--------');
+                            print(
+                              '---update post function call button--------',
+                            );
                           } else {
                             print('---Nothing call--------');
                           }
@@ -259,13 +261,13 @@ class _PostCardState extends State<PostCard> {
                 ],
               ),
             ),
-      
+
             const SizedBox(height: 8),
-      
+
             // Post Image
-             if (isImagePost && imageUrl != null)
-            // if (post['image_url'] != null &&
-            //     post['image_url'].toString().isNotEmpty)
+            if (isImagePost && imageUrl != null)
+              // if (post['image_url'] != null &&
+              //     post['image_url'].toString().isNotEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
                 child: ClipRRect(
@@ -279,61 +281,66 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ),
               ),
-      
+
             const SizedBox(height: 8),
-         if (isVideoPost && videoUrl != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: VideoPlayerWidget(videoUrl: videoUrl), // You must create this widget
+            if (isVideoPost && videoUrl != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: VideoPlayerWidget(
+                      videoUrl: videoUrl,
+                    ), // You must create this widget
+                  ),
                 ),
               ),
-            ),
-               const SizedBox(height: 8),
+            const SizedBox(height: 8),
             // Post Text (with "...more")
-             if (description != null && description.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RichText(
-                    text: TextSpan(
-                      style: TextStyle(color: Colors.black),
-                      children: [
-                        TextSpan(
-                          text: '${post['user_name']} : ',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        TextSpan(text: description),
-                      ],
+            if (description != null && description.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(color: Colors.black),
+                        children: [
+                          TextSpan(
+                            text: '${post['user_name']} : ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          TextSpan(text: description),
+                        ],
+                      ),
+                      maxLines: isExpanded ? null : 2,
+                      overflow:
+                          isExpanded
+                              ? TextOverflow.visible
+                              : TextOverflow.ellipsis,
                     ),
-                    maxLines: isExpanded ? null : 2,
-                    overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                  ),
-                  if (description.length >= 70)
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isExpanded = !isExpanded;
-                        });
-                      },
-                      child: Text(
-                        isExpanded ? 'less' : 'more',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
+                    if (description.length >= 70)
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isExpanded = !isExpanded;
+                          });
+                        },
+                        child: Text(
+                          isExpanded ? 'less' : 'more',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
-            ),
-      
-            const SizedBox(height: 8),
+
+            // const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Row(
@@ -397,7 +404,7 @@ class _PostCardState extends State<PostCard> {
                                           },
                                         ),
                                       ),
-      
+
                                       const SizedBox(height: 10),
                                       TextButton(
                                         onPressed: () {
@@ -418,7 +425,7 @@ class _PostCardState extends State<PostCard> {
                           children: [
                             Icon(
                               Icons.thumb_up_alt,
-                              size: 20,
+                              size: 30,
                               color:
                                   (post['likes_list'] as List).any(
                                         (like) =>
@@ -506,9 +513,13 @@ class _PostCardState extends State<PostCard> {
                                                         post['post_id']
                                                             .toString(),
                                                       );
-                                                      handleSubmit(setModalState);
-      
-                                                      print('Post button tapped');
+                                                      handleSubmit(
+                                                        setModalState,
+                                                      );
+
+                                                      print(
+                                                        'Post button tapped',
+                                                      );
                                                     },
                                                   ),
                                                   hintText: 'Comments',
@@ -519,7 +530,7 @@ class _PostCardState extends State<PostCard> {
                                             ),
                                           ),
                                           const SizedBox(height: 12),
-      
+
                                           Flexible(
                                             child: ListView.builder(
                                               shrinkWrap: true,
@@ -567,7 +578,8 @@ class _PostCardState extends State<PostCard> {
                                                           : SizedBox(),
                                                   title: Column(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       Text(
                                                         comment['user_name'],
@@ -576,7 +588,7 @@ class _PostCardState extends State<PostCard> {
                                                         ),
                                                       ),
                                                       Text(
-                                                        '${comment['comment']} dskjfhdfuh ruiefhiergheuri gheiu gfheiruhuiehfuiewhfuidewhfuiwehfhw',
+                                                        '${comment['comment']}',
                                                       ),
                                                     ],
                                                   ),
@@ -589,7 +601,7 @@ class _PostCardState extends State<PostCard> {
                                               },
                                             ),
                                           ),
-      
+
                                           const SizedBox(height: 10),
                                           // TextButton(
                                           //   onPressed: () {

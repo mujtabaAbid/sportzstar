@@ -48,7 +48,9 @@ class PostDetailScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      formatDate(post['created_at']),
+                      post['created_at'] != null && post['created_at'] != ''
+                          ? formatDate(post['created_at'])
+                          : '',
                       style: const TextStyle(color: Colors.black),
                     ),
                   ],

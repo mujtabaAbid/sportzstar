@@ -16,6 +16,7 @@ import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
 import 'package:sportzstar/widgets/post_card_widget.dart';
 
 import '../../helper/local_storage.dart';
+import '../postScreens/post_detail_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -465,64 +466,79 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           )
                                           .toList();
                                   final post = filteredPosts[index];
-                                  return Container(
-                                    margin: const EdgeInsets.only(bottom: 8),
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                        255,
-                                        218,
-                                        218,
-                                        218,
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (_) =>
+                                                  PostDetailScreen(post: post),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(bottom: 8),
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: const Color.fromARGB(
+                                          255,
+                                          218,
+                                          218,
+                                          218,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Column(
-                                      spacing: 6,
+                                      child: Column(
+                                        spacing: 6,
 
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'dfsdfkjshdfiudsfuisdhfsduifhuijhhf sdfhus ifhuisdfhuisdfh \n osfdihufhduasoif ${post['post_description']}',
-                                          style: const TextStyle(fontSize: 14),
-                                        ),
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${post['post_description']}',
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
 
-                                        Row(
-                                          spacing: 6,
-                                          children: [
-                                            Icon(
-                                              Icons.thumb_up,
-                                              size: 16,
-                                              color:
-                                                  post['total_likes'] == 0
-                                                      ? Palette.basicgray
-                                                      : Palette.basicgreen,
-                                            ),
-                                            Text(
-                                              post['total_likes'].toString(),
-                                              style: TextStyle(
-                                                color: Colors.black,
+                                          Row(
+                                            spacing: 6,
+                                            children: [
+                                              Icon(
+                                                Icons.thumb_up,
+                                                size: 16,
+                                                color:
+                                                    post['total_likes'] == 0
+                                                        ? Palette.basicgray
+                                                        : Palette.basicgreen,
                                               ),
-                                            ),
-                                            SizedBox(width: 6),
-                                            Icon(
-                                              Icons.comment_outlined,
-                                              size: 16,
-                                              color:
-                                                  post['total_comments'] == 0
-                                                      ? Palette.darkgray
-                                                      : Palette.basicgreen,
-                                            ),
-                                            Text(
-                                              post['total_comments'].toString(),
-                                              style: TextStyle(
-                                                color: Colors.black,
+                                              Text(
+                                                post['total_likes'].toString(),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                              SizedBox(width: 6),
+                                              Icon(
+                                                Icons.comment_outlined,
+                                                size: 16,
+                                                color:
+                                                    post['total_comments'] == 0
+                                                        ? Palette.darkgray
+                                                        : Palette.basicgreen,
+                                              ),
+                                              Text(
+                                                post['total_comments']
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   );
                                 },
@@ -560,6 +576,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   final post = filteredPosts[index];
                                   return GestureDetector(
                                     onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (_) =>
+                                                  PostDetailScreen(post: post),
+                                        ),
+                                      );
                                       print(
                                         'here we will open the post details----${post['post_type']}',
                                       );
