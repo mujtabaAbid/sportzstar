@@ -25,8 +25,15 @@ const readNotificationsApi = '${apiUrl}notification_/read/20/'; //get
 // posts
 const createPostApi = '${apiUrl}posts/create/';
 const updatePostApi = '${apiUrl}posts/update/1/'; //patch
-const deletePostApi = '${apiUrl}posts/delete/1/'; //del
-const allUserPostApi = '${apiUrl}posts/user/2/'; //get
+// const deletePostApi = '${apiUrl}posts/delete/1/'; //del
+String deletePostApi({required int id}) {
+  return '${apiUrl}posts/delete/$id/';
+}
+// const allUserPostApi = '${apiUrl}posts/user/2/'; //get
+String allUserPostApi({required int id}) {
+  return '${apiUrl}posts/user/$id/';
+}
+
 const allPostsApi = '${apiUrl}posts/'; //get
 const likePostApi = '${apiUrl}posts/like/';
 const unlikePostApi = '${apiUrl}posts/unlike/';

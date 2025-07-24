@@ -501,13 +501,13 @@ class _HomeScreenState extends State<HomeScreen> {
             //     ),
             //   ),
             // ),
-            CustomButton(
-              onPressed: () {
-                print('dlgfdhjjg');
-                getNotifications();
-              },
-              text: 'ewfsefs',
-            ),
+            // CustomButton(
+            //   onPressed: () {
+            //     print('dlgfdhjjg');
+            //     getNotifications();
+            //   },
+            //   text: 'ewfsefs',
+            // ),
           ],
         ),
       ),

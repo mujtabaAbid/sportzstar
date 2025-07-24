@@ -33,7 +33,13 @@ void main() async {
       statusBarColor: Colors.white,
       statusBarIconBrightness: Brightness.dark,
       statusBarBrightness: Brightness.light,
-      systemNavigationBarColor: Colors.white, // light background
+      // for bottom bar color
+      systemNavigationBarColor: Color.fromARGB(
+        255,
+        247,
+        247,
+        247,
+      ), // light background
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
@@ -65,12 +71,13 @@ class MyApp extends StatelessWidget {
               theme: ThemeData(
                 primarySwatch: Palette.primaryColor,
 
-                scaffoldBackgroundColor: const Color.fromARGB(
-                  255,
-                  243,
-                  243,
-                  243,
-                ),
+                scaffoldBackgroundColor: Colors.white,
+                // const Color.fromARGB(
+                //   255,
+                //   243,
+                //   243,
+                //   243,
+                // ),
                 fontFamily: 'Poppins',
 
                 // appBarTheme: const AppBarTheme(

@@ -21,9 +21,9 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     HomeScreen(),
     // Center(child: Text('Home')),
     Center(child: Text('Star')),
-   EventScreen(),
+    EventScreen(),
     ChatListScreen(),
-    UserProfileScreen()
+    UserProfileScreen(),
     // Center(child: Text('Profile')),
   ];
 
@@ -38,7 +38,12 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
           shape: BoxShape.circle,
           gradient:
               selectedIndex != 2
-                  ? Palette.primaryGradient
+                  ? LinearGradient(
+                    colors: [
+                      Color.fromRGBO(241, 255, 41, 1),
+                      Color.fromRGBO(205, 251, 68, 1),
+                    ],
+                  )
                   : Palette.secondaryGradient,
           boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 8)],
         ),
@@ -56,6 +61,8 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: StylishBottomBar(
+        // gradient: Palette.primaryGradient,
+        backgroundColor: const Color.fromARGB(255, 247, 247, 247),
         option: AnimatedBarOptions(
           iconSize: 28,
           barAnimation: BarAnimation.transform3D,
@@ -78,7 +85,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
           BottomBarItem(
             icon: const Icon(Icons.star_border),
             title: const Text('Star'),
-            selectedColor: Palette.darkgreen,
+            selectedColor: Palette.basicgreen,
           ),
           BottomBarItem(
             icon: const Icon(Icons.add),
@@ -89,12 +96,12 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
           BottomBarItem(
             icon: const Icon(Icons.chat_bubble),
             title: const Text('Chats'),
-            selectedColor: Palette.basicgray,
+            selectedColor: Palette.basicgreen,
           ),
           BottomBarItem(
             icon: const Icon(Icons.person_outline),
             title: const Text('Profile'),
-            selectedColor: Palette.darkgray,
+            selectedColor: Palette.basicgreen,
           ),
         ],
       ),
