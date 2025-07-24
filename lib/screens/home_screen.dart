@@ -56,10 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             listen: false,
           ).getAllSports();
-
-      // final sports = List<Map<String, dynamic>>.from(response);
-
-      sportsCategories.clear(); // optional: clear previous data
+      sportsCategories.clear();
       for (var item in response) {
         sportsCategories.add(item['game_name']);
       }
@@ -120,20 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // List of sports categories
   String selectedCategory = '';
-  // final List<String> sportsCategories = [
-  //   'Badminton',
-  //   'Baseball',
-  //   'Cricket',
-  //   'Beach handball',
-  //   'Boxing',
-  //   'Cycling',
-  //   'Football',
-  //   'Golf',
-  //   'Hockey',
-  //   'NetBall',
-  // ];
 
   final List<dynamic> postsss = [
     {
@@ -222,11 +206,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return MainLayoutWidget(
       isLoading: _isLoading,
-      // appBar: AppBar(title: const Text('Home Screen'), ),
       body: Container(
-        // padding: EdgeInsets.only(top: 50),
         child: Column(
-          // spacing: 20,
           children: [
             Container(
               padding: EdgeInsets.only(bottom: 20, top: 50),
@@ -272,33 +253,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {},
                     icon: Icon(Icons.add_a_photo_outlined, size: 30),
                   ),
-                  //     Positioned(
-                  //       top: 6,
-                  //       right: 8,
-                  //       child: Container(
-                  //         padding: EdgeInsets.symmetric(
-                  //           vertical: 2,
-                  //           horizontal: 3,
-                  //         ),
-                  //         decoration: BoxDecoration(
-                  //           color: Colors.red,
-                  //           borderRadius: BorderRadius.circular(20),
-                  //         ),
-                  //         child: Text(
-                  //           '12',
-                  //           style: TextStyle(color: Colors.white, fontSize: 8),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+
                   SizedBox(width: 20),
                 ],
               ),
             ),
 
-            // SizedBox(height: 20),
-            // Circular Portion
             Container(
               color: Colors.white,
               height: 100,
@@ -319,13 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 padding: EdgeInsets.all(3),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  gradient:
-                                  // story['isOwn']
-                                  // ? LinearGradient(
-                                  //   colors: [Colors.grey, Colors.grey],
-                                  // )
-                                  // :
-                                  LinearGradient(
+                                  gradient: LinearGradient(
                                     colors: [Colors.yellow, Colors.orange],
                                   ),
                                 ),
@@ -346,42 +300,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                               as ImageProvider,
                                 ),
                               ),
-                              // if (story['isOwn'])
-                              //   Positioned(
-                              //     bottom: 0,
-                              //     right: 0,
-                              //     child: CircleAvatar(
-                              //       radius: 10,
-                              //       backgroundColor: Colors.green,
-                              //       child: Icon(
-                              //         Icons.add,
-                              //         size: 16,
-                              //         color: Colors.white,
-                              //       ),
-                              //     ),
-                              //   ),
-                              // if (story['isLive'] == true)
-                              //   Positioned(
-                              //     bottom: -2,
-                              //     left: 12,
-                              //     child: Container(
-                              //       padding: EdgeInsets.symmetric(
-                              //         horizontal: 6,
-                              //         vertical: 2,
-                              //       ),
-                              //       decoration: BoxDecoration(
-                              //         color: Colors.red,
-                              //         borderRadius: BorderRadius.circular(12),
-                              //       ),
-                              //       child: Text(
-                              //         'Active',
-                              //         style: TextStyle(
-                              //           fontSize: 10,
-                              //           color: Colors.white,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
                             ],
                           ),
                           SizedBox(height: 4),
@@ -397,8 +315,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-            //circular portion ends here
-            //sports section
             Container(
               color: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -434,11 +350,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: 2,
                             ),
                           ),
-                          // color:
-                          //     isSelected
-                          //         ? Colors.blue
-                          //         : const Color.fromARGB(255, 255, 255, 255),
-                          // borderRadius: BorderRadius.circular(20),
                         ),
                         child: Center(
                           child: Text(
@@ -457,8 +368,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-
-            // Display selected content
             Expanded(
               child: Container(
                 child: ListView.builder(
@@ -480,27 +389,37 @@ class _HomeScreenState extends State<HomeScreen> {
                             .toList();
                     final post = filteredPosts[index];
 
-                    if (post.isNotEmpty) {
-                      return PostCard(post: post);
+                    if (post['post_type'] == 'text' &&
+                        post['image_url'] == null &&
+                        post['video_url'] == null) {
+                      // Display post_description in PostCard
+                      return PostCard(
+                        post: post,
+                        displayType: PostDisplayType.text,
+                      );
+                    } else if (post['post_type'] == 'image' &&
+                        post['video_url'] == null) {
+                      // Display image_url and post_description in PostCard
+                      return PostCard(
+                        post: post,
+                        displayType: PostDisplayType.image,
+                      );
+                    } else if (post['post_type'] == 'video' &&
+                        post['image_url'] == null) {
+                      // Display video_url and post_description in PostCard
+                      return PostCard(
+                        post: post,
+                        displayType: PostDisplayType.video,
+                      );
                     } else {
-                      return Text('data', style: TextStyle(fontSize: 100));
+                      // Handle any other cases here, though your provided examples cover text, image, and video scenarios
+                      return SizedBox(); // Placeholder for other scenarios
                     }
                   },
                 ),
               ),
             ),
-            // Expanded(
-            //   child: Container(
-            //     child: ListView.builder(
-            //       padding: EdgeInsets.symmetric(vertical: 10),
-            //       itemCount: posts.length,
-            //       itemBuilder: (context, index) {
-            //         final post = posts[index];
-            //         return PostCard(post: post);
-            //       },
-            //     ),
-            //   ),
-            // ),
+
             // CustomButton(
             //   onPressed: () {
             //     print('dlgfdhjjg');
