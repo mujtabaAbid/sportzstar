@@ -8,15 +8,21 @@ import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/close_keyboard.dart';
 import 'package:sportzstar/helper/local_storage.dart';
 import 'package:sportzstar/provider/home_provider.dart';
+import 'package:sportzstar/screens/postScreens/post_detail_screen.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
+import 'package:sportzstar/widgets/video_player_widget.dart';
 
 import '../helper/basic_enum.dart';
 import 'alerts/alert_notification_widget.dart';
 
-class PostCard extends StatefulWidget {
-  final Map<String, dynamic> post;
+enum PostDisplayType { text, image, video }
 
-  const PostCard({required this.post, super.key});
+
+class PostCard extends StatefulWidget {
+   final Map<String, dynamic> post;
+  final PostDisplayType displayType; // ✅ Add this
+
+  const PostCard({required this.post, super.key, required this.displayType});
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -56,18 +62,14 @@ class _PostCardState extends State<PostCard> {
     alphabetCount = RegExp(r'[a-zA-Z]').allMatches(text).length;
   }
 
-  String formatDate(String isoDateString) {
-    // Parse the UTC time
-    DateTime utcDate = DateTime.parse(isoDateString);
+    String formatDate(String isoDateString) {
+      DateTime utcDate = DateTime.parse(isoDateString);
 
-    // Convert to your local timezone
-    DateTime localDate = utcDate.toLocal();
+      DateTime localDate = utcDate.toLocal();
+      String formattedDate = DateFormat('dd MMM yyyy, hh:mm a').format(localDate);
 
-    // Format as "16 Apr 2025, 06:25 am"
-    String formattedDate = DateFormat('dd MMM yyyy, hh:mm a').format(localDate);
-
-    return formattedDate;
-  }
+      return formattedDate;
+    }
 
   void toggle(String postId) async {
     setState(() {
@@ -143,12 +145,6 @@ class _PostCardState extends State<PostCard> {
         setModalState(() {
           widget.post['comments_list'] = response;
         });
-
-        // alertNotification(
-        //   context: context,
-        //   message: 'Comment Saved',
-        //   messageType: AlertMessageType.success,
-        // );
       } catch (e) {
         alertNotification(
           context: context,
@@ -174,499 +170,472 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
+   final String postType = post['post_type'] ?? '';
+  final String? imageUrl = post['image_url'];
+  final String? videoUrl = post['video_url'];
+  final String? description = post['post_description'];
 
-    return Card(
-      color: Colors.white,
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 4,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header
-          ListTile(
-            trailing:
-                userData['id'] == post['user_id']
-                    ? PopupMenuButton<String>(
-                      icon: Icon(Icons.more_horiz_rounded, size: 24),
-                      onSelected: (String value) {
-                        if (value == 'delete') {
-                          // Call your delete post function here
-                          // deletePost();
-                          print('---delete post function call button--------');
-                        } else if (value == 'update') {
-                          print('---update post function call button--------');
-                        } else {
-                          print('---Nothing call--------');
-                        }
-                      },
-                      itemBuilder:
-                          (BuildContext context) => [
-                            PopupMenuItem<String>(
-                              value: 'delete',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.delete, color: Colors.red),
-                                  SizedBox(width: 8),
-                                  Text('Delete'),
-                                ],
+  final bool isTextPost = postType == 'text' && imageUrl == null && videoUrl == null;
+  final bool isImagePost = postType == 'image' && videoUrl == null;
+  final bool isVideoPost = postType == 'video' && imageUrl == null;
+    return GestureDetector(
+      onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PostDetailScreen(post: post),
+      ),
+    );
+  },
+      child: Card(
+        color: Colors.white,
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 4,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            ListTile(
+              trailing:
+                  userData['id'] == post['user_id']
+                      ? PopupMenuButton<String>(
+                        icon: Icon(Icons.more_horiz_rounded, size: 24),
+                        onSelected: (String value) {
+                          if (value == 'delete') {
+                            // Call your delete post function here
+                            // deletePost();
+                            print('---delete post function call button--------');
+                          } else if (value == 'update') {
+                            print('---update post function call button--------');
+                          } else {
+                            print('---Nothing call--------');
+                          }
+                        },
+                        itemBuilder:
+                            (BuildContext context) => [
+                              PopupMenuItem<String>(
+                                value: 'delete',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.delete, color: Colors.red),
+                                    SizedBox(width: 8),
+                                    Text('Delete'),
+                                  ],
+                                ),
                               ),
-                            ),
-                            PopupMenuItem<String>(
-                              value: 'update',
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.update_sharp,
-                                    color: Palette.basicgreen,
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text('Update'),
-                                ],
+                              PopupMenuItem<String>(
+                                value: 'update',
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.update_sharp,
+                                      color: Palette.basicgreen,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text('Update'),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                    )
-                    : null,
-            leading: CircleAvatar(
-              radius: 24,
-              backgroundImage: NetworkImage(
-                post['user_profile'] ??
-                    'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
+                            ],
+                      )
+                      : null,
+              leading: CircleAvatar(
+                radius: 24,
+                backgroundImage: NetworkImage(
+                  post['user_profile'] ??
+                      'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
+                ),
+              ),
+              title: Text(
+                post['user_name'],
+                style: const TextStyle(fontSize: 16),
+              ),
+              subtitle: Row(
+                children: [
+                  Text(formatDate(post['created_at'])),
+                  const SizedBox(width: 2),
+                  const Icon(Icons.public, size: 12),
+                ],
               ),
             ),
-            title: Text(
-              post['user_name'],
-              style: const TextStyle(fontSize: 16),
-            ),
-            subtitle: Row(
-              children: [
-                Text(formatDate(post['created_at'])),
-                const SizedBox(width: 2),
-                const Icon(Icons.public, size: 12),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
-          // Post Image
-          if (post['image_url'] != null &&
-              post['image_url'].toString().isNotEmpty)
+      
+            const SizedBox(height: 8),
+      
+            // Post Image
+             if (isImagePost && imageUrl != null)
+            // if (post['image_url'] != null &&
+            //     post['image_url'].toString().isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    imageUrl,
+                    // post['image_url'],
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: 250,
+                  ),
+                ),
+              ),
+      
+            const SizedBox(height: 8),
+         if (isVideoPost && videoUrl != null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  post['image_url'],
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: 250,
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: VideoPlayerWidget(videoUrl: videoUrl), // You must create this widget
                 ),
               ),
             ),
-
-          const SizedBox(height: 8),
-
-          // Post Text (with "...more")
-          if (post['post_description'] != null &&
-              post['post_description'].toString().isNotEmpty)
+               const SizedBox(height: 8),
+            // Post Text (with "...more")
+             if (description != null && description.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   RichText(
                     text: TextSpan(
-                      style: const TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.black),
                       children: [
                         TextSpan(
-                          text: '${post['user_name']} :  ',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          text: '${post['user_name']} : ',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        TextSpan(text: post['post_description']),
+                        TextSpan(text: description),
                       ],
                     ),
                     maxLines: isExpanded ? null : 2,
-                    overflow:
-                        isExpanded
-                            ? TextOverflow.visible
-                            : TextOverflow.ellipsis,
+                    overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
                   ),
-                  alphabetCount >= 70
-                      ? GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isExpanded = !isExpanded;
-                          });
-                        },
-                        child: Text(
-                          isExpanded ? 'less' : 'more',
-                          style: const TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  if (description.length >= 70)
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isExpanded = !isExpanded;
+                        });
+                      },
+                      child: Text(
+                        isExpanded ? 'less' : 'more',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
                         ),
-                      )
-                      : SizedBox(),
+                      ),
+                    ),
                 ],
               ),
             ),
-
-          const SizedBox(height: 8),
-
-          // Likes & Comments & uploadand & copy
-          // !addComment
-          //     ?
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Row(
-                  children: [
-                    // post like section
-                    TextButton(
-                      onPressed: () {
-                        toggle(post['post_id'].toString());
-                      },
-                      onLongPress: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Dialog(
-                              child: Container(
-                                width: double.maxFinite,
-                                constraints: BoxConstraints(maxHeight: 400),
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Text(
-                                      'Liked By',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Flexible(
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: post['likes_list'].length,
-                                        itemBuilder: (context, index) {
-                                          final like =
-                                              post['likes_list'][index];
-                                          return ListTile(
-                                            leading: CircleAvatar(
-                                              backgroundImage:
-                                                  like['user_profile'] !=
-                                                              null &&
-                                                          like['user_profile']
-                                                              .toString()
-                                                              .isNotEmpty
-                                                      ? NetworkImage(
-                                                        like['user_profile'],
-                                                      )
-                                                      : AssetImage(
-                                                            'assets/profile/user.png',
-                                                          )
-                                                          as ImageProvider,
-                                            ),
-                                            title: Text(like['user_name']),
-                                            subtitle: Text(
-                                              formatDate(like['created_at']),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-
-                                    const SizedBox(height: 10),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(
-                                          context,
-                                        ).pop(); // Close dialog
-                                      },
-                                      child: const Text('Close'),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.thumb_up_alt,
-                            size: 20,
-                            color:
-                                (post['likes_list'] as List).any(
-                                      (like) =>
-                                          like['userId'] == userData['id'],
-                                    )
-                                    ? Palette.darkgreen
-                                    : Palette.darkgray,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(post['total_likes'].toString()),
-                        ],
-                      ),
-                    ),
-                    // post comment section
-                    TextButton(
-                      onLongPress: () {
-                        commentToggle();
-                        // toggle(post['post_id'].toString());
-                        // by clicking on it i will show text field
-                      },
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled:
-                              true, // optional, if content is large
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(16),
-                            ),
-                          ),
-                          isDismissible: true,
-                          builder: (BuildContext context) {
-                            return StatefulBuilder(
-                              builder: (
-                                BuildContext context,
-                                StateSetter setModalState,
-                              ) {
-                                return FractionallySizedBox(
-                                  heightFactor: 0.8,
-                                  // widthFactor: MediaQuery.of(context).size.width,
-                                  child: Container(
-                                    padding: EdgeInsets.only(
-                                      top: 30,
-                                      // left: 16,
-                                      // right: 16,
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        const Text(
-                                          'Comments By',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+      
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Row(
+                    children: [
+                      // post like section
+                      TextButton(
+                        onPressed: () {
+                          toggle(post['post_id'].toString());
+                        },
+                        onLongPress: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Dialog(
+                                child: Container(
+                                  width: double.maxFinite,
+                                  constraints: BoxConstraints(maxHeight: 400),
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Text(
+                                        'Liked By',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 16,
-                                            horizontal: 18,
-                                          ),
-                                          child: Form(
-                                            key: _formKey,
-                                            child: TextFormField(
-                                              keyboardType:
-                                                  TextInputType.multiline,
-                                              maxLines: null,
-                                              controller: _commentController,
-                                              minLines: 1,
-                                              onSaved: (value) {
-                                                handleSave('comment', value!);
-                                              },
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                              ),
-                                              decoration: InputDecoration(
-                                                suffixIcon: IconButton(
-                                                  icon: Icon(
-                                                    Icons.send,
-                                                    color: Colors.black,
-                                                  ),
-                                                  onPressed: () {
-                                                    // Navigator.of(context).pop();
-                                                    handleSave(
-                                                      'post_id',
-                                                      post['post_id']
-                                                          .toString(),
-                                                    );
-                                                    handleSubmit(setModalState);
-
-                                                    print('Post button tapped');
-                                                  },
-                                                ),
-                                                hintText: 'Comments',
-                                                filled: true,
-                                                fillColor: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 12),
-
-                                        Flexible(
-                                          child: ListView.builder(
-                                            shrinkWrap: true,
-                                            itemCount:
-                                                post['comments_list'].length,
-                                            itemBuilder: (context, index) {
-                                              final comment =
-                                                  post['comments_list'][index];
-                                              return ListTile(
-                                                leading: CircleAvatar(
-                                                  radius: 26,
-                                                  backgroundImage:
-                                                      comment['user_profile'] !=
-                                                                  null &&
-                                                              comment['user_profile']
-                                                                  .toString()
-                                                                  .isNotEmpty
-                                                          ? NetworkImage(
-                                                            comment['user_profile'],
-                                                          )
-                                                          : AssetImage(
-                                                                'assets/profile/user.png',
-                                                              )
-                                                              as ImageProvider,
-                                                ),
-                                                trailing:
-                                                    (comment['userId'] ??
-                                                                comment['user_id']) ==
-                                                            userData['id']
-                                                        ? IconButton(
-                                                          onPressed: () {
-                                                            print(
-                                                              '-------------function created but commented due to some changes required in backend-----------',
-                                                            );
-                                                            // deleteComment(
-                                                            //   comment['comment_id'] ??
-                                                            //       comment['id'],
-                                                            // );
-                                                          },
-                                                          icon: Icon(
-                                                            Icons.delete,
-                                                            color: Colors.red,
-                                                          ),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Flexible(
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: post['likes_list'].length,
+                                          itemBuilder: (context, index) {
+                                            final like =
+                                                post['likes_list'][index];
+                                            return ListTile(
+                                              leading: CircleAvatar(
+                                                backgroundImage:
+                                                    like['user_profile'] !=
+                                                                null &&
+                                                            like['user_profile']
+                                                                .toString()
+                                                                .isNotEmpty
+                                                        ? NetworkImage(
+                                                          like['user_profile'],
                                                         )
-                                                        : SizedBox(),
-                                                title: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      comment['user_name'],
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      '${comment['comment']} dskjfhdfuh ruiefhiergheuri gheiu gfheiruhuiehfuiewhfuidewhfuiwehfhw',
-                                                    ),
-                                                  ],
-                                                ),
-                                                subtitle: Text(
-                                                  formatDate(
-                                                    comment['created_at'],
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
+                                                        : AssetImage(
+                                                              'assets/profile/user.png',
+                                                            )
+                                                            as ImageProvider,
+                                              ),
+                                              title: Text(like['user_name']),
+                                              subtitle: Text(
+                                                formatDate(like['created_at']),
+                                              ),
+                                            );
+                                          },
                                         ),
-
-                                        const SizedBox(height: 10),
-                                        // TextButton(
-                                        //   onPressed: () {
-                                        //     Navigator.of(
-                                        //       context,
-                                        //     ).pop(); // Close dialog
-                                        //   },
-                                        //   child: const Text('Close'),
-                                        // ),
-                                      ],
-                                    ),
+                                      ),
+      
+                                      const SizedBox(height: 10),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(
+                                            context,
+                                          ).pop(); // Close dialog
+                                        },
+                                        child: const Text('Close'),
+                                      ),
+                                    ],
                                   ),
-                                );
-                              },
-                            );
-                          },
-                        );
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.comment,
-                            size: 20,
-                            color: Palette.darkgray,
-                          ),
-                          const SizedBox(width: 4),
-                          Text('Comments'),
-                        ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.thumb_up_alt,
+                              size: 20,
+                              color:
+                                  (post['likes_list'] as List).any(
+                                        (like) =>
+                                            like['userId'] == userData['id'],
+                                      )
+                                      ? Palette.darkgreen
+                                      : Palette.darkgray,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(post['total_likes'].toString()),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(),
-                SizedBox(),
-                Row(
-                  children: [
-                    Icon(Icons.file_upload_outlined, size: 20),
-                    const SizedBox(width: 16),
-                    Icon(Icons.bookmarks_outlined, size: 20),
-                  ],
-                ),
-              ],
+                      // post comment section
+                      TextButton(
+                        onLongPress: () {
+                          commentToggle();
+                          // toggle(post['post_id'].toString());
+                          // by clicking on it i will show text field
+                        },
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled:
+                                true, // optional, if content is large
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(16),
+                              ),
+                            ),
+                            isDismissible: true,
+                            builder: (BuildContext context) {
+                              return StatefulBuilder(
+                                builder: (
+                                  BuildContext context,
+                                  StateSetter setModalState,
+                                ) {
+                                  return FractionallySizedBox(
+                                    heightFactor: 0.8,
+                                    // widthFactor: MediaQuery.of(context).size.width,
+                                    child: Container(
+                                      padding: EdgeInsets.only(
+                                        top: 30,
+                                        // left: 16,
+                                        // right: 16,
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          const Text(
+                                            'Comments By',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 16,
+                                              horizontal: 18,
+                                            ),
+                                            child: Form(
+                                              key: _formKey,
+                                              child: TextFormField(
+                                                keyboardType:
+                                                    TextInputType.multiline,
+                                                maxLines: null,
+                                                controller: _commentController,
+                                                minLines: 1,
+                                                onSaved: (value) {
+                                                  handleSave('comment', value!);
+                                                },
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                ),
+                                                decoration: InputDecoration(
+                                                  suffixIcon: IconButton(
+                                                    icon: Icon(
+                                                      Icons.send,
+                                                      color: Colors.black,
+                                                    ),
+                                                    onPressed: () {
+                                                      // Navigator.of(context).pop();
+                                                      handleSave(
+                                                        'post_id',
+                                                        post['post_id']
+                                                            .toString(),
+                                                      );
+                                                      handleSubmit(setModalState);
+      
+                                                      print('Post button tapped');
+                                                    },
+                                                  ),
+                                                  hintText: 'Comments',
+                                                  filled: true,
+                                                  fillColor: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 12),
+      
+                                          Flexible(
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount:
+                                                  post['comments_list'].length,
+                                              itemBuilder: (context, index) {
+                                                final comment =
+                                                    post['comments_list'][index];
+                                                return ListTile(
+                                                  leading: CircleAvatar(
+                                                    radius: 26,
+                                                    backgroundImage:
+                                                        comment['user_profile'] !=
+                                                                    null &&
+                                                                comment['user_profile']
+                                                                    .toString()
+                                                                    .isNotEmpty
+                                                            ? NetworkImage(
+                                                              comment['user_profile'],
+                                                            )
+                                                            : AssetImage(
+                                                                  'assets/profile/user.png',
+                                                                )
+                                                                as ImageProvider,
+                                                  ),
+                                                  trailing:
+                                                      (comment['userId'] ??
+                                                                  comment['user_id']) ==
+                                                              userData['id']
+                                                          ? IconButton(
+                                                            onPressed: () {
+                                                              print(
+                                                                '-------------function created but commented due to some changes required in backend-----------',
+                                                              );
+                                                              // deleteComment(
+                                                              //   comment['comment_id'] ??
+                                                              //       comment['id'],
+                                                              // );
+                                                            },
+                                                            icon: Icon(
+                                                              Icons.delete,
+                                                              color: Colors.red,
+                                                            ),
+                                                          )
+                                                          : SizedBox(),
+                                                  title: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        comment['user_name'],
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        '${comment['comment']} dskjfhdfuh ruiefhiergheuri gheiu gfheiruhuiehfuiewhfuidewhfuiwehfhw',
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  subtitle: Text(
+                                                    formatDate(
+                                                      comment['created_at'],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+      
+                                          const SizedBox(height: 10),
+                                          // TextButton(
+                                          //   onPressed: () {
+                                          //     Navigator.of(
+                                          //       context,
+                                          //     ).pop(); // Close dialog
+                                          //   },
+                                          //   child: const Text('Close'),
+                                          // ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.comment,
+                              size: 20,
+                              color: Palette.darkgray,
+                            ),
+                            const SizedBox(width: 4),
+                            Text('Comments'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(),
+                  SizedBox(),
+                  Row(
+                    children: [
+                      Icon(Icons.file_upload_outlined, size: 20),
+                      const SizedBox(width: 16),
+                      Icon(Icons.bookmarks_outlined, size: 20),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          // : Padding(
-          //   padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-          //   // padding: const EdgeInsets.symmetric(horizontal: 16),
-          //   child: Stack(
-          //     children: [
-          //       Container(
-          //         // color: Colors.amber,
-          //         // margin: EdgeInsets.only(top: 36),
-          //         child: TextFormField(
-          //           decoration: InputDecoration(hintText: 'Comment'),
-          //           // highlightErrorBorder: true,
-          //           // validator: ValidationBuilder().build(),
-          //           keyboardType: TextInputType.text,
-          //           onSaved: (value) {
-          //             print('mu val ===>>>$value');
-          //           },
-          //           style: const TextStyle(color: Colors.black),
-          //           // heading: 'User Name',
-          //           // hintText: 'User Name',
-          //           // icon: 'assets/images/icons/user.png',
-          //           textCapitalization: TextCapitalization.words,
-          //         ),
-          //       ),
-          //       Positioned(
-          //         top: 0,
-          //         // bottom: 30,
-          //         right: 20,
-          //         child: SizedBox(
-          //           width: 10, // or any fixed size you want
-          //           height: 10,
-          //           child: IconButton(
-          //             onPressed: () {
-          //               print('drgrdg');
-          //               setState(() {
-          //                 commentToggle();
-          //               });
-          //             },
-          //             icon: Icon(
-          //               Icons.cancel_outlined,
-          //               color: Colors.red,
-          //               size: 30,
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-        ],
+          ],
+        ),
       ),
     );
   }

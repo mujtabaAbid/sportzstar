@@ -82,8 +82,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const NotificationsScreen());
 
     //postScreens
-    case postDetailScreenRoute:
-      return MaterialPageRoute(builder: (_) => const PostDetailScreen());
+    // case postDetailScreenRoute:
+    //   return MaterialPageRoute(builder: (_) => const PostDetailScreen());
     
 
     //userScreens

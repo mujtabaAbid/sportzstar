@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -11,7 +9,6 @@ import 'package:sportzstar/helper/captaliza.dart';
 import 'package:sportzstar/helper/local_storage.dart';
 import 'package:sportzstar/provider/user_provider.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
-import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
 
 import '../../helper/basic_enum.dart';
@@ -32,8 +29,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, String> _formData = {};
   List<String> sportsCategories = [];
-
+  final List<String> allOptions = ['Facebook', 'Instagram', 'Twitter'];
+  final List<String?> selectedItems = [];
+  final List<TextEditingController> controllers = [];
+  final List<String> allCareerHistoryOptions = [
+    'Badminton',
+    'Circket',
+    'Football',
+    'Hockey',
+  ];
+  final List<String?> selectCareerHistoryItems = [];
   File? _image;
+  List<DateTime?> startDates = [];
+  List<DateTime?> endDates = [];
+
   final _usernameController = TextEditingController();
   final _bioController = TextEditingController();
   final _medalController = TextEditingController();
@@ -41,9 +50,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController dobController = TextEditingController();
   // String _selectCateory = 'Professional';
   // String _selectedGender = 'male';
-  String? _selectedPlatform;
   final TextEditingController _linkController = TextEditingController();
-  final bool _isSaved = false;
   Future<void> _pickImage() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (picked != null) {
@@ -62,7 +69,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _selectYear(BuildContext context) async {
-    final currentYear = DateTime.now().year;
     int? selectedYear;
 
     await showDialog(
@@ -141,11 +147,56 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     });
   }
 
+  void addNewItem() {
+    if (selectedItems.length < allOptions.length) {
+      selectedItems.add(null); // Placeholder for the new dropdown
+      controllers.add(TextEditingController());
+      setState(() {});
+    }
+  }
+
+  List<String> getRemainingOptions(int index) {
+    final used =
+        selectedItems.where((item) => item != null).cast<String>().toList();
+    if (selectedItems[index] != null) {
+      used.remove(selectedItems[index]); // Allow re-selecting the current
+    }
+    return allOptions.where((item) => !used.contains(item)).toList();
+  }
+
+  void addNewItemCareerHistory() {
+    if (selectCareerHistoryItems.length < allCareerHistoryOptions.length) {
+      selectCareerHistoryItems.add(null); // Placeholder for the new dropdown
+      controllers.add(TextEditingController());
+      startDates.add(null);
+      endDates.add(null);
+      setState(() {});
+    }
+  }
+
+  List<String> getRemainingOptionsCareerHistory(int index) {
+    final used =
+        selectCareerHistoryItems
+            .where((item) => item != null)
+            .cast<String>()
+            .toList();
+    if (selectCareerHistoryItems[index] != null) {
+      used.remove(
+        selectCareerHistoryItems[index],
+      ); // Allow re-selecting the current
+    }
+    return allCareerHistoryOptions
+        .where((item) => !used.contains(item))
+        .toList();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     getUserData();
     getSports();
+    addNewItem(); // show first dropdown initially
+    addNewItemCareerHistory();
     super.initState();
   }
 
@@ -191,6 +242,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  Future<void> pickDate(BuildContext context, int index, bool isStart) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      setState(() {
+        if (isStart) {
+          startDates[index] = picked;
+        } else {
+          endDates[index] = picked;
+        }
+      });
+    }
+  }
+
+  String formatDate(DateTime date) {
+    return "${date.day}/${date.month}/${date.year}";
   }
 
   @override
@@ -324,10 +398,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
-                  value:
-                      sportsCategories.contains(userData['player_category'])
-                          ? userData['player_category']
-                          : 'Batminton',
+                  // hint: Text( 'Select Player Category'),
+                  // value:
+                  //     userData['player_category'] != null &&
+                  //             userData['player_category'] != '' &&
+                  //             sportsCategories.contains(
+                  //               userData['player_category'],
+                  //             )
+                  //         ? userData['player_category']
+                  //         : null,
+                  hint: Text(
+                    userData['player_category'] != null &&
+                            userData['player_category'] != ''
+                        ? userData['player_category']
+                        : 'Select Player Category',
+                  ), // <-- this shows the placeholder
                   decoration: const InputDecoration(
                     labelStyle: TextStyle(color: Colors.black),
                     filled: true,
@@ -426,34 +511,84 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                DropdownButtonFormField<String>(
-                  hint: Text('Slelct Link'),
-                  decoration: const InputDecoration(
-                    labelStyle: TextStyle(color: Colors.black),
-                    filled: true,
-                    fillColor: Color.fromARGB(255, 224, 224, 224),
-                    // labelText: 'Gender',
-                    border: OutlineInputBorder(),
-                  ),
-                  items:
-                      ['Facebook', 'Instagram', 'Twitter']
-                          .map(
-                            (category) => DropdownMenuItem(
-                              value: category,
-                              child: Text(category),
+                Column(
+                  children: List.generate(selectedItems.length, (index) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DropdownButtonFormField<String>(
+                          value: selectedItems[index],
+                          hint: Text('Select Link'),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Palette.basicgray,
+                            border: OutlineInputBorder(),
+                          ),
+                          items:
+                              getRemainingOptions(index)
+                                  .map(
+                                    (option) => DropdownMenuItem(
+                                      value: option,
+                                      child: Text(option),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedItems[index] = value!;
+                            });
+                          },
+                        ),
+                        if (selectedItems[index] != null) ...[
+                          const SizedBox(height: 10),
+                          TextFormField(
+                            controller: controllers[index],
+                            cursorColor: Colors.black,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
                             ),
-                          )
-                          .toList(),
-                  onChanged: (value) {
-                    print(
-                      'ksdjfhsdjhifgsdihfgiusdghiusdhfiusdjhf----->>>>$value',
+                            decoration: InputDecoration(
+                              labelStyle: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              hintText: 'Enter ${selectedItems[index]} link',
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          if (index == selectedItems.length - 1 &&
+                              selectedItems.whereType<String>().length <
+                                  allOptions.length)
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.add_circle,
+                                  color: Colors.blue,
+                                  size: 30,
+                                ),
+                                onPressed: addNewItem,
+                              ),
+                            ),
+                          const SizedBox(height: 20),
+                        ],
+                      ],
                     );
-                    // handleSave('platform', value!);
-                    // setState(() {
-                    //   _selectCateory = value!;
-                    // });
-                  },
+                  }),
                 ),
+
                 const SizedBox(height: 16),
                 //social_links
                 Row(
@@ -469,74 +604,148 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                DropdownButtonFormField<String>(
-                  hint: Text('Career History'),
-                  decoration: const InputDecoration(
-                    labelStyle: TextStyle(color: Colors.black),
-                    filled: true,
-                    fillColor: Color.fromARGB(255, 224, 224, 224),
-                    // labelText: 'Gender',
-                    border: OutlineInputBorder(),
-                  ),
-                  items:
-                      ['Facebook', 'Instagram', 'Twitter']
-                          .map(
-                            (category) => DropdownMenuItem(
-                              value: category,
-                              child: Text(category),
+                Column(
+                  children: List.generate(selectCareerHistoryItems.length, (
+                    index,
+                  ) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DropdownButtonFormField<String>(
+                          value: selectCareerHistoryItems[index],
+                          hint: Text('Select Career History'),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Palette.basicgray,
+                            border: OutlineInputBorder(),
+                          ),
+                          items:
+                              getRemainingOptionsCareerHistory(index)
+                                  .map(
+                                    (option) => DropdownMenuItem(
+                                      value: option,
+                                      child: Text(option),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectCareerHistoryItems[index] = value!;
+                            });
+                          },
+                        ),
+                        if (selectCareerHistoryItems[index] != null) ...[
+                          const SizedBox(height: 10),
+                          TextFormField(
+                            controller: controllers[index],
+                            cursorColor: Colors.black,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
                             ),
-                          )
-                          .toList(),
-                  onChanged: (value) {
-                    print(
-                      'ksdjfhsdjhifgsdihfgiusdghiusdhfiusdjhf----->>>>$value',
-                    );
-                    // handleSave('platform', value!);
-                    // setState(() {
-                    //   _selectCateory = value!;
-                    // });
-                  },
-                ),
-
-                const SizedBox(height: 20),
-
-                // Show editable or read-only field depending on saved status
-                if (_selectedPlatform != null)
-                  !_isSaved
-                      ? TextFormField(
-                        controller: _linkController,
-                        decoration: InputDecoration(
-                          labelText: 'Enter $_selectedPlatform link',
-                          border: const OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Please enter the link';
-                          }
-                          if (!Uri.parse(value.trim()).isAbsolute) {
-                            return 'Please enter a valid URL';
-                          }
-                          return null;
-                        },
-                      )
-                      : TextFormField(
-                        enabled: false,
-                        decoration: InputDecoration(
-                          labelText: _selectedPlatform,
-                          hintText: _linkController.text,
-                          border: const OutlineInputBorder(),
-                        ),
+                            decoration: InputDecoration(
+                              labelStyle: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              hintText:
+                                  'Enter ${selectCareerHistoryItems[index]} description',
+                               enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: BorderSide(
+                        color:
+                             Colors.grey,
+                        width: 2.0,
                       ),
+                  
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          TextField(
+                  style: const TextStyle(color: Colors.black),
+                  controller: dobController,
+                  readOnly: true,
+                  onTap:() => pickDate(context, index, true),
 
-                const SizedBox(height: 20),
-
-                // Show save button only if not saved yet
-                if (_selectedPlatform != null && !_isSaved)
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.save),
-                    label: const Text('Save'),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Palette.basicgray,
+                    hintText:  startDates[index] != null
+                                    ? formatDate(startDates[index]!)
+                                    : "Select Start Date",
+                    labelStyle: TextStyle(color: Colors.black),
+                    hintStyle: TextStyle(color: Colors.black),
+                    border: OutlineInputBorder(),
+                    suffixIcon: Icon(Icons.calendar_today),
                   ),
+                ),
+                          // Start Date
+                          // InkWell(
+                          //   onTap: () => pickDate(context, index, true),
+                          //   child: Container(
+                          //     padding: EdgeInsets.symmetric(
+                          //       vertical: 16,
+                          //       horizontal: 12,
+                          //     ),
+                          //     decoration: BoxDecoration(
+                          //       border: Border.all(color: Colors.grey),
+                          //       borderRadius: BorderRadius.circular(4),
+                          //     ),
+                          //     child: Text(
+                          //       startDates[index] != null
+                          //           ? "Start Date: ${formatDate(startDates[index]!)}"
+                          //           : "Select Start Date",
+                          //       style: TextStyle(color: Colors.black),
+                          //     ),
+                          //   ),
+                          // ),
+                          const SizedBox(height: 10),
+                             TextField(
+                  style: const TextStyle(color: Colors.black),
+                  controller: dobController,
+                  readOnly: true,
+                  onTap:() => pickDate(context, index, false),
+
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Palette.basicgray,
+                    hintText:  endDates[index] != null
+                                    ? formatDate(endDates[index]!)
+                                    : "Select End Date",
+                    labelStyle: TextStyle(color: Colors.black),
+                    hintStyle: TextStyle(color: Colors.black),
+                    border: OutlineInputBorder(),
+                    suffixIcon: Icon(Icons.calendar_today),
+                  ),
+                ),
+                          const SizedBox(height: 10),
+                          if (index == selectCareerHistoryItems.length - 1 &&
+                              selectCareerHistoryItems
+                                      .whereType<String>()
+                                      .length <
+                                  allCareerHistoryOptions.length)
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.add_circle,
+                                  color: Colors.blue,
+                                  size: 30,
+                                ),
+                                onPressed: addNewItemCareerHistory,
+                              ),
+                            ),
+                          const SizedBox(height: 20),
+                        ],
+                      ],
+                    );
+                  }),
+                ),
               ],
             ),
           ),
