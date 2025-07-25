@@ -79,7 +79,7 @@ class PostDetailScreen extends StatelessWidget {
                   post['image_url'],
                   fit: BoxFit.cover,
                   width: double.infinity,
-                  height: 250,
+                  height: 450,
                 ),
               ),
 
@@ -93,31 +93,36 @@ class PostDetailScreen extends StatelessWidget {
                       (post['video_url'] == null ||
                           post['video_url'].toString().isEmpty)
                   ? Center(
-                    child: Card(
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      color: Colors.grey.shade100,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: const TextStyle(color: Colors.black),
-                            children: [
-                              TextSpan(
-                                text: '${post['user_name']} : ',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                    child: Container(
+                  height: 450, 
+                  width: double.infinity,
+                    
+                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12), 
+                     color: Colors.grey.shade100,
+                   ),
+                     
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: const TextStyle(color: Colors.black),
+                              children: [
+                                TextSpan(
+                                  text: '${post['user_name']} : ',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
                                 ),
-                              ),
-                              TextSpan(
-                                text: post['post_description'],
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            ],
+                                TextSpan(
+                                  text: post['post_description'],
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -154,6 +159,7 @@ class PostDetailScreen extends StatelessWidget {
             // === Comments List ===
             ListView.builder(
               shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               itemCount: comments.length,
               itemBuilder: (context, index) {
                 final comment = comments[index];
@@ -192,3 +198,4 @@ class PostDetailScreen extends StatelessWidget {
     );
   }
 }
+ 
