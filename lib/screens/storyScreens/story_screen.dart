@@ -136,13 +136,9 @@ class _StoryScreenState extends State<StoryScreen> {
                                 const Color.fromARGB(221, 28, 28, 28),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(8),
 
-                            //  NetworkImage(story['video_url']),
-                            // AssetImage(
-                            //   post['image_url'],
-                            // ),
-                            // fit: BoxFit.cover,
+
                           ),
 
                           child:
