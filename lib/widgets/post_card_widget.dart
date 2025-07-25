@@ -263,7 +263,6 @@ class _PostCardState extends State<PostCard> {
             ),
 
             const SizedBox(height: 8),
-
             // Post Image
             if (isImagePost && imageUrl != null)
               // if (post['image_url'] != null &&
@@ -280,10 +279,9 @@ class _PostCardState extends State<PostCard> {
                     height: 250,
                   ),
                 ),
-              ),
-
-            const SizedBox(height: 8),
-            if (isVideoPost && videoUrl != null)
+              )
+            // const SizedBox(height: 8),
+            else if (isVideoPost && videoUrl != null)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
                 child: ClipRRect(
@@ -295,10 +293,29 @@ class _PostCardState extends State<PostCard> {
                     ), // You must create this widget
                   ),
                 ),
+              )
+            else
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical:
+                      post['post_description'].toString().length < 35 ? 80 : 20,
+                ),
+                color: Palette.basicgray,
+                child: Text(
+                  post['post_description'],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                ),
               ),
-            const SizedBox(height: 8),
+            if (post['post_type'] != 'text') const SizedBox(height: 8),
             // Post Text (with "...more")
-            if (description != null && description.isNotEmpty)
+
+            // description with user name portion
+            if (description != null &&
+                description.isNotEmpty &&
+                post['post_type'] != 'text')
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
@@ -350,6 +367,15 @@ class _PostCardState extends State<PostCard> {
                     children: [
                       // post like section
                       TextButton(
+                        style: ButtonStyle(
+                          padding: WidgetStateProperty.all<EdgeInsets>(
+                            EdgeInsets.zero,
+                          ),
+                          minimumSize: WidgetStateProperty.all<Size>(
+                            Size(0, 0),
+                          ),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
                         onPressed: () {
                           toggle(post['post_id'].toString());
                         },
@@ -421,11 +447,13 @@ class _PostCardState extends State<PostCard> {
                             },
                           );
                         },
+                        
                         child: Row(
                           children: [
+                            SizedBox(width: 6),
                             Icon(
                               Icons.thumb_up_alt,
-                              size: 30,
+                              size: 20,
                               color:
                                   (post['likes_list'] as List).any(
                                         (like) =>
@@ -435,7 +463,7 @@ class _PostCardState extends State<PostCard> {
                                       : Palette.darkgray,
                             ),
                             const SizedBox(width: 4),
-                            Text(post['total_likes'].toString()),
+                            Text('${post['total_likes'].toString()} Likes'),
                           ],
                         ),
                       ),
@@ -628,7 +656,7 @@ class _PostCardState extends State<PostCard> {
                               color: Palette.darkgray,
                             ),
                             const SizedBox(width: 4),
-                            Text('Comments'),
+                            Text('${post['total_comments']} Comments'),
                           ],
                         ),
                       ),

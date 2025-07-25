@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sportzstar/chats/chat_list_screen.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/explore/tabbar_screen.dart';
+import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/home_screen.dart';
+import 'storyScreens/story_screen.dart';
 import 'userScreens/user_profile_screen.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
@@ -20,7 +22,8 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
   List<Widget> pages = const [
     HomeScreen(),
     // Center(child: Text('Home')),
-    Center(child: Text('Star')),
+    // Center(child: Text('Star')),
+    StoryScreen(),
     EventScreen(),
     ChatListScreen(),
     UserProfileScreen(),
@@ -84,7 +87,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
           ),
           BottomBarItem(
             icon: const Icon(Icons.star_border),
-            title: const Text('Star'),
+            title: const Text('Story'),
             selectedColor: Palette.basicgreen,
           ),
           BottomBarItem(

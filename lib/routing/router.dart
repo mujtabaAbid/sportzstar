@@ -8,6 +8,7 @@ import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/screens/postScreens/post_detail_screen.dart';
 import 'package:sportzstar/started_screen.dart';
 
+import '../screens/storyScreens/story_screen.dart';
 import '../screens/userScreens/edit_profile_screen.dart';
 import '../screens/userScreens/settings_screen.dart';
 import '../screens/userScreens/user_profile_screen.dart';
@@ -15,7 +16,6 @@ import '../screens/authScreens/forget_password_screen.dart';
 import '../screens/generalScreens/about_us.dart';
 import '../screens/generalScreens/feedback_screen.dart';
 import '../screens/home_screen.dart';
-
 
 import '../screens/authScreens/login_screen.dart';
 import '../screens/authScreens/reset_password_screen.dart';
@@ -60,7 +60,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         settings: RouteSettings(arguments: settings.arguments),
       );
 
-
     // generalScreens
     case aboutUsScreenRoute:
       return MaterialPageRoute(builder: (_) => const AboutUs());
@@ -75,8 +74,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         builder: (_) => const TermsAndConditionsScreen(),
       );
 
-   
-
     //notifications
     case notificationScreenRoute:
       return MaterialPageRoute(builder: (_) => const NotificationsScreen());
@@ -84,7 +81,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     //postScreens
     // case postDetailScreenRoute:
     //   return MaterialPageRoute(builder: (_) => const PostDetailScreen());
-    
+    case storyScreenRoute:
+      return MaterialPageRoute(builder: (_) => const StoryScreen());
 
     //userScreens
     case editProfileScreenRoute:
@@ -101,6 +99,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const EventScreen());
     case addEventScreenRoute:
       return MaterialPageRoute(builder: (_) => const AddEventScreen());
+
     // case confirmEmailScreenRoute:
     //   return MaterialPageRoute(
     //       builder: (_) => const ConfirmEmailScreen(),

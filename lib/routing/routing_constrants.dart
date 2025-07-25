@@ -22,6 +22,10 @@ const String notificationScreenRoute = '/notification';
 //PostScreens
 const String postDetailScreenRoute = '/post-details';
 
+//StoryScreen
+const String storyScreenRoute = '/story';
+
+
 // userScreens
 const String editProfileScreenRoute = '/edit-profile';
 const String userProfileScreenRoute = '/user-profile';

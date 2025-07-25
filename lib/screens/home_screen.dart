@@ -317,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Container(
               color: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              // padding: const EdgeInsets.symmetric(horizontal: 20),
               child: SizedBox(
                 height: 50,
                 child: ListView.builder(
@@ -337,7 +337,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 16,
-                          vertical: 8,
+                          // vertical: 8,
                         ),
                         // margin: EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -346,7 +346,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               color:
                                   isSelected
                                       ? Colors.black
-                                      : Colors.transparent,
+                                      : const Color.fromARGB(
+                                        192,
+                                        213,
+                                        213,
+                                        213,
+                                      ),
                               width: 2,
                             ),
                           ),
@@ -389,23 +394,19 @@ class _HomeScreenState extends State<HomeScreen> {
                             .toList();
                     final post = filteredPosts[index];
 
-                    if (post['post_type'] == 'text' &&
-                        post['image_url'] == null &&
-                        post['video_url'] == null) {
+                    if (post['post_type'] == 'text') {
                       // Display post_description in PostCard
                       return PostCard(
                         post: post,
                         displayType: PostDisplayType.text,
                       );
-                    } else if (post['post_type'] == 'image' &&
-                        post['video_url'] == null) {
+                    } else if (post['post_type'] == 'image') {
                       // Display image_url and post_description in PostCard
                       return PostCard(
                         post: post,
                         displayType: PostDisplayType.image,
                       );
-                    } else if (post['post_type'] == 'video' &&
-                        post['image_url'] == null) {
+                    } else if (post['post_type'] == 'video') {
                       // Display video_url and post_description in PostCard
                       return PostCard(
                         post: post,
