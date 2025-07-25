@@ -12,7 +12,7 @@ class VideoPlayerWidget extends StatefulWidget {
     required this.videoUrl,
     this.stopPlaying = false,
     this.fullWidth = false,
-    this.iconsize,
+    this.iconsize, 
   });
 
   @override

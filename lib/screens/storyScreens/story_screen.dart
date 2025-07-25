@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/provider/stories_provider.dart';
+import 'package:sportzstar/screens/storyScreens/story_details_screen.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 
 import '../../helper/basic_enum.dart';
@@ -31,6 +34,10 @@ class _StoryScreenState extends State<StoryScreen> {
         url.endsWith('.jpeg') ||
         url.endsWith('.png') ||
         url.endsWith('.gif');
+  }
+
+  bool isLocal(String path) {
+    return !path.startsWith('http');
   }
 
   Future<void> getAllStories() async {
@@ -100,8 +107,103 @@ class _StoryScreenState extends State<StoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MainLayoutWidget(
-      isLoading: _isLoading,
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              final titleController = TextEditingController();
+              final descriptionController = TextEditingController();
+
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                title: const Text(
+                  'Add Story Item',
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+
+                        minLines: 1,
+                        onSaved: (value) {
+                          handleSave('title', value!);
+                        },
+                        style: const TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          hintText: 'Title',
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
+                      ),
+                                            const SizedBox(height: 10),
+
+                      TextFormField(
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+
+                        minLines: 1,
+                        onSaved: (value) {
+                          handleSave('post_description', value!);
+                        },
+                        style: const TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          hintText: 'post_description',
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Column(
+                          children: const [
+                            Icon(
+                              Icons.photo_library,
+                              size: 50,
+                              color: Colors.green,
+                            ),
+                            SizedBox(height: 8),
+                            Text('Pick from Gallery'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close dialog
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Use titleController.text and descriptionController.text
+                      // to handle data input
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Add'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
+
+      // isLoading: _isLoading,
       body: Container(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -119,16 +221,19 @@ class _StoryScreenState extends State<StoryScreen> {
                   final story = stories[index];
                   return GestureDetector(
                     onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => StoryDetailScreen(story: story),
+                        ),
+                      );
                       print(
                         'here we will open the post details----${story['post_type']}',
                       );
                     },
                     child: Stack(
                       children: [
-                        // Text('data'),
                         Container(
-                          // height: 150,
-                          // width: 150,
                           decoration: BoxDecoration(
                             gradient: RadialGradient(
                               colors: [
@@ -137,18 +242,22 @@ class _StoryScreenState extends State<StoryScreen> {
                               ],
                             ),
                             borderRadius: BorderRadius.circular(8),
-
-
                           ),
 
                           child:
                               isImage(story['video_url'])
                                   ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
-                                      story['video_url'],
-                                      fit: BoxFit.cover,
-                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    child:
+                                        isLocal(story['video_url'])
+                                            ? Image.file(
+                                              File(story['video_url']),
+                                              fit: BoxFit.cover,
+                                            )
+                                            : Image.network(
+                                              story['video_url'],
+                                              fit: BoxFit.cover,
+                                            ),
                                   )
                                   : ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
@@ -157,31 +266,21 @@ class _StoryScreenState extends State<StoryScreen> {
                                         // Show a placeholder or thumbnail
                                         Stack(
                                           children: [
-                                            // Positioned(
-                                            //   child: Container(
-                                            //     color: Colors.black26,
-                                            //     child: Center(
-                                            //       child: Icon(
-                                            //         Icons.play_circle_fill,
-                                            //         size: 50,
-                                            //         color: Colors.white,
-                                            //       ),
-                                            //     ),
-                                            //   ),
-                                            // ),
                                             SizedBox(
                                               width: double.infinity,
-                                              child: VideoPlayerWidget(
-                                                stopPlaying: true,
-                                                iconsize: 18,
-                                                videoUrl: story['video_url'],
-                                              ),
+                                              child:
+                                                  isLocal(story['video_url'])
+                                                      ? VideoPlayerWidget(
+                                                        videoUrl:
+                                                            story['video_url'],
+                                                      )
+                                                      : VideoPlayerWidget(
+                                                        videoUrl:
+                                                            story['video_url'],
+                                                      ),
                                             ),
                                           ],
                                         ),
-
-                                        // Optionally add VideoPlayer here
-                                        // Example: VideoPlayer(videoController)
                                       ],
                                     ),
                                   ),
@@ -213,42 +312,42 @@ class _StoryScreenState extends State<StoryScreen> {
                 },
               ),
             ),
-            Form(
-              child: Column(
-                children: [
-                  TextFormField(
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
+            // Form(
+            //   child: Column(
+            //     children: [
+            //       TextFormField(
+            //         keyboardType: TextInputType.multiline,
+            //         maxLines: null,
 
-                    minLines: 1,
-                    onSaved: (value) {
-                      handleSave('title', value!);
-                    },
-                    style: const TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      hintText: 'Title',
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                  ),
-                  TextFormField(
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
+            //         minLines: 1,
+            //         onSaved: (value) {
+            //           handleSave('title', value!);
+            //         },
+            //         style: const TextStyle(color: Colors.black),
+            //         decoration: InputDecoration(
+            //           hintText: 'Title',
+            //           filled: true,
+            //           fillColor: Colors.white,
+            //         ),
+            //       ),
+            //       TextFormField(
+            //         keyboardType: TextInputType.multiline,
+            //         maxLines: null,
 
-                    minLines: 1,
-                    onSaved: (value) {
-                      handleSave('post_description', value!);
-                    },
-                    style: const TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      hintText: 'post_description',
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            //         minLines: 1,
+            //         onSaved: (value) {
+            //           handleSave('post_description', value!);
+            //         },
+            //         style: const TextStyle(color: Colors.black),
+            //         decoration: InputDecoration(
+            //           hintText: 'post_description',
+            //           filled: true,
+            //           fillColor: Colors.white,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),
