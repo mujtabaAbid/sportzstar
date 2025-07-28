@@ -41,12 +41,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
           shape: BoxShape.circle,
           gradient:
               selectedIndex != 2
-                  ? LinearGradient(
-                    colors: [
-                      Color.fromRGBO(241, 255, 41, 1),
-                      Color.fromRGBO(205, 251, 68, 1),
-                    ],
-                  )
+                  ? Palette.lightGreenGradient
                   : Palette.secondaryGradient,
           boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 8)],
         ),

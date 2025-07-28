@@ -54,6 +54,9 @@ class Palette {
       Color.fromRGBO(27, 104, 52, 1),
     ],
   );
+  static const lightGreenGradient = LinearGradient(
+    colors: [Color.fromRGBO(241, 255, 41, 1), Color.fromRGBO(205, 251, 68, 1)],
+  );
 
   static const secondaryGradient = LinearGradient(
     colors: [Color.fromRGBO(143, 139, 16, 1), Color.fromRGBO(145, 179, 58, 1)],

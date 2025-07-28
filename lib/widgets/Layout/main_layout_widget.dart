@@ -12,6 +12,7 @@ class MainLayoutWidget extends StatelessWidget {
     this.bottomNavigationBar,
     required this.isLoading,
     this.bottomNavigationColor,
+    this.floatingActionButton,
   });
   final Widget? body;
   final Widget? drawer;
@@ -19,12 +20,14 @@ class MainLayoutWidget extends StatelessWidget {
   final PreferredSizeWidget? appBar;
   final Widget? bottomNavigationBar;
   final Color? bottomNavigationColor;
+  final Widget? floatingActionButton;
 
   @override
   Widget build(BuildContext context) {
     return LoadingWidget(
       isLoading: isLoading,
       child: Scaffold(
+        floatingActionButton:floatingActionButton,
         appBar: appBar,
         drawer: drawer,
         body: GestureDetector(

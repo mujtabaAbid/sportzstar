@@ -27,6 +27,7 @@ class _StoryScreenState extends State<StoryScreen> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, String> _formData = {};
   bool _isLoading = false;
+  int totalStories = 0;
   File? selectedFile;
   String? mediaType; // image or video
   bool isImage(String url) {
@@ -35,6 +36,9 @@ class _StoryScreenState extends State<StoryScreen> {
         url.endsWith('.png') ||
         url.endsWith('.gif');
   }
+
+  File? _mediaFile;
+  String _postType = ''; // "image" or "video"
 
   bool isLocal(String path) {
     return !path.startsWith('http');
@@ -51,6 +55,10 @@ class _StoryScreenState extends State<StoryScreen> {
             listen: false,
           ).getStories();
       stories.addAll(response['stories']);
+      setState(() {
+        totalStories = response['total_stories'];
+      });
+
       print('all stories get success ------->>>>>${stories.toList()}');
     } catch (e) {
       print('all stories get error    e ------->>>>>$e');
@@ -76,7 +84,16 @@ class _StoryScreenState extends State<StoryScreen> {
         final response = await Provider.of<StoriesProvider>(
           context,
           listen: false,
-        ).addStory(formData: _formData);
+        ).addStory(
+          formData:
+              _formData..addAll({
+                'post_type': 'video', //_postType,
+                // 'user_id': userId.toString(),
+                'created_at': DateTime.now().toString(),
+              }),
+          file: _mediaFile,
+          postType: _postType, // either "image" or "video"
+        );
         print('story added successfully------------>>>$response');
       } catch (e) {
         alertNotification(
@@ -84,7 +101,7 @@ class _StoryScreenState extends State<StoryScreen> {
           message: 'Something went wrong, try again later.',
           messageType: AlertMessageType.error,
         );
-        print('Error saving comment: $e');
+        print('Error saving stories  e:------ $e');
       }
     } else {
       alertNotification(
@@ -105,249 +122,337 @@ class _StoryScreenState extends State<StoryScreen> {
     getAllStories();
   }
 
+  Future<void> pickMedia() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.image),
+                title: Text('Pick Image'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final pickedFile = await ImagePicker().pickImage(
+                    source: ImageSource.gallery,
+                  );
+                  if (pickedFile != null) {
+                    setState(() {
+                      _mediaFile = File(pickedFile.path);
+                      _postType = 'image';
+                    });
+                  }
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.videocam),
+                title: Text('Pick Video'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final pickedFile = await ImagePicker().pickVideo(
+                    source: ImageSource.gallery,
+                  );
+                  if (pickedFile != null) {
+                    setState(() {
+                      _mediaFile = File(pickedFile.path);
+                      _postType = 'video';
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              final titleController = TextEditingController();
-              final descriptionController = TextEditingController();
-
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                title: const Text(
-                  'Add Story Item',
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-                content: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-
-                        minLines: 1,
-                        onSaved: (value) {
-                          handleSave('title', value!);
-                        },
-                        style: const TextStyle(color: Colors.black),
-                        decoration: InputDecoration(
-                          hintText: 'Title',
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                      ),
-                                            const SizedBox(height: 10),
-
-                      TextFormField(
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-
-                        minLines: 1,
-                        onSaved: (value) {
-                          handleSave('post_description', value!);
-                        },
-                        style: const TextStyle(color: Colors.black),
-                        decoration: InputDecoration(
-                          hintText: 'post_description',
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Column(
-                          children: const [
-                            Icon(
-                              Icons.photo_library,
-                              size: 50,
-                              color: Colors.green,
-                            ),
-                            SizedBox(height: 8),
-                            Text('Pick from Gallery'),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Close dialog
-                    },
-                    child: const Text('Cancel'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Use titleController.text and descriptionController.text
-                      // to handle data input
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Add'),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-        child: const Icon(Icons.add),
+    return MainLayoutWidget(
+      isLoading: _isLoading,
+      appBar: AppBar(
+        title: Text('Stories', style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
       ),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          gradient: Palette.lightGreenGradient,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: FloatingActionButton(
+          elevation: 0, // 🔄 Remove default shadow
+          highlightElevation: 0,
+          backgroundColor: Colors.transparent,
 
-      // isLoading: _isLoading,
-      body: Container(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 6,
-                  crossAxisSpacing: 6,
-                  childAspectRatio: 1,
-                ),
-                itemCount: stories.length,
-                itemBuilder: (context, index) {
-                  final story = stories[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => StoryDetailScreen(story: story),
-                        ),
-                      );
-                      print(
-                        'here we will open the post details----${story['post_type']}',
-                      );
-                    },
-                    child: Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: RadialGradient(
-                              colors: [
-                                Colors.white,
-                                const Color.fromARGB(221, 28, 28, 28),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                // final titleController = TextEditingController();
+                // final descriptionController = TextEditingController();
 
-                          child:
-                              isImage(story['video_url'])
-                                  ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
-                                    child:
-                                        isLocal(story['video_url'])
-                                            ? Image.file(
-                                              File(story['video_url']),
-                                              fit: BoxFit.cover,
-                                            )
-                                            : Image.network(
-                                              story['video_url'],
-                                              fit: BoxFit.cover,
-                                            ),
-                                  )
-                                  : ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Stack(
-                                      children: [
-                                        // Show a placeholder or thumbnail
-                                        Stack(
-                                          children: [
-                                            SizedBox(
-                                              width: double.infinity,
-                                              child:
-                                                  isLocal(story['video_url'])
-                                                      ? VideoPlayerWidget(
-                                                        videoUrl:
-                                                            story['video_url'],
-                                                      )
-                                                      : VideoPlayerWidget(
-                                                        videoUrl:
-                                                            story['video_url'],
-                                                      ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                return StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setModalState) {
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      title: const Text(
+                        'Add Story Item',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
-                        Positioned(
-                          bottom: 6,
-                          left: 6,
-                          child: Row(
+                      ),
+                      content: SingleChildScrollView(
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                Icons.favorite,
-                                size: 14,
-                                color: Color.fromARGB(255, 199, 70, 70),
+                              TextFormField(
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+
+                                minLines: 1,
+                                onSaved: (value) {
+                                  handleSave('title', value!);
+                                },
+                                style: const TextStyle(color: Colors.black),
+                                decoration: InputDecoration(
+                                  hintText: 'Title',
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
                               ),
-                              const SizedBox(width: 4),
-                              Text(
-                                story['user_name'].toString(),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
+                              const SizedBox(height: 10),
+
+                              TextFormField(
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+
+                                minLines: 1,
+                                onSaved: (value) {
+                                  handleSave('post_description', value!);
+                                },
+                                style: const TextStyle(color: Colors.black),
+                                decoration: InputDecoration(
+                                  hintText: 'post_description',
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              GestureDetector(
+                                onTap: () {
+                                  print('open galery');
+                                  pickMedia();
+                                },
+                                child: Column(
+                                  children: const [
+                                    Icon(
+                                      Icons.photo_library,
+                                      size: 50,
+                                      color: Colors.green,
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text('Pick from Gallery'),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Close dialog
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Use titleController.text and descriptionController.text
+                            // to handle data input
+                            // Navigator.of(context).pop();
+                            handleSubmit(setModalState);
+                          },
+                          child: const Text('Add'),
+                        ),
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //     gradient: LinearGradient(
+                        //       colors: [Colors.blue, Colors.purple],
+                        //     ),
+                        //     borderRadius: BorderRadius.circular(8),
+                        //   ),
+                        //   child: ElevatedButton(
+                        //     onPressed: () {
+                        //       Navigator.of(context).pop();
+                        //     },
+                        //     style: ElevatedButton.styleFrom(
+                        //       backgroundColor: Colors.transparent,
+                        //       shadowColor: Colors.transparent,
+                        //       padding: const EdgeInsets.symmetric(
+                        //         horizontal: 24,
+                        //         vertical: 12,
+                        //       ),
+                        //       shape: RoundedRectangleBorder(
+                        //         borderRadius: BorderRadius.circular(8),
+                        //       ),
+                        //     ),
+                        //     child: const Text(
+                        //       'Add',
+                        //       style: TextStyle(color: Colors.white),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
+                    );
+                  },
+                );
+              },
+            );
+          },
+          child: const Icon(Icons.add),
+        ),
+      ),
+
+      body: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            totalStories == 0
+                ? Column(
+                  spacing: 16,
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height / 5,
+                      width: MediaQuery.of(context).size.width,
                     ),
-                  );
-                },
-              ),
-            ),
-            // Form(
-            //   child: Column(
-            //     children: [
-            //       TextFormField(
-            //         keyboardType: TextInputType.multiline,
-            //         maxLines: null,
+                    Image.asset('assets/images/nostories.png', scale: 2),
 
-            //         minLines: 1,
-            //         onSaved: (value) {
-            //           handleSave('title', value!);
-            //         },
-            //         style: const TextStyle(color: Colors.black),
-            //         decoration: InputDecoration(
-            //           hintText: 'Title',
-            //           filled: true,
-            //           fillColor: Colors.white,
-            //         ),
-            //       ),
-            //       TextFormField(
-            //         keyboardType: TextInputType.multiline,
-            //         maxLines: null,
+                    Text(
+                      'No Stories Found',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                )
+                : Expanded(
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 6,
+                          crossAxisSpacing: 6,
+                          childAspectRatio: 1,
+                        ),
+                    itemCount: stories.length,
+                    itemBuilder: (context, index) {
+                      final story = stories[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => StoryDetailScreen(story: story),
+                            ),
+                          );
+                          print(
+                            'here we will open the post details----${story['post_type']}',
+                          );
+                        },
+                        child: Stack(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: RadialGradient(
+                                  colors: [
+                                    Colors.white,
+                                    const Color.fromARGB(221, 28, 28, 28),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
 
-            //         minLines: 1,
-            //         onSaved: (value) {
-            //           handleSave('post_description', value!);
-            //         },
-            //         style: const TextStyle(color: Colors.black),
-            //         decoration: InputDecoration(
-            //           hintText: 'post_description',
-            //           filled: true,
-            //           fillColor: Colors.white,
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
+                              child:
+                                  isImage(story['video_url'])
+                                      ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child:
+                                            isLocal(story['video_url'])
+                                                ? Image.file(
+                                                  File(story['video_url']),
+                                                  fit: BoxFit.cover,
+                                                )
+                                                : Image.network(
+                                                  story['video_url'],
+                                                  fit: BoxFit.cover,
+                                                ),
+                                      )
+                                      : ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Stack(
+                                          children: [
+                                            // Show a placeholder or thumbnail
+                                            Stack(
+                                              children: [
+                                                SizedBox(
+                                                  width: double.infinity,
+                                                  child:
+                                                      isLocal(
+                                                            story['video_url'],
+                                                          )
+                                                          ? VideoPlayerWidget(
+                                                            videoUrl:
+                                                                story['video_url'],
+                                                          )
+                                                          : VideoPlayerWidget(
+                                                            videoUrl:
+                                                                story['video_url'],
+                                                          ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                            ),
+                            Positioned(
+                              bottom: 6,
+                              left: 6,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.favorite,
+                                    size: 14,
+                                    color: Color.fromARGB(255, 199, 70, 70),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    story['user_name'].toString(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
           ],
         ),
       ),
