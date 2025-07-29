@@ -12,12 +12,14 @@ import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 class BottomNavigationBarScreen extends StatefulWidget {
   const BottomNavigationBarScreen({super.key, this.pageIndex});
   final int? pageIndex;
+
   @override
   State<BottomNavigationBarScreen> createState() =>
       _BottomNavigationBarScreenState();
 }
 
-class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
+class _BottomNavigationBarScreenState
+    extends State<BottomNavigationBarScreen> {
   late int selectedIndex;
 
   @override
@@ -26,99 +28,85 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     selectedIndex = widget.pageIndex ?? 0;
   }
 
-  List<Widget> pages = const [
+  final List<Widget> pages = const [
     HomeScreen(),
-    // Center(child: Text('Home')),
-    // Center(child: Text('Star')),
     StoryScreen(),
     EventScreen(),
     ChatListScreen(),
     UserProfileScreen(),
-    // Center(child: Text('Profile')),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Testing(),
-        Scaffold(
-          body: pages[selectedIndex],
-          floatingActionButton: Container(
-            width: 56.0,
-            height: 56.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient:
-                  selectedIndex != 2
-                      ? Palette.lightGreenGradient
-                      : Palette.secondaryGradient,
-              boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 8)],
-            ),
-            child: FloatingActionButton(
-              shape: CircleBorder(),
-              onPressed: () {
-                setState(() {
-                  selectedIndex = 2;
-                });
-              },
-              backgroundColor: const Color.fromARGB(52, 255, 255, 255),
-              elevation: 0,
-              child: const Icon(
-                Icons.emoji_events_outlined,
-                color: Colors.black,
-              ),
-            ),
+    return Scaffold(
+      extendBody: true, // So the nav bar floats above the body
+      body: pages[selectedIndex],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            selectedIndex = 2;
+          });
+        },
+        backgroundColor: Colors.blueAccent,
+        elevation: 4,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add, size: 32),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 6,
+        elevation: 10,
+        color: Colors.white,
+        child: Container(
+          height: 70,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(30)
+            // borderRadius: const BorderRadius.only(
+            //   topLeft: Radius.circular(35),
+            //   topRight: Radius.circular(35),
+            // ),
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
-          bottomNavigationBar: StylishBottomBar(
-            // gradient: Palette.primaryGradient,
-            backgroundColor: const Color.fromARGB(255, 247, 247, 247),
-            option: AnimatedBarOptions(
-              iconSize: 28,
-              barAnimation: BarAnimation.transform3D,
-              iconStyle: IconStyle.Default,
-            ),
-            fabLocation: StylishBarFabLocation.center,
-            hasNotch: false,
-            currentIndex: selectedIndex,
-            onTap: (index) {
-              setState(() {
-                selectedIndex = index;
-              });
-            },
-            items: [
-              BottomBarItem(
-                icon: const Icon(Icons.home_outlined),
-                title: const Text('Home'),
-                selectedColor: Palette.basicgreen,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Left side icons
+              Row(
+                children: [
+                  _buildNavIcon(Icons.home_outlined, 0),
+                  const SizedBox(width: 30),
+                  _buildNavIcon(Icons.star_border, 1),
+                ],
               ),
-              BottomBarItem(
-                icon: const Icon(Icons.star_border),
-                title: const Text('Story'),
-                selectedColor: Palette.basicgreen,
-              ),
-              BottomBarItem(
-                icon: const Icon(Icons.add),
-                title: const Text('heart'),
-                unSelectedColor: Colors.transparent,
-                selectedColor: Colors.transparent,
-              ),
-              BottomBarItem(
-                icon: const Icon(Icons.chat_bubble),
-                title: const Text('Chats'),
-                selectedColor: Palette.basicgreen,
-              ),
-              BottomBarItem(
-                icon: const Icon(Icons.person_outline),
-                title: const Text('Profile'),
-                selectedColor: Palette.basicgreen,
+              // Right side icons
+              Row(
+                children: [
+                  _buildNavIcon(Icons.chat_bubble_outline, 3),
+                  const SizedBox(width: 30),
+                  _buildNavIcon(Icons.person_outline, 4),
+                ],
               ),
             ],
           ),
         ),
-      ],
+      ),
+    );
+  }
+
+  Widget _buildNavIcon(IconData icon, int index) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedIndex = index;
+        });
+      },
+      child: Icon(
+        icon,
+        color: selectedIndex == index ? Colors.white : Colors.white54,
+        size: 28,
+      ),
     );
   }
 }

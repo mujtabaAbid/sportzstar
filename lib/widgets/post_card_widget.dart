@@ -185,11 +185,14 @@ class _PostCardState extends State<PostCard> {
           MaterialPageRoute(builder: (_) => PostDetailScreen(post: post)),
         );
       },
-      child: Card(
-        color: Colors.white,
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 4,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+        ),
+        // margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        // elevation: 4,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

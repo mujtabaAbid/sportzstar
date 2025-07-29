@@ -213,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Container(
               padding: EdgeInsets.only(bottom: 20, top: 50),
-              color: Colors.white,
+             color: Colors.transparent,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -270,7 +270,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             Container(
-              color: Colors.white,
+              color: Colors.transparent,
               height: 100,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
@@ -326,7 +326,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Container(
-              color: Colors.white,
+            color: Colors.red,
               // padding: const EdgeInsets.symmetric(horizontal: 20),
               child: SizedBox(
                 height: 50,
