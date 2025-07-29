@@ -29,7 +29,7 @@ class _StoryScreenState extends State<StoryScreen> {
   bool _isLoading = false;
   int totalStories = 0;
   File? selectedFile;
-  String? mediaType; // image or video
+  String? mediaType;
   bool isImage(String url) {
     return url.endsWith('.jpg') ||
         url.endsWith('.jpeg') ||
@@ -352,7 +352,7 @@ class _StoryScreenState extends State<StoryScreen> {
                           crossAxisCount: 3,
                           mainAxisSpacing: 6,
                           crossAxisSpacing: 6,
-                          childAspectRatio: 1,
+                          childAspectRatio: 0.6,
                         ),
                     itemCount: stories.length,
                     itemBuilder: (context, index) {
@@ -370,84 +370,68 @@ class _StoryScreenState extends State<StoryScreen> {
                             'here we will open the post details----${story['post_type']}',
                           );
                         },
-                        child: Stack(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                gradient: RadialGradient(
-                                  colors: [
-                                    Colors.white,
-                                    const Color.fromARGB(221, 28, 28, 28),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(8),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Stack(
+                            children: [
+                              // Media content (Image or Video)
+                              Positioned.fill(
+                                child:
+                                    isImage(story['video_url'])
+                                        ? isLocal(story['video_url'])
+                                            ? Image.file(
+                                              File(story['video_url']),
+                                              fit: BoxFit.cover,
+                                            )
+                                            : Image.network(
+                                              story['video_url'],
+                                              fit: BoxFit.cover,
+                                            )
+                                        : VideoPlayerWidget(
+                                          videoUrl: story['video_url'],
+                                        ),
                               ),
 
-                              child:
-                                  isImage(story['video_url'])
-                                      ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(12),
-                                        child:
-                                            isLocal(story['video_url'])
-                                                ? Image.file(
-                                                  File(story['video_url']),
-                                                  fit: BoxFit.cover,
-                                                )
-                                                : Image.network(
-                                                  story['video_url'],
-                                                  fit: BoxFit.cover,
-                                                ),
-                                      )
-                                      : ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Stack(
-                                          children: [
-                                            // Show a placeholder or thumbnail
-                                            Stack(
-                                              children: [
-                                                SizedBox(
-                                                  width: double.infinity,
-                                                  child:
-                                                      isLocal(
-                                                            story['video_url'],
-                                                          )
-                                                          ? VideoPlayerWidget(
-                                                            videoUrl:
-                                                                story['video_url'],
-                                                          )
-                                                          : VideoPlayerWidget(
-                                                            videoUrl:
-                                                                story['video_url'],
-                                                          ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                            ),
-                            Positioned(
-                              bottom: 6,
-                              left: 6,
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.favorite,
-                                    size: 14,
-                                    color: Color.fromARGB(255, 199, 70, 70),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    story['user_name'].toString(),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
+                              // Gradient overlay (always on top of media)
+                              Positioned.fill(
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    gradient: RadialGradient(
+                                      colors: [
+                                        Colors.transparent,
+                                        Color.fromARGB(221, 28, 28, 28),
+                                      ],
+                                      center: Alignment.center,
+                                      radius: 0.85,
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ],
+
+                              // Bottom info (icon + text)
+                              Positioned(
+                                bottom: 6,
+                                left: 6,
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.favorite,
+                                      size: 14,
+                                      color: Color.fromARGB(255, 199, 70, 70),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      story['user_name'].toString(),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },

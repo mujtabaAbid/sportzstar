@@ -20,6 +20,7 @@ const deleteUserApi =
 String notificationApi({required int id}) {
   return '${apiUrl}get_notifications/$id/';
 }
+
 const readNotificationsApi = '${apiUrl}notification_/read/20/'; //get
 
 // posts
@@ -29,6 +30,7 @@ const updatePostApi = '${apiUrl}posts/update/1/'; //patch
 String deletePostApi({required int id}) {
   return '${apiUrl}posts/delete/$id/';
 }
+
 // const allUserPostApi = '${apiUrl}posts/user/2/'; //get`
 String allUserPostApi({required int id}) {
   return '${apiUrl}posts/user/$id/';
@@ -43,13 +45,15 @@ const deleteCommentOnPostApi = '${apiUrl}posts/comment/delete';
 //stories
 const createStoryApi = '${apiUrl}stories/create/';
 const updateStoryApi = '${apiUrl}stories/update/1/'; //patch
-const deleteStoryApi = '${apiUrl}stories/delete/<post_id>/'; //get
-// const getStoryWithUserIdApi = '${apiUrl}stories/2/'; //get
+// const deleteStoryApi = '${apiUrl}stories/delete/<post_id>/'; //get
+String deleteStoryApi({required int id}) {
+  return '${apiUrl}stories/delete/$id/';
+}
 
+// const getStoryWithUserIdApi = '${apiUrl}stories/2/'; //get
 String getStoryWithUserIdApi({required int id}) {
   return '${apiUrl}stories/$id/';
 }
-
 
 const getAllStoriesApi = '${apiUrl}stories/'; //get
 

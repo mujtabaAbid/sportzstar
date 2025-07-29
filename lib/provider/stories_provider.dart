@@ -39,22 +39,6 @@ class StoriesProvider with ChangeNotifier {
     }
   }
 
-  // Future<dynamic> addStory({required Map<String, String> formData}) async {
-  //   final user = await userData();
-  //   try {
-  //     final response = await http.post(
-  //       Uri.parse(createStoryApi),
-  //       headers: {'Accept': 'application/json'},
-  //       body: formData,
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       final responseData = json.decode(response.body);
-
-  //       print('object');
-  //     }
-  //   } catch (e) {}
-  // }
   Future<dynamic> addStory({
     required Map<String, String> formData,
     File? file,
@@ -92,6 +76,24 @@ class StoriesProvider with ChangeNotifier {
     } else {
       print("Upload failed [${response.statusCode}]: ${response.body}");
       throw Exception('Failed to upload story');
+    }
+  }
+
+  Future<dynamic> deleteStoryFun(int storyId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse(deleteStoryApi(id: storyId)),
+        headers: {'Accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        print('object');
+        return response;
+      }
+    } catch (e) {
+      
     }
   }
 }
