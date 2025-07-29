@@ -208,238 +208,219 @@ class _HomeScreenState extends State<HomeScreen> {
     return MainLayoutWidget(
       isLoading: _isLoading,
       noDefaultBackground: true,
-      body: Container(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.only(bottom: 20, top: 50),
-             color: Colors.transparent,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => Testing()),
-                      );
-                    },
-                    child: Text('data'),
-                  ),
-                  Stack(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          pushNamedNavigate(
-                            context: context,
-                            pageName: notificationScreenRoute,
-                          );
-                        },
-                        icon: Icon(Icons.notifications_none, size: 30),
+      body: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(bottom: 20, top: 50),
+            color: Colors.transparent,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Stack(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        pushNamedNavigate(
+                          context: context,
+                          pageName: notificationScreenRoute,
+                        );
+                      },
+                      icon: Icon(Icons.notifications_none, size: 30),
+                    ),
+                    Positioned(
+                      top: 6,
+                      right: 8,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 2,
+                          horizontal: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          notificationCount.toString(),
+                          style: TextStyle(color: Colors.white, fontSize: 8),
+                        ),
                       ),
-                      Positioned(
-                        top: 6,
-                        right: 8,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 2,
-                            horizontal: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            notificationCount.toString(),
-                            style: TextStyle(color: Colors.white, fontSize: 8),
+                    ),
+                  ],
+                ),
+
+                // Stack(
+                //   children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.add_a_photo_outlined, size: 30),
+                ),
+
+                SizedBox(width: 20),
+              ],
+            ),
+          ),
+
+          Container(
+            color: Colors.transparent,
+            height: 100,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: allUsersList.length,
+              itemBuilder: (context, index) {
+                final story = allUsersList[index];
+                return Container(
+                  padding: EdgeInsets.only(left: index == 0 ? 16 : 0),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    child: Column(
+                      children: [
+                        Stack(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(3),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  colors: [Colors.yellow, Colors.orange],
+                                ),
+                              ),
+                              child: CircleAvatar(
+                                radius: 32,
+                                backgroundImage:
+                                    story['profile_picture'] != null &&
+                                            story['profile_picture']
+                                                .toString()
+                                                .isNotEmpty
+                                        ? NetworkImage(
+                                          story['profile_picture'] ??
+                                              'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
+                                        )
+                                        : AssetImage('assets/profile/user.png')
+                                            as ImageProvider,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          story['full_name'],
+                          style: TextStyle(fontSize: 12, color: Colors.black),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Container(
+            color: Colors.red,
+            // padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: SizedBox(
+              height: 50,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: sportsCategories.length,
+                itemBuilder: (BuildContext context, int index) {
+                  String category = sportsCategories[index];
+                  bool isSelected = selectedCategory == category;
+
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedCategory = category;
+                        print('kjfskdjfhsdjf---->>>>$selectedCategory');
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        // vertical: 8,
+                      ),
+                      // margin: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color:
+                                isSelected
+                                    ? Colors.black
+                                    : const Color.fromARGB(192, 213, 213, 213),
+                            width: 2,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-
-                  // Stack(
-                  //   children: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.add_a_photo_outlined, size: 30),
-                  ),
-
-                  SizedBox(width: 20),
-                ],
-              ),
-            ),
-
-            Container(
-              color: Colors.transparent,
-              height: 100,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: allUsersList.length,
-                itemBuilder: (context, index) {
-                  final story = allUsersList[index];
-                  return Container(
-                    padding: EdgeInsets.only(left: index == 0 ? 16 : 0),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: Column(
-                        children: [
-                          Stack(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(3),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: LinearGradient(
-                                    colors: [Colors.yellow, Colors.orange],
-                                  ),
-                                ),
-                                child: CircleAvatar(
-                                  radius: 32,
-                                  backgroundImage:
-                                      story['profile_picture'] != null &&
-                                              story['profile_picture']
-                                                  .toString()
-                                                  .isNotEmpty
-                                          ? NetworkImage(
-                                            story['profile_picture'] ??
-                                                'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
-                                          )
-                                          : AssetImage(
-                                                'assets/profile/user.png',
-                                              )
-                                              as ImageProvider,
-                                ),
-                              ),
-                            ],
+                      child: Center(
+                        child: Text(
+                          category,
+                          style: TextStyle(
+                            color: isSelected ? Colors.black : Palette.darkgray,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
                           ),
-                          SizedBox(height: 4),
-                          Text(
-                            story['full_name'],
-                            style: TextStyle(fontSize: 12, color: Colors.black),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   );
                 },
               ),
             ),
-            Container(
-            color: Colors.red,
-              // padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: SizedBox(
-                height: 50,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: sportsCategories.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    String category = sportsCategories[index];
-                    bool isSelected = selectedCategory == category;
-
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedCategory = category;
-                          print('kjfskdjfhsdjf---->>>>$selectedCategory');
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          // vertical: 8,
-                        ),
-                        // margin: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color:
-                                  isSelected
-                                      ? Colors.black
-                                      : const Color.fromARGB(
-                                        192,
-                                        213,
-                                        213,
-                                        213,
-                                      ),
-                              width: 2,
-                            ),
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            category,
-                            style: TextStyle(
-                              color:
-                                  isSelected ? Colors.black : Palette.darkgray,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            Expanded(
-              child: Container(
-                child: ListView.builder(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  itemCount:
+          ),
+          Expanded(
+            child: Container(
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                itemCount:
+                    posts
+                        .where(
+                          (post) => post['player_category'] == selectedCategory,
+                        )
+                        .length,
+                itemBuilder: (context, index) {
+                  final filteredPosts =
                       posts
                           .where(
                             (post) =>
                                 post['player_category'] == selectedCategory,
                           )
-                          .length,
-                  itemBuilder: (context, index) {
-                    final filteredPosts =
-                        posts
-                            .where(
-                              (post) =>
-                                  post['player_category'] == selectedCategory,
-                            )
-                            .toList();
-                    final post = filteredPosts[index];
+                          .toList();
+                  final post = filteredPosts[index];
 
-                    if (post['post_type'] == 'text') {
-                      // Display post_description in PostCard
-                      return PostCard(
-                        post: post,
-                        displayType: PostDisplayType.text,
-                      );
-                    } else if (post['post_type'] == 'image') {
-                      // Display image_url and post_description in PostCard
-                      return PostCard(
-                        post: post,
-                        displayType: PostDisplayType.image,
-                      );
-                    } else if (post['post_type'] == 'video') {
-                      // Display video_url and post_description in PostCard
-                      return PostCard(
-                        post: post,
-                        displayType: PostDisplayType.video,
-                      );
-                    } else {
-                      // Handle any other cases here, though your provided examples cover text, image, and video scenarios
-                      return SizedBox(); // Placeholder for other scenarios
-                    }
-                  },
-                ),
+                  if (post['post_type'] == 'text') {
+                    // Display post_description in PostCard
+                    return PostCard(
+                      post: post,
+                      displayType: PostDisplayType.text,
+                    );
+                  } else if (post['post_type'] == 'image') {
+                    // Display image_url and post_description in PostCard
+                    return PostCard(
+                      post: post,
+                      displayType: PostDisplayType.image,
+                    );
+                  } else if (post['post_type'] == 'video') {
+                    // Display video_url and post_description in PostCard
+                    return PostCard(
+                      post: post,
+                      displayType: PostDisplayType.video,
+                    );
+                  } else {
+                    // Handle any other cases here, though your provided examples cover text, image, and video scenarios
+                    return SizedBox(); // Placeholder for other scenarios
+                  }
+                },
               ),
             ),
+          ),
 
-            // CustomButton(
-            //   onPressed: () {
-            //     print('dlgfdhjjg');
-            //     getNotifications();
-            //   },
-            //   text: 'ewfsefs',
-            // ),
-          ],
-        ),
+          // CustomButton(
+          //   onPressed: () {
+          //     print('dlgfdhjjg');
+          //     getNotifications();
+          //   },
+          //   text: 'ewfsefs',
+          // ),
+        ],
       ),
     );
   }
