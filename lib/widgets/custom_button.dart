@@ -25,12 +25,12 @@ class CustomButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           shape: const StadiumBorder(),
           padding: EdgeInsets.zero,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.blueAccent,
           shadowColor: Colors.transparent,
         ),
         child: Ink(
           decoration: BoxDecoration(
-            gradient: Palette.primaryGradient,
+            // gradient: Palette.primaryGradient,
             borderRadius: BorderRadius.circular(30),
           ),
           child: Container(
