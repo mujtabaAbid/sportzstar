@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
+import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/provider/stories_provider.dart';
+import 'package:sportzstar/routing/routing_constrants.dart';
+import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
 import 'package:video_player/video_player.dart';
 
@@ -29,6 +32,9 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
   @override
   void initState() {
     super.initState();
+
+    // print('jkkjkjjoi--------->>>>>${widget.story}');
+
     final url = widget.story['video_url'] ?? '';
     isVideo =
         !(url.endsWith('.jpg') ||
@@ -111,6 +117,15 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
           message: message['message'],
           messageType: AlertMessageType.success,
         );
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => BottomNavigationBarScreen(pageIndex: 1),
+          ),
+        );
+        // pushNamedAndRemoveUntilNavigate(
+        //   pageName: BottomNavigationBarScreen(storyId),
+        //   context: context,
+        // );
       } else {
         alertNotification(
           context: context,
@@ -208,6 +223,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                   onSelected: (String value) {
                     if (value == 'delete') {
                       print('Delete pressed');
+                      deleteStory(storyId: story['story_id']);
                     } else if (value == 'close') {
                       print('Close pressed');
                       Navigator.pop(context);

@@ -4,6 +4,7 @@ import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/provider/home_provider.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
+import 'package:sportzstar/screens/testing.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/post_card_widget.dart';
@@ -206,6 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return MainLayoutWidget(
       isLoading: _isLoading,
+      noDefaultBackground: true,
       body: Container(
         child: Column(
           children: [
@@ -215,6 +217,14 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => Testing()),
+                      );
+                    },
+                    child: Text('data'),
+                  ),
                   Stack(
                     children: [
                       IconButton(

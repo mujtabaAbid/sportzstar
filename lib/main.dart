@@ -29,17 +29,18 @@ void main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.white,
-      statusBarIconBrightness: Brightness.dark,
+    SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
       statusBarBrightness: Brightness.light,
       // for bottom bar color
-      systemNavigationBarColor: Color.fromARGB(
-        255,
-        247,
-        247,
-        247,
-      ), // light background
+      systemNavigationBarColor: const Color.fromARGB(255, 28, 26, 49),
+      // .fromARGB(
+      //   255,
+      //   247,
+      //   247,
+      //   247,
+      // ), // light background
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
@@ -71,7 +72,7 @@ class MyApp extends StatelessWidget {
               theme: ThemeData(
                 primarySwatch: Palette.primaryColor,
 
-                scaffoldBackgroundColor: Colors.white,
+                scaffoldBackgroundColor: Colors.transparent,
                 // const Color.fromARGB(
                 //   255,
                 //   243,

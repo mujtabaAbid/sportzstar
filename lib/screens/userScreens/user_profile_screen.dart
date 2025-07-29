@@ -164,6 +164,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Widget build(BuildContext context) {
     return MainLayoutWidget(
       isLoading: _isLoading,
+      noDefaultBackground: true,
       // backgroundColor: Colors.white,
       body: CustomScrollView(
         physics: NeverScrollableScrollPhysics(),

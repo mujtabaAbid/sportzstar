@@ -172,8 +172,10 @@ class _StoryScreenState extends State<StoryScreen> {
   @override
   Widget build(BuildContext context) {
     return MainLayoutWidget(
+      noDefaultBackground: true,
       isLoading: _isLoading,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: Text('Stories', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),

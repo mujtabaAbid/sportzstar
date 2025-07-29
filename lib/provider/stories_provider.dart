@@ -85,15 +85,16 @@ class StoriesProvider with ChangeNotifier {
         Uri.parse(deleteStoryApi(id: storyId)),
         headers: {'Accept': 'application/json'},
       );
-
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
 
-        print('object');
+        print('deleteStoryFun------->>> $responseData');
         return response;
+      } else {
+        print('deleteStoryFun error ------->>> $response.body');
       }
     } catch (e) {
-      
+      print('deleteStoryFun  error ---e---->>> $e');
     }
   }
 }
