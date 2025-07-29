@@ -18,8 +18,7 @@ class BottomNavigationBarScreen extends StatefulWidget {
       _BottomNavigationBarScreenState();
 }
 
-class _BottomNavigationBarScreenState
-    extends State<BottomNavigationBarScreen> {
+class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
   late int selectedIndex;
 
   @override
@@ -38,60 +37,66 @@ class _BottomNavigationBarScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true, // So the nav bar floats above the body
-      body: pages[selectedIndex],
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            selectedIndex = 2;
-          });
-        },
-        backgroundColor: Colors.blueAccent,
-        elevation: 4,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add, size: 32),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 6,
-        elevation: 10,
-        color: Colors.white,
-        child: Container(
-          height: 70,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          decoration: BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(30)
-            // borderRadius: const BorderRadius.only(
-            //   topLeft: Radius.circular(35),
-            //   topRight: Radius.circular(35),
-            // ),
+    return Stack(
+      children: [
+        Testing(),
+        Scaffold(
+          extendBody: true, // So the nav bar floats above the body
+          body: pages[selectedIndex],
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                selectedIndex = 2;
+              });
+            },
+            backgroundColor: Colors.blueAccent,
+            elevation: 4,
+            shape: const CircleBorder(),
+            child: const Icon(Icons.add, size: 32),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Left side icons
-              Row(
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          bottomNavigationBar: BottomAppBar(
+            shape: const CircularNotchedRectangle(),
+            notchMargin: 6,
+            elevation: 10,
+            color: Colors.white,
+            child: Container(
+              height: 70,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(30),
+                // borderRadius: const BorderRadius.only(
+                //   topLeft: Radius.circular(35),
+                //   topRight: Radius.circular(35),
+                // ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildNavIcon(Icons.home_outlined, 0),
-                  const SizedBox(width: 30),
-                  _buildNavIcon(Icons.star_border, 1),
+                  // Left side icons
+                  Row(
+                    children: [
+                      _buildNavIcon(Icons.home_outlined, 0),
+                      const SizedBox(width: 30),
+                      _buildNavIcon(Icons.star_border, 1),
+                    ],
+                  ),
+                  // Right side icons
+                  Row(
+                    children: [
+                      _buildNavIcon(Icons.chat_bubble_outline, 3),
+                      const SizedBox(width: 30),
+                      _buildNavIcon(Icons.person_outline, 4),
+                    ],
+                  ),
                 ],
               ),
-              // Right side icons
-              Row(
-                children: [
-                  _buildNavIcon(Icons.chat_bubble_outline, 3),
-                  const SizedBox(width: 30),
-                  _buildNavIcon(Icons.person_outline, 4),
-                ],
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 
