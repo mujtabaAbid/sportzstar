@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Palette {
-  static Color basicColor = const Color.fromARGB(255, 0, 0, 0);
+  static Color basicColor = const Color.fromARGB(255, 35, 42, 86);
+  static Color basicDark = const Color.fromARGB(255, 18, 21, 43);
   static Color basicgray = const Color.fromARGB(255, 224, 224, 224);
   static Color darkgray = const Color.fromARGB(255, 190, 190, 190);
   static Color basicgreen = const Color.fromARGB(255, 109, 185, 112);
@@ -50,8 +51,8 @@ class Palette {
 
   static const primaryGradient = LinearGradient(
     colors: [
-      Color.fromRGBO(201, 241, 178, 0.996),
-      Color.fromRGBO(27, 104, 52, 1),
+      Color.fromRGBO(75, 91, 195, 0.996),
+      Color.fromARGB(255, 28, 26, 49),
     ],
   );
   static const lightGreenGradient = LinearGradient(

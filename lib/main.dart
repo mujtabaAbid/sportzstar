@@ -12,14 +12,12 @@ import 'package:sportzstar/started_screen.dart';
 
 import '../config/palette.dart';
 import '../provider/main_provider.dart';
-import '../screens/splash_screen.dart';
 
 import 'helper/form_field_border_style.dart';
 import 'routing/router.dart' as router;
 import 'screens/home_screen.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   // SystemChrome.setPreferredOrientations([
   //   DeviceOrientation.portraitUp,
   //   DeviceOrientation.portraitDown,

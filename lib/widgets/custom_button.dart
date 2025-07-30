@@ -5,7 +5,11 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String? text;
   final Color? color;
+  final Color? background;
+  final Gradient? gradient;
   final double? textsize;
+  final double? width;
+  final double? height;
 
   const CustomButton({
     super.key,
@@ -13,13 +17,17 @@ class CustomButton extends StatelessWidget {
     this.text,
     this.color,
     this.textsize,
+    this.width,
+    this.height,
+    this.background,
+    this.gradient,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: double.infinity,
-      height: 55,
+      width: width ?? double.infinity,
+      height: height ?? 55,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -30,7 +38,10 @@ class CustomButton extends StatelessWidget {
         ),
         child: Ink(
           decoration: BoxDecoration(
-            gradient: Palette.primaryGradient,
+            color: background,
+
+            gradient:
+                background == null ? gradient ?? Palette.primaryGradient : null,
             borderRadius: BorderRadius.circular(30),
           ),
           child: Container(

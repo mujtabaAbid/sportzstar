@@ -43,29 +43,32 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
         Scaffold(
           extendBody: true, // So the nav bar floats above the body
           body: pages[selectedIndex],
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              setState(() {
-                selectedIndex = 2;
-              });
-            },
-            backgroundColor: Colors.blueAccent,
-            elevation: 4,
-            shape: const CircleBorder(),
-            child: const Icon(Icons.add, size: 32),
+          floatingActionButton: Transform.translate(
+            offset: const Offset(0, 20),
+            child: FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  selectedIndex = 2;
+                });
+              },
+              backgroundColor: Palette.facebookColor,
+              elevation: 4,
+              shape: const CircleBorder(),
+              child: const Icon(Icons.add, size: 32, color: Colors.white),
+            ),
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: BottomAppBar(
             shape: const CircularNotchedRectangle(),
-            notchMargin: 6,
+            notchMargin: 0,
             elevation: 10,
-            color: Colors.white,
+            color: Colors.transparent,
             child: Container(
-              height: 70,
+              height: 150,
               padding: const EdgeInsets.symmetric(horizontal: 20),
               decoration: BoxDecoration(
-                color: Colors.red,
+                color: Palette.basicDark,
                 borderRadius: BorderRadius.circular(30),
                 // borderRadius: const BorderRadius.only(
                 //   topLeft: Radius.circular(35),

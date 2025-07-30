@@ -211,55 +211,91 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(bottom: 20, top: 50),
+            padding: EdgeInsets.only(bottom: 20, top: 60),
             color: Colors.transparent,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Stack(
+                // SizedBox(width: 20),
+                Container(
+                  margin: EdgeInsets.only(left: 20),
+                  child: Text(
+                    'SportzStar',
+                    style: TextStyle(color: Colors.white, fontSize: 36),
+                  ),
+                ),
+                Row(
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        pushNamedNavigate(
-                          context: context,
-                          pageName: notificationScreenRoute,
-                        );
-                      },
-                      icon: Icon(Icons.notifications_none, size: 30),
+                    Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(115, 53, 53, 53),
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              pushNamedNavigate(
+                                context: context,
+                                pageName: notificationScreenRoute,
+                              );
+                            },
+                            icon: Icon(
+                              Icons.notifications_none,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: 12,
+                          right: 10,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 2,
+                              horizontal: 3,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              notificationCount.toString(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 8,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    Positioned(
-                      top: 6,
-                      right: 8,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 2,
-                          horizontal: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          notificationCount.toString(),
-                          style: TextStyle(color: Colors.white, fontSize: 8),
+
+                    // Stack(
+                    SizedBox(width: 16),
+                    //   children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(115, 53, 53, 53),
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                      ),
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.add_a_photo_outlined,
+                          color: Colors.white,
+                          size: 28,
                         ),
                       ),
                     ),
+
+                    SizedBox(width: 20),
                   ],
                 ),
-
-                // Stack(
-                //   children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.add_a_photo_outlined, size: 30),
-                ),
-
-                SizedBox(width: 20),
               ],
             ),
           ),
-
+          SizedBox(height: 10),
           Container(
             color: Colors.transparent,
             height: 100,
@@ -277,12 +313,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         Stack(
                           children: [
                             Container(
-                              padding: EdgeInsets.all(3),
+                              padding: EdgeInsets.all(2),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  colors: [Colors.yellow, Colors.orange],
-                                ),
+                                color: Colors.transparent,
+                                // gradient: LinearGradient(
+                                //   colors: [Colors.yellow, Colors.orange],
+                                // ),
                               ),
                               child: CircleAvatar(
                                 radius: 32,
@@ -304,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(height: 4),
                         Text(
                           story['full_name'],
-                          style: TextStyle(fontSize: 12, color: Colors.black),
+                          style: TextStyle(fontSize: 12, color: Colors.white),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
@@ -314,11 +351,12 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
+
+          // category selection
           Container(
-            color: Colors.red,
-            // padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(vertical: 14),
             child: SizedBox(
-              height: 50,
+              height: 30,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: sportsCategories.length,
@@ -326,90 +364,105 @@ class _HomeScreenState extends State<HomeScreen> {
                   String category = sportsCategories[index];
                   bool isSelected = selectedCategory == category;
 
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedCategory = category;
-                        print('kjfskdjfhsdjf---->>>>$selectedCategory');
-                      });
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        // vertical: 8,
+                  return Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8,
+                      // vertical: 8,
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Palette.facebookColor,
                       ),
-                      // margin: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color:
-                                isSelected
-                                    ? Colors.black
-                                    : const Color.fromARGB(192, 213, 213, 213),
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          category,
-                          style: TextStyle(
-                            color: isSelected ? Colors.black : Palette.darkgray,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                      child: Text(
+                        category,
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   );
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     setState(() {
+                  //       selectedCategory = category;
+                  //       print('kjfskdjfhsdjf---->>>>$selectedCategory');
+                  //     });
+                  //   },
+                  //   child:
+
+                  //    Container(
+                  //     padding: EdgeInsets.symmetric(
+                  //       horizontal: 16,
+                  //       // vertical: 8,
+                  //     ),
+                  //     // margin: EdgeInsets.all(8),
+                  //     decoration: BoxDecoration(
+                  //       border: Border(
+                  //         bottom: BorderSide(
+                  //           color:
+                  //               isSelected
+                  //                   ? Colors.black
+                  //                   : const Color.fromARGB(192, 213, 213, 213),
+                  //           width: 2,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     child: Center(
+                  //       child: Text(
+                  //         category,
+                  //         style: TextStyle(
+                  //           color: isSelected ? Colors.black : Palette.darkgray,
+                  //           fontSize: 14,
+                  //           fontWeight: FontWeight.bold,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // );
                 },
               ),
             ),
           ),
+          //post card widget call
           Expanded(
-            child: Container(
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                itemCount:
+            child: ListView.builder(
+              padding: EdgeInsets.only(top: 10, bottom: 80),
+              itemCount:
+                  posts
+                      .where(
+                        (post) => post['player_category'] == selectedCategory,
+                      )
+                      .length,
+              itemBuilder: (context, index) {
+                final filteredPosts =
                     posts
                         .where(
                           (post) => post['player_category'] == selectedCategory,
                         )
-                        .length,
-                itemBuilder: (context, index) {
-                  final filteredPosts =
-                      posts
-                          .where(
-                            (post) =>
-                                post['player_category'] == selectedCategory,
-                          )
-                          .toList();
-                  final post = filteredPosts[index];
-
-                  if (post['post_type'] == 'text') {
-                    // Display post_description in PostCard
-                    return PostCard(
-                      post: post,
-                      displayType: PostDisplayType.text,
-                    );
-                  } else if (post['post_type'] == 'image') {
-                    // Display image_url and post_description in PostCard
-                    return PostCard(
-                      post: post,
-                      displayType: PostDisplayType.image,
-                    );
-                  } else if (post['post_type'] == 'video') {
-                    // Display video_url and post_description in PostCard
-                    return PostCard(
-                      post: post,
-                      displayType: PostDisplayType.video,
-                    );
-                  } else {
-                    // Handle any other cases here, though your provided examples cover text, image, and video scenarios
-                    return SizedBox(); // Placeholder for other scenarios
-                  }
-                },
-              ),
+                        .toList();
+                final post = filteredPosts[index];
+                if (post['post_type'] == 'text') {
+                  // Display post_description in PostCard
+                  return PostCard(
+                    post: post,
+                    displayType: PostDisplayType.text,
+                  );
+                } else if (post['post_type'] == 'image') {
+                  // Display image_url and post_description in PostCard
+                  return PostCard(
+                    post: post,
+                    displayType: PostDisplayType.image,
+                  );
+                } else if (post['post_type'] == 'video') {
+                  // Display video_url and post_description in PostCard
+                  return PostCard(
+                    post: post,
+                    displayType: PostDisplayType.video,
+                  );
+                } else {
+                  // Handle any other cases here, though your provided examples cover text, image, and video scenarios
+                  return SizedBox(); // Placeholder for other scenarios
+                }
+              },
             ),
           ),
 
