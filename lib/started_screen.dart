@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
+import 'package:sportzstar/screens/testing.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 
 import 'package:flutter/material.dart';
@@ -46,92 +47,93 @@ class _StartedScreenState extends State<StartedScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            // Animated Image
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 800),
-              top:
-                  _moveUp
-                      ? MediaQuery.of(context).size.height * 0.1
-                      : MediaQuery.of(context).size.height * 0.38,
-              left: (MediaQuery.of(context).size.width / 2) / 8,
-              child: Image.asset(
-                'assets/images/start.png',
-                height: MediaQuery.of(context).size.height * 0.36,
-                // width: 260,
-              ),
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Testing(),
+          // Animated Image
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 800),
+            top:
+                _moveUp
+                    ? MediaQuery.of(context).size.height * 0.1
+                    : MediaQuery.of(context).size.height * 0.38,
+                    left: (MediaQuery.of(context).size.width - MediaQuery.of(context).size.height * 0.32) / 2,
+            // left: (MediaQuery.of(context).size.width / 2) / 8,
+            child: Image.asset(
+              'assets/images/startImage.png',
+              height: MediaQuery.of(context).size.height * 0.36,
+              // width: 260,
             ),
-
-            // Animated Content
-            AnimatedOpacity(
-              opacity: _showContent ? 1 : 0,
-              duration: const Duration(milliseconds: 810),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    // const SizedBox(height: 300),
-                    const Text(
-                      'Best Social App to Make\nNew Friends',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+          ),
+      
+          // Animated Content
+          AnimatedOpacity(
+            opacity: _showContent ? 1 : 0,
+            duration: const Duration(milliseconds: 810),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // const SizedBox(height: 300),
+                  const Text(
+                    'Join the conversation and Connect',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'With pipel you will find new friends from various\ncountries and regions of the world',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
-                    ),
-                    const SizedBox(height: 40),
-
-                    // Get Started Button
-                    CustomButton(
-                      text: 'Get Started',
-                      onPressed: () async {
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Become part of community of individuals whor are engaged in conversations and connections',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 40),
+      
+                  // Get Started Button
+                  CustomButton(
+                    text: 'Get Started',
+                    textsize: 18,
+                    onPressed: () async {
+                      pushNamedNavigate(
+                        context: context,
+                        pageName: signupScreenRoute,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 20),
+      
+                  // Login Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 60,
+                    child: OutlinedButton(
+                      onPressed: () {
                         pushNamedNavigate(
                           context: context,
-                          pageName: signupScreenRoute,
+                          pageName: loginScreenRoute,
                         );
                       },
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Login Button
-                    SizedBox(
-                      width: double.infinity,
-                      height: 55,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          pushNamedNavigate(
-                            context: context,
-                            pageName: loginScreenRoute,
-                          );
-                        },
-                        style: OutlinedButton.styleFrom(
-                          shape: const StadiumBorder(),
-                          side: const BorderSide(color: Colors.black12),
-                        ),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(fontSize: 16, color: Colors.black87),
-                        ),
+                      style: OutlinedButton.styleFrom(
+                        shape: const StadiumBorder(),
+                        side: const BorderSide(color: Colors.black12),
+                      ),
+                      child: const Text(
+                        'Login',
+                        style: TextStyle(fontSize: 18, color: Colors.black87),
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-                  ],
-                ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
