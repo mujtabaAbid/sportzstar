@@ -37,9 +37,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   // List<dynamic> filteredPosts = [];
 
   final List<Map<String, dynamic>> myPostsGrid = [
-    {'name': 'image', 'icon': Icons.grid_on},
-    {'name': 'video', 'icon': Icons.video_collection_outlined},
-    {'name': 'text', 'icon': Icons.bookmark_border},
+    {'name': 'image', 'icon': Icons.person},
+    {'name': 'video', 'icon': Icons.grid_on},
+    {'name': 'text', 'icon': Icons.video_collection_outlined},
   ];
 
   // final List<Map<String, dynamic>> posts = [
@@ -606,9 +606,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                   image: NetworkImage(
                                                     post['image_url'],
                                                   ),
-                                                  // AssetImage(
-                                                  //   post['image_url'],
-                                                  // ),
+                                                 
                                                   fit: BoxFit.cover,
                                                 ),
                                                 borderRadius:
