@@ -12,8 +12,7 @@ class StoriesProvider with ChangeNotifier {
   Future<dynamic> userData() async {
     final data = await getDataFromLocalStorage(name: 'userData');
     final userData = json.decode(data);
-    print('object--->>>$userData');
-    print('object--->>>${userData['id']}');
+
     return userData;
   }
 
