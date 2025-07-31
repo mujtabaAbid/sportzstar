@@ -17,11 +17,12 @@ class StoriesProvider with ChangeNotifier {
     return userData;
   }
 
-  Future<dynamic> getStories() async {
+  Future<dynamic> getStories([int? userId]) async {
     final user = await userData();
+    print('user id =======>>>.  ${userId.toString()}');
     try {
       final response = await http.get(
-        Uri.parse(getStoryWithUserIdApi(id: user['id'])),
+        Uri.parse(getStoryWithUserIdApi(id: userId ?? user['id'])),
         headers: {'Accept': 'application/json'},
         // body: {'comment_id': commentId, 'user_id': user['id'].toString()},
       );

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/provider/home_provider.dart';
+import 'package:sportzstar/provider/stories_provider.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/testing.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
@@ -118,6 +119,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> getUserStories(int userId) async {
+    try {
+      final response = Provider.of<StoriesProvider>(
+        context,
+        listen: false,
+      ).getStories(userId);
+
+      print('allll sstroies from hokme==========>>>> $response');
+      print('allll sstroies from hokme==========>>>> $response');
+    } catch (e) {
+      print('allll sstroies from hokme==========>>>> $e');
+    }
+  }
+
   String selectedCategory = '';
 
   final List<dynamic> postsss = [
@@ -210,6 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
       noDefaultBackground: true,
       body: Column(
         children: [
+          //app name and notifications section
           Container(
             padding: EdgeInsets.only(bottom: 20, top: 60),
             color: Colors.transparent,
@@ -272,7 +288,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
 
                     // Stack(
-                    SizedBox(width: 16),
+                    SizedBox(width: 8),
+                    //   children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(115, 53, 53, 53),
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                      ),
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.add, color: Colors.white, size: 28),
+                      ),
+                    ),
+                    SizedBox(width: 8),
                     //   children: [
                     Container(
                       decoration: BoxDecoration(
@@ -296,6 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           SizedBox(height: 10),
+          // all users list
           Container(
             color: Colors.transparent,
             height: 100,
@@ -304,47 +333,68 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCount: allUsersList.length,
               itemBuilder: (context, index) {
                 final story = allUsersList[index];
-                return Container(
-                  padding: EdgeInsets.only(left: index == 0 ? 16 : 0),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 6),
-                    child: Column(
-                      children: [
-                        Stack(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.transparent,
-                                // gradient: LinearGradient(
-                                //   colors: [Colors.yellow, Colors.orange],
-                                // ),
+                return GestureDetector(
+                  onTap: () {
+                    getUserStories(story['id']);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.only(left: index == 0 ? 16 : 0),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: Column(
+                        children: [
+                          Stack(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.transparent,
+                                  // gradient: LinearGradient(
+                                  //   colors: [Colors.yellow, Colors.orange],
+                                  // ),
+                                ),
+                                child: CircleAvatar(
+                                  radius: 32,
+                                  backgroundImage:
+                                      story['profile_picture'] != null &&
+                                              story['profile_picture']
+                                                  .toString()
+                                                  .isNotEmpty
+                                          ? NetworkImage(
+                                            story['profile_picture'] ??
+                                                'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
+                                          )
+                                          : AssetImage(
+                                                'assets/profile/user.png',
+                                              )
+                                              as ImageProvider,
+                                ),
                               ),
-                              child: CircleAvatar(
-                                radius: 32,
-                                backgroundImage:
-                                    story['profile_picture'] != null &&
-                                            story['profile_picture']
-                                                .toString()
-                                                .isNotEmpty
-                                        ? NetworkImage(
-                                          story['profile_picture'] ??
-                                              'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
-                                        )
-                                        : AssetImage('assets/profile/user.png')
-                                            as ImageProvider,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          story['full_name'],
-                          style: TextStyle(fontSize: 12, color: Colors.white),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                              // Positioned(
+                              //   bottom: 2,
+                              //   right: 2,
+                              //   child: Container(
+                              //     decoration: BoxDecoration(
+                              //       borderRadius: BorderRadius.circular(20),
+                              //       color: const Color.fromARGB(221, 32, 32, 31),
+                              //     ),
+                              //     child: Icon(
+                              //       Icons.add_reaction_sharp,
+                              //       color: Colors.white,
+                              //     ),
+                              //   ),
+                              // ),
+                            ],
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            story['full_name'],
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );

@@ -375,7 +375,7 @@ class _PostCardState extends State<PostCard> {
                 // color: Colors.amber,
                 padding: const EdgeInsets.symmetric(
                   vertical: 0,
-                  horizontal: 20,
+                  horizontal: 24,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -673,31 +673,31 @@ class _PostCardState extends State<PostCard> {
                         ],
                       ),
                     ),
-                    TextButton(
-                      style: ButtonStyle(
-                        padding: WidgetStateProperty.all<EdgeInsets>(
-                          EdgeInsets.zero,
-                        ),
-                        minimumSize: WidgetStateProperty.all<Size>(Size(0, 0)),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      onPressed: () {},
-                      child: Icon(Icons.file_upload_outlined, size: 20),
-                    ),
-                    // const SizedBox(width: 16),
-                    TextButton(
-                      style: ButtonStyle(
-                        padding: WidgetStateProperty.all<EdgeInsets>(
-                          EdgeInsets.zero,
-                        ),
-                        minimumSize: WidgetStateProperty.all<Size>(Size(0, 0)),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      onPressed: () {
-                        // _captureAndSave();
-                      },
-                      child: Icon(Icons.bookmarks_outlined, size: 20),
-                    ),
+                    // TextButton(
+                    //   style: ButtonStyle(
+                    //     padding: WidgetStateProperty.all<EdgeInsets>(
+                    //       EdgeInsets.zero,
+                    //     ),
+                    //     minimumSize: WidgetStateProperty.all<Size>(Size(0, 0)),
+                    //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    //   ),
+                    //   onPressed: () {},
+                    //   child: Icon(Icons.file_upload_outlined, size: 20),
+                    // ),
+                    // // const SizedBox(width: 16),
+                    // TextButton(
+                    //   style: ButtonStyle(
+                    //     padding: WidgetStateProperty.all<EdgeInsets>(
+                    //       EdgeInsets.zero,
+                    //     ),
+                    //     minimumSize: WidgetStateProperty.all<Size>(Size(0, 0)),
+                    //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    //   ),
+                    //   onPressed: () {
+                    //     // _captureAndSave();
+                    //   },
+                    //   child: Icon(Icons.bookmarks_outlined, size: 20),
+                    // ),
                   ],
                 ),
               ),
