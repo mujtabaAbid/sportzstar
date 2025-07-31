@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:provider/provider.dart';
+import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
 import 'package:sportzstar/helper/close_keyboard.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
@@ -173,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           obscurePassword
                               ? Icons.visibility
                               : Icons.visibility_off,
-                          color: Colors.black,
+                          color: Palette.basicgray,
                         ),
                         onPressed: () {
                           setState(() {
@@ -194,13 +195,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                         child: const Text(
                           'Forget Password?',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Palette.facebookColor),
                         ),
                       ),
                     ),
 
                     const SizedBox(height: 24),
                     CustomButton(
+                      background: Palette.facebookColor,
                       onPressed: () {
                         handleSubmit();
                       },
@@ -225,7 +227,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text(
                       "Sign Up",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Palette.facebookColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

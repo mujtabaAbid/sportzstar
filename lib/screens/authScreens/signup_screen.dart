@@ -116,7 +116,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
           pushNamedNavigate(
             pageName: otpScreenRoute,
-            argument: {'email' :_formData['email'].toString(), 'route': 'signup'},
+            argument: {
+              'email': _formData['email'].toString(),
+              'route': 'signup',
+            },
             context: context,
           );
         } else {
@@ -222,26 +225,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       'Date of Birth',
-                      style: TextStyle(color: Colors.black, fontSize: 14),
+                      style: TextStyle(color: Colors.white, fontSize: 14),
                     ),
                   ),
                 ],
               ),
               TextField(
-                style: const TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.white),
                 controller: dobController,
                 readOnly: true,
                 onTap: () => _selectDate(context),
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Palette.basicgray,
+                  fillColor: Color.fromARGB(51, 224, 224, 224),
                   hintText: "DD/MM/YYYY",
-                  labelStyle: TextStyle(color: Colors.black),
-                  hintStyle: TextStyle(color: Colors.black),
-                  border: OutlineInputBorder(),
-                  suffixIcon: Icon(Icons.calendar_today),
+                  labelStyle: TextStyle(color: Colors.white),
+                  hintStyle: TextStyle(color: Colors.white),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: Palette.facebookColor),
+                  ),
+                  suffixIcon: Icon(Icons.calendar_today, color: Colors.white),
                 ),
               ),
+
               const SizedBox(height: 8),
 
               // Gender Selection
@@ -251,7 +266,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   padding: EdgeInsets.only(left: 8.0, bottom: 8.0),
                   child: Text(
                     "Gender",
-                    style: TextStyle(color: Colors.black, fontSize: 14),
+                    style: TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),
               ),
@@ -276,12 +291,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             decoration: BoxDecoration(
                               color:
                                   isSelected
-                                      ? Palette.basicgreen
+                                      ? Palette.facebookColor
                                       : Palette.basicgray,
                               border: Border.all(
                                 color:
                                     isSelected
-                                        ? Palette.darkgreen
+                                        ? Palette.facebookColor
                                         : Palette.basicgray,
                                 width: 2,
                               ),
@@ -292,6 +307,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 gender,
                                 style: TextStyle(
                                   color:
+                                      // Colors.white,
                                       isSelected ? Colors.white : Colors.black,
                                   fontWeight:
                                       isSelected
@@ -363,6 +379,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 24),
 
               CustomButton(
+                background: Palette.facebookColor,
                 onPressed: () {
                   print('object-----sam,i');
                   handleSubmit();

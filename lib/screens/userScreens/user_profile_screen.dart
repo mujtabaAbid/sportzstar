@@ -226,7 +226,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     IconButton(
                                       icon: const Icon(
                                         Icons.email_outlined,
-                                        color: Colors.black,
+                                        color: Colors.white,
                                       ),
                                       onPressed: () {},
                                     ),
@@ -245,7 +245,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       ),
                                       child: const Text(
                                         'Follow',
-                                        style: TextStyle(color: Colors.black),
+                                        style: TextStyle(color: Colors.white),
                                       ),
                                     ),
                                   ],
@@ -265,7 +265,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 height: 30,
 
                 child: PopupMenuButton<String>(
-                  color: Colors.transparent,
+                  color: const Color.fromARGB(144, 28, 72, 159),
                   icon: Icon(Icons.more_horiz_rounded, size: 24),
                   onSelected: (String value) {
                     if (value == 'edit') {
@@ -288,9 +288,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           value: 'edit',
                           child: Row(
                             children: [
-                              Icon(Icons.edit, color: Palette.basicgreen),
+                              Icon(Icons.edit, color: Colors.white),
                               SizedBox(width: 8),
-                              Text('Edit Profile'),
+                              Text(
+                                'Edit Profile',
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ],
                           ),
                         ),
@@ -298,12 +301,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           value: 'logout',
                           child: Row(
                             children: [
-                              Icon(
-                                Icons.logout_outlined,
-                                color: Palette.basicgreen,
-                              ),
+                              Icon(Icons.logout_outlined, color: Colors.white),
                               SizedBox(width: 8),
-                              Text('Logout'),
+                              Text(
+                                'Logout',
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ],
                           ),
                         ),
@@ -312,7 +315,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 // const Icon(
                 //   Icons.more_horiz,
                 //   size: 14,
-                //   color: Colors.black,
+                //   color: Colors.white,
                 // ),
               ),
               // ),
@@ -346,7 +349,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
-                                color: Colors.black,
+                                color: Colors.white,
                               ),
                             ),
                             // const SizedBox(height: 2),
@@ -368,12 +371,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   : '',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.black,
+                                color: Colors.white,
                               ),
                             ),
                             Text(
                               '📩 ${userData['email']}',
-                              style: TextStyle(color: Colors.black),
+                              style: TextStyle(color: Colors.white),
                             ),
                           ],
                         ),
@@ -422,7 +425,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                               bottom: BorderSide(
                                                 color:
                                                     isSelected
-                                                        ? Colors.black
+                                                        ? Colors.white
                                                         : Colors.transparent,
                                                 width: 2,
                                               ),
@@ -432,7 +435,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                             category['icon'],
                                             color:
                                                 isSelected
-                                                    ? Colors.black
+                                                    ? Colors.white
                                                     : Colors.grey,
                                             size: 28,
                                           ),
@@ -517,7 +520,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                               Text(
                                                 post['total_likes'].toString(),
                                                 style: TextStyle(
-                                                  color: Colors.black,
+                                                  color: Colors.white,
                                                 ),
                                               ),
                                               SizedBox(width: 6),
@@ -533,7 +536,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                 post['total_comments']
                                                     .toString(),
                                                 style: TextStyle(
-                                                  color: Colors.black,
+                                                  color: Colors.white,
                                                 ),
                                               ),
                                             ],
@@ -741,7 +744,7 @@ class _StatItem extends StatelessWidget {
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
         Text(

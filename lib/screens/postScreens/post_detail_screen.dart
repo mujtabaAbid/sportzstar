@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/video_player_widget.dart';
 
@@ -31,9 +32,17 @@ class PostDetailScreen extends StatelessWidget {
             // User Info
             Row(
               children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage(post['user_profile'] ?? ''),
+                Container(
+                  width: 64, // radius * 2 + border (30*2 + 4)
+                  height: 64,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 1),
+                  ),
+                  child: CircleAvatar(
+                    radius: 30,
+                    backgroundImage: NetworkImage(post['user_profile'] ?? ''),
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Column(
@@ -44,14 +53,14 @@ class PostDetailScreen extends StatelessWidget {
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 22,
-                        color: Colors.black,
+                        color: Colors.white,
                       ),
                     ),
                     Text(
                       post['created_at'] != null && post['created_at'] != ''
                           ? formatDate(post['created_at'])
                           : '',
-                      style: const TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
@@ -94,21 +103,21 @@ class PostDetailScreen extends StatelessWidget {
                           post['video_url'].toString().isEmpty)
                   ? Center(
                     child: Container(
-                  height: 450, 
-                  width: double.infinity,
-                    
-                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12), 
-                     color: Colors.grey.shade100,
-                   ),
-                     
+                      height: 450,
+                      width: double.infinity,
+
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.grey.shade100,
+                      ),
+
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: RichText(
                             textAlign: TextAlign.center,
                             text: TextSpan(
-                              style: const TextStyle(color: Colors.black),
+                              style: const TextStyle(color: Colors.white),
                               children: [
                                 TextSpan(
                                   text: '${post['user_name']} : ',
@@ -130,7 +139,7 @@ class PostDetailScreen extends StatelessWidget {
                   )
                   : RichText(
                     text: TextSpan(
-                      style: const TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.white),
                       children: [
                         TextSpan(
                           text: '${post['user_name']} : ',
@@ -141,7 +150,10 @@ class PostDetailScreen extends StatelessWidget {
                         ),
                         TextSpan(
                           text: post['post_description'],
-                          style: const TextStyle(fontSize: 16),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
@@ -150,23 +162,28 @@ class PostDetailScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Likes & Comments Info
-            Text('Likes: ${post['total_likes'] ?? 0}'),
-            const SizedBox(height: 8),
-            Text('Comments: ${comments.length}'),
-
-            const SizedBox(height: 8),
-
-            // === Comments List ===
+            Text(
+              'Likes: ${post['total_likes'] ?? 0}',
+              style: TextStyle(color: Colors.grey),
+            ),
+            SizedBox(height: 4), // reduce height
+            Text(
+              'Comments: ${comments.length}',
+              style: TextStyle(color: Colors.grey),
+            ),
+            SizedBox(height: 8),
             ListView.builder(
               shrinkWrap: true,
+              padding: EdgeInsets.only(top: 0),
               physics: NeverScrollableScrollPhysics(),
               itemCount: comments.length,
               itemBuilder: (context, index) {
                 final comment = comments[index];
                 return ListTile(
-                  contentPadding: const EdgeInsets.symmetric(vertical: 6),
+                  contentPadding: EdgeInsets.zero, // reduce padding
+                  dense: true, // make it tighter vertically
                   leading: CircleAvatar(
-                    radius: 22,
+                    radius: 20,
                     backgroundImage:
                         (comment['user_profile'] != null &&
                                 comment['user_profile'].toString().isNotEmpty)
@@ -174,21 +191,24 @@ class PostDetailScreen extends StatelessWidget {
                             : const AssetImage('assets/profile/user.png')
                                 as ImageProvider,
                   ),
-                  title: Column(
+                  title: Text(
+                    comment['user_name'],
+                    style: TextStyle(fontSize: 13, color: Colors.white),
+                  ),
+                  subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        comment['user_name'],
-                        style: const TextStyle(fontSize: 13),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
                         comment['comment'],
-                        style: const TextStyle(fontSize: 14),
+                        style: TextStyle(fontSize: 14, color: Colors.white),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        formatDate(comment['created_at']),
+                        style: TextStyle(color: Palette.darkgray, fontSize: 12),
                       ),
                     ],
                   ),
-                  subtitle: Text(formatDate(comment['created_at'])),
                 );
               },
             ),
@@ -198,4 +218,3 @@ class PostDetailScreen extends StatelessWidget {
     );
   }
 }
- 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:sportzstar/config/palette.dart';
 import '../helper/basic_enum.dart';
 
 class InputWidget extends StatefulWidget {
@@ -82,7 +83,7 @@ class _InputWidgetState extends State<InputWidget> {
                             : ''),
                     style:
                         widget.headingStyle ??
-                        const TextStyle(color: Colors.black, fontSize: 14),
+                        const TextStyle(color: Colors.white, fontSize: 14),
                   ),
             ],
           ),
@@ -120,7 +121,7 @@ class _InputWidgetState extends State<InputWidget> {
                   },
                   decoration: InputDecoration(
                     labelStyle: const TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                     hintText:
@@ -132,14 +133,14 @@ class _InputWidgetState extends State<InputWidget> {
                     // ✅ This shows +XX prefix inside the input field
                     //  prefixText: widget.showCountryCodePicker ? '$selectedCountryCode ' : null,
                     prefixStyle: const TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                       fontSize: 14,
                     ),
 
                     filled: true,
                     fillColor:
                         widget.backgroundColor ??
-                        const Color.fromARGB(255, 224, 224, 224),
+                        const Color.fromARGB(51, 224, 224, 224),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16.0),
                       borderSide: BorderSide.none,
@@ -149,7 +150,7 @@ class _InputWidgetState extends State<InputWidget> {
                       borderSide: BorderSide(
                         color:
                             widget.highlightErrorBorder
-                                ? Colors.green
+                                ? Palette.facebookColor
                                 : Colors.transparent,
                         width: 2.0,
                       ),
@@ -159,7 +160,7 @@ class _InputWidgetState extends State<InputWidget> {
                       horizontal: 16.0,
                     ),
                   ),
-                  style: const TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.white),
                 ),
               ),
             ],

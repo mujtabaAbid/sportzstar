@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/testing.dart';
@@ -58,7 +59,10 @@ class _StartedScreenState extends State<StartedScreen>
                 _moveUp
                     ? MediaQuery.of(context).size.height * 0.1
                     : MediaQuery.of(context).size.height * 0.38,
-                    left: (MediaQuery.of(context).size.width - MediaQuery.of(context).size.height * 0.32) / 2,
+            left:
+                (MediaQuery.of(context).size.width -
+                    MediaQuery.of(context).size.height * 0.32) /
+                2,
             // left: (MediaQuery.of(context).size.width / 2) / 8,
             child: Image.asset(
               'assets/images/startImage.png',
@@ -66,7 +70,7 @@ class _StartedScreenState extends State<StartedScreen>
               // width: 260,
             ),
           ),
-      
+
           // Animated Content
           AnimatedOpacity(
             opacity: _showContent ? 1 : 0,
@@ -93,11 +97,12 @@ class _StartedScreenState extends State<StartedScreen>
                     style: TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                   const SizedBox(height: 40),
-      
+
                   // Get Started Button
                   CustomButton(
                     text: 'Get Started',
                     textsize: 18,
+                    background: Palette.facebookColor,
                     onPressed: () async {
                       pushNamedNavigate(
                         context: context,
@@ -106,7 +111,7 @@ class _StartedScreenState extends State<StartedScreen>
                     },
                   ),
                   const SizedBox(height: 20),
-      
+
                   // Login Button
                   SizedBox(
                     width: double.infinity,
@@ -124,7 +129,7 @@ class _StartedScreenState extends State<StartedScreen>
                       ),
                       child: const Text(
                         'Login',
-                        style: TextStyle(fontSize: 18, color: Colors.black87),
+                        style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ),
                   ),

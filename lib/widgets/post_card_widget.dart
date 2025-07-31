@@ -375,7 +375,7 @@ class _PostCardState extends State<PostCard> {
                 // color: Colors.amber,
                 padding: const EdgeInsets.symmetric(
                   vertical: 0,
-                  horizontal: 18,
+                  horizontal: 20,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -467,13 +467,13 @@ class _PostCardState extends State<PostCard> {
                           Icon(
                             Icons.thumb_up_alt,
                             size: 20,
-                            color:
-                                (post['likes_list'] as List).any(
-                                      (like) =>
-                                          like['userId'] == userData['id'],
-                                    )
-                                    ? Palette.darkgreen
-                                    : Palette.darkgray,
+                            // color:
+                            //     (post['likes_list'] as List).any(
+                            //           (like) =>
+                            //               like['userId'] == userData['id'],
+                            //         )
+                            //         ? Palette.darkgreen
+                            //         : Palette.darkgray,
                           ),
                           const SizedBox(width: 4),
                           Text(' ${post['total_likes'].toString()}'),
@@ -666,16 +666,33 @@ class _PostCardState extends State<PostCard> {
                           Icon(
                             Icons.comment,
                             size: 20,
-                            color: Palette.darkgray,
+                            // color: Palette.darkgray,
                           ),
                           const SizedBox(width: 4),
                           Text('${post['total_comments']}'),
                         ],
                       ),
                     ),
-                    Icon(Icons.file_upload_outlined, size: 20),
+                    TextButton(
+                      style: ButtonStyle(
+                        padding: WidgetStateProperty.all<EdgeInsets>(
+                          EdgeInsets.zero,
+                        ),
+                        minimumSize: WidgetStateProperty.all<Size>(Size(0, 0)),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      onPressed: () {},
+                      child: Icon(Icons.file_upload_outlined, size: 20),
+                    ),
                     // const SizedBox(width: 16),
                     TextButton(
+                      style: ButtonStyle(
+                        padding: WidgetStateProperty.all<EdgeInsets>(
+                          EdgeInsets.zero,
+                        ),
+                        minimumSize: WidgetStateProperty.all<Size>(Size(0, 0)),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
                       onPressed: () {
                         // _captureAndSave();
                       },

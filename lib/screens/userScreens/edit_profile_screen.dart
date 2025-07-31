@@ -271,7 +271,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return MainLayoutWidget(
       isLoading: _isLoading,
-      appBar: AppBar(title: const Text('Edit Profile'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text(
+          'Edit Profile',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
@@ -350,7 +358,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       padding: const EdgeInsets.only(left: 8),
                       child: Text(
                         'Gender',
-                        style: TextStyle(color: Colors.black, fontSize: 14),
+                        style: TextStyle(color: Colors.white, fontSize: 14),
                       ),
                     ),
                   ],
@@ -358,13 +366,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
                   value: capitalize(userData['gender'] ?? 'Male'),
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                  decoration: const InputDecoration(
-                    labelStyle: TextStyle(color: Colors.black),
+                  // borderRadius: BorderRadius.all(Radius.circular(12),),
+                  decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Colors.white),
                     filled: true,
-                    fillColor: Color.fromARGB(255, 224, 224, 224),
+                    fillColor: Color.fromARGB(51, 224, 224, 224),
                     // labelText: 'Gender',
-                    border: OutlineInputBorder(),
+                    // border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Palette.facebookColor),
+                    ),
                   ),
                   items:
                       ['Male', 'Female', 'Other']
@@ -391,7 +411,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       padding: const EdgeInsets.only(left: 8),
                       child: Text(
                         'Player Category',
-                        style: TextStyle(color: Colors.black, fontSize: 14),
+                        style: TextStyle(color: Colors.white, fontSize: 14),
                       ),
                     ),
                   ],
@@ -413,12 +433,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ? userData['player_category']
                         : 'Select Player Category',
                   ), // <-- this shows the placeholder
-                  decoration: const InputDecoration(
-                    labelStyle: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Colors.white),
                     filled: true,
-                    fillColor: Color.fromARGB(255, 224, 224, 224),
+                    fillColor: Color.fromARGB(51, 224, 224, 224),
                     // labelText: 'Gender',
-                    border: OutlineInputBorder(),
+                    // border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Palette.facebookColor),
+                    ),
                   ),
                   items:
                       sportsCategories
@@ -460,25 +492,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     // child:
                     Text(
                       'Start Year',
-                      style: TextStyle(color: Colors.black, fontSize: 14),
+                      style: TextStyle(color: Colors.white, fontSize: 14),
                       // ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
                 TextField(
-                  style: const TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.white),
                   controller: dobController,
                   readOnly: true,
                   onTap: () => _selectYear(context),
 
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Palette.basicgray,
+                    fillColor: Color.fromARGB(51, 224, 224, 224),
                     hintText: userData['start_year'] ?? "YYYY",
-                    labelStyle: TextStyle(color: Colors.black),
-                    hintStyle: TextStyle(color: Colors.black),
-                    border: OutlineInputBorder(),
+                    labelStyle: TextStyle(color: Colors.white),
+                    hintStyle: TextStyle(color: Colors.white),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Palette.facebookColor),
+                    ),
                     suffixIcon: Icon(Icons.calendar_today),
                   ),
                 ),
@@ -505,7 +548,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       padding: const EdgeInsets.only(left: 8),
                       child: Text(
                         'Social Links',
-                        style: TextStyle(color: Colors.black, fontSize: 14),
+                        style: TextStyle(color: Colors.white, fontSize: 14),
                       ),
                     ),
                   ],
@@ -521,8 +564,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           hint: Text('Select Link'),
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: Palette.basicgray,
-                            border: OutlineInputBorder(),
+                            fillColor: Color.fromARGB(51, 224, 224, 224),
+                            // border: OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: Palette.facebookColor,
+                              ),
+                            ),
                           ),
                           items:
                               getRemainingOptions(index)
@@ -543,14 +600,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           const SizedBox(height: 10),
                           TextFormField(
                             controller: controllers[index],
-                            cursorColor: Colors.black,
+                            cursorColor: Colors.white,
                             style: const TextStyle(
-                              color: Colors.black,
+                              color: Colors.white,
                               fontWeight: FontWeight.normal,
                             ),
                             decoration: InputDecoration(
                               labelStyle: const TextStyle(
-                                color: Colors.black,
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
                               hintText: 'Enter ${selectedItems[index]} link',
@@ -598,7 +655,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       padding: const EdgeInsets.only(left: 8),
                       child: Text(
                         'Career History',
-                        style: TextStyle(color: Colors.black, fontSize: 14),
+                        style: TextStyle(color: Colors.white, fontSize: 14),
                       ),
                     ),
                   ],
@@ -616,8 +673,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           hint: Text('Select Career History'),
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: Palette.basicgray,
-                            border: OutlineInputBorder(),
+                            fillColor: Color.fromARGB(51, 224, 224, 224),
+                            // border: OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: Colors.transparent),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: Palette.facebookColor,
+                              ),
+                            ),
                           ),
                           items:
                               getRemainingOptionsCareerHistory(index)
@@ -638,52 +709,51 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           const SizedBox(height: 10),
                           TextFormField(
                             controller: controllers[index],
-                            cursorColor: Colors.black,
+                            cursorColor: Colors.white,
                             style: const TextStyle(
-                              color: Colors.black,
+                              color: Colors.white,
                               fontWeight: FontWeight.normal,
                             ),
                             decoration: InputDecoration(
                               labelStyle: const TextStyle(
-                                color: Colors.black,
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
                               hintText:
                                   'Enter ${selectCareerHistoryItems[index]} description',
-                               enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: BorderSide(
-                        color:
-                             Colors.grey,
-                        width: 2.0,
-                      ),
-                  
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                  width: 2.0,
+                                ),
                               ),
                             ),
                           ),
                           const SizedBox(height: 10),
                           TextField(
-                  style: const TextStyle(color: Colors.black),
-                  controller: dobController,
-                  readOnly: true,
-                  onTap:() => pickDate(context, index, true),
+                            style: const TextStyle(color: Colors.white),
+                            controller: dobController,
+                            readOnly: true,
+                            onTap: () => pickDate(context, index, true),
 
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Palette.basicgray,
-                    hintText:  startDates[index] != null
-                                    ? formatDate(startDates[index]!)
-                                    : "Select Start Date",
-                    labelStyle: TextStyle(color: Colors.black),
-                    hintStyle: TextStyle(color: Colors.black),
-                    border: OutlineInputBorder(),
-                    suffixIcon: Icon(Icons.calendar_today),
-                  ),
-                ),
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color.fromARGB(51, 224, 224, 224),
+                              hintText:
+                                  startDates[index] != null
+                                      ? formatDate(startDates[index]!)
+                                      : "Select Start Date",
+                              labelStyle: TextStyle(color: Colors.white),
+                              hintStyle: TextStyle(color: Colors.white),
+                              border: OutlineInputBorder(),
+                              suffixIcon: Icon(Icons.calendar_today),
+                            ),
+                          ),
                           // Start Date
                           // InkWell(
                           //   onTap: () => pickDate(context, index, true),
@@ -700,29 +770,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           //       startDates[index] != null
                           //           ? "Start Date: ${formatDate(startDates[index]!)}"
                           //           : "Select Start Date",
-                          //       style: TextStyle(color: Colors.black),
+                          //       style: TextStyle(color: Colors.white),
                           //     ),
                           //   ),
                           // ),
                           const SizedBox(height: 10),
-                             TextField(
-                  style: const TextStyle(color: Colors.black),
-                  controller: dobController,
-                  readOnly: true,
-                  onTap:() => pickDate(context, index, false),
+                          TextField(
+                            style: const TextStyle(color: Colors.white),
+                            controller: dobController,
+                            readOnly: true,
+                            onTap: () => pickDate(context, index, false),
 
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Palette.basicgray,
-                    hintText:  endDates[index] != null
-                                    ? formatDate(endDates[index]!)
-                                    : "Select End Date",
-                    labelStyle: TextStyle(color: Colors.black),
-                    hintStyle: TextStyle(color: Colors.black),
-                    border: OutlineInputBorder(),
-                    suffixIcon: Icon(Icons.calendar_today),
-                  ),
-                ),
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color.fromARGB(51, 224, 224, 224),
+                              hintText:
+                                  endDates[index] != null
+                                      ? formatDate(endDates[index]!)
+                                      : "Select End Date",
+                              labelStyle: TextStyle(color: Colors.white),
+                              hintStyle: TextStyle(color: Colors.white),
+                              border: OutlineInputBorder(),
+                              suffixIcon: Icon(Icons.calendar_today),
+                            ),
+                          ),
                           const SizedBox(height: 10),
                           if (index == selectCareerHistoryItems.length - 1 &&
                               selectCareerHistoryItems

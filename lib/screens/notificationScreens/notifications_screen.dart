@@ -71,9 +71,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return MainLayoutWidget(
       isLoading: _isLoading,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
         title: Text(
           'Notifications',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         centerTitle: true,
       ),
@@ -113,10 +115,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     ),
                     title: Text(
                       chat['full_name'],
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                    subtitle: Text(chat['message']),
-                    trailing: Text(_formatDateOrTime(chat['created_at'])),
+                    subtitle: Text(
+                      chat['message'],
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    trailing: Text(
+                      _formatDateOrTime(chat['created_at']),
+                      style: const TextStyle(color: Colors.white),
+                    ),
                     onTap: () {
                       pushNamedNavigate(
                         context: context,
