@@ -1,14 +1,22 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sportzstar/config/palette.dart';
+import 'package:sportzstar/helper/basic_enum.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/provider/home_provider.dart';
 import 'package:sportzstar/provider/stories_provider.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
+import 'package:sportzstar/screens/bottom_navigation_bar.dart';
+import 'package:sportzstar/screens/storyScreens/other_user_stories.dart';
 import 'package:sportzstar/screens/testing.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
+import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/post_card_widget.dart';
+
+import '../helper/local_storage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     getNotifications();
     getSports();
-    allUsers();
+    getStoryUsers();
     getPosts();
   }
 
@@ -31,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Map<String, dynamic>> posts = [];
   List<String> sportsCategories = [];
   int notificationCount = 0;
+  // int storyCount = 0;
   bool _isLoading = false;
 
   Future<void> getNotifications() async {
@@ -68,35 +77,67 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> allUsers() async {
+  Future<void> getStoryUsers() async {
     setState(() {
       _isLoading = true;
     });
+
     try {
+      final data = await getDataFromLocalStorage(name: 'userData');
+      final logedInUser = json.decode(data);
+      final loggedInUserId = logedInUser['id'];
+
       final usersData =
-          await Provider.of<HomeProvider>(context, listen: false).usersList();
+          await Provider.of<StoriesProvider>(
+            context,
+            listen: false,
+          ).getAllStories();
 
-      print('API Response: $usersData');
+      print('API Response:---- $usersData');
 
-      // Clear previous data
       allUsersList.clear();
+      int totalStories = 0;
 
-      // Merge all categories in order
-      for (String key in [
-        'friends',
-        'send_requests_users',
-        'recieved_request_users',
-        'other_users',
-      ]) {
-        if (usersData[key] != null && usersData[key] is List) {
-          allUsersList.addAll(List<Map<String, dynamic>>.from(usersData[key]));
+      Map<String, dynamic>? loggedInUserMapFromResponse;
+
+      for (var user in usersData) {
+        final userId = user['user_id'];
+
+        // Count stories
+        int storyCount = 0;
+        if (user['stories'] != null && user['stories'] is List) {
+          storyCount = user['stories'].length;
+          totalStories += storyCount;
         }
+
+        // Add story_count to user object
+        user['story_count'] = storyCount;
+
+        // If it's the logged-in user, store it separately
+        if (userId == loggedInUserId) {
+          loggedInUserMapFromResponse = user;
+          continue; // skip adding now
+        }
+
+        allUsersList.add(user); // Add others
       }
 
-      print('Final flattened list: ${allUsersList.length} users');
+      // Add logged-in user at index 0
+      if (loggedInUserMapFromResponse != null) {
+        allUsersList.insert(0, loggedInUserMapFromResponse);
+      } else {
+        final loggedInUserMap = Map<String, dynamic>.from(logedInUser);
+        loggedInUserMap['stories'] = [];
+        loggedInUserMap['story_count'] = 0;
+        allUsersList.insert(0, loggedInUserMap);
+      }
+
+      print('Total stories count: $totalStories');
+      print('Total users with stories: ${allUsersList.length}');
     } catch (e) {
-      print('from screen use list------->>>>>> Error: $e');
+      print('story users list------->>>>>> Error: $e');
     }
+
     setState(() {
       _isLoading = false;
     });
@@ -120,17 +161,52 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getUserStories(int userId) async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
-      final response = Provider.of<StoriesProvider>(
+      final response = await Provider.of<StoriesProvider>(
         context,
         listen: false,
       ).getStories(userId);
 
-      print('allll sstroies from hokme==========>>>> $response');
-      print('allll sstroies from hokme==========>>>> $response');
+      print(
+        'allll sstroies from hokme==========>>>> ${response['total_stories']}',
+      );
+
+      if (response['total_stories'] == 0) {
+        // alertNotification(
+        //   context: context,
+        //   message: 'No stories Posted',
+        //   messageType: AlertMessageType.warning,
+        // );
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => BottomNavigationBarScreen(pageIndex: 1),
+          ),
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => OtherUserStoryDetailScreen(
+                  story:
+                      (response['stories'] as List)
+                          .cast<Map<String, dynamic>>(),
+                ),
+          ),
+        );
+      }
+      print(
+        'allll sstroies from hokme==========>>>> ${response['total_stories']}',
+      );
     } catch (e) {
-      print('allll sstroies from hokme==========>>>> $e');
+      print('allll sstroies from hokme====e======>>>> $e');
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   String selectedCategory = '';
@@ -308,9 +384,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                       ),
                       child: IconButton(
-                        onPressed: () {
-                          
-                        },
+                        onPressed: () {},
                         icon: Icon(
                           Icons.add_a_photo_outlined,
                           color: Colors.white,
@@ -337,7 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 final story = allUsersList[index];
                 return GestureDetector(
                   onTap: () {
-                    getUserStories(story['id']);
+                    getUserStories(story['user_id'] ?? story['id']);
                   },
                   child: Container(
                     padding: EdgeInsets.only(left: index == 0 ? 16 : 0),
@@ -347,51 +421,57 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Stack(
                             children: [
-                              Container(
-                                padding: EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.transparent,
-                                  // gradient: LinearGradient(
-                                  //   colors: [Colors.yellow, Colors.orange],
-                                  // ),
+                              CustomPaint(
+                                painter: StoryBorderPainter(
+                                  storyCount: story['story_count'],
                                 ),
-                                child: CircleAvatar(
-                                  radius: 32,
-                                  backgroundImage:
-                                      story['profile_picture'] != null &&
-                                              story['profile_picture']
-                                                  .toString()
-                                                  .isNotEmpty
-                                          ? NetworkImage(
-                                            story['profile_picture'] ??
-                                                'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
-                                          )
-                                          : AssetImage(
-                                                'assets/profile/user.png',
-                                              )
-                                              as ImageProvider,
+                                child: Container(
+                                  padding: const EdgeInsets.all(
+                                    2,
+                                  ), // space between border and image
+                                  child: CircleAvatar(
+                                    radius: 32,
+                                    backgroundImage:
+                                        story['user_profile'] != null &&
+                                                story['user_profile']
+                                                    .toString()
+                                                    .isNotEmpty
+                                            ? NetworkImage(
+                                              story['user_profile'] ??
+                                                  story['profile_picture'] ??
+                                                  'https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black-thumbnail.png',
+                                            )
+                                            : const AssetImage(
+                                                  'assets/profile/user.png',
+                                                )
+                                                as ImageProvider,
+                                  ),
                                 ),
                               ),
-                              // Positioned(
-                              //   bottom: 2,
-                              //   right: 2,
-                              //   child: Container(
-                              //     decoration: BoxDecoration(
-                              //       borderRadius: BorderRadius.circular(20),
-                              //       color: const Color.fromARGB(221, 32, 32, 31),
-                              //     ),
-                              //     child: Icon(
-                              //       Icons.add_reaction_sharp,
-                              //       color: Colors.white,
-                              //     ),
-                              //   ),
-                              // ),
+                              if (story['story_count'] == 0)
+                                Positioned(
+                                  bottom: 2,
+                                  right: 2,
+                                  child: CircleAvatar(
+                                    radius: 10,
+                                    backgroundColor: Color.fromARGB(
+                                      221,
+                                      32,
+                                      32,
+                                      31,
+                                    ),
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                      size: 16,
+                                    ),
+                                  ),
+                                ),
                             ],
                           ),
                           SizedBox(height: 4),
                           Text(
-                            story['full_name'],
+                            story['full_name'] ?? story['user_name'],
                             style: TextStyle(fontSize: 12, color: Colors.white),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -422,9 +502,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       // vertical: 8,
                     ),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          selectedCategory = category;
+                          print('kjfskdjfhsdjf---->>>>$selectedCategory');
+                        });
+                      },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Palette.facebookColor,
+                        backgroundColor:
+                            category == selectedCategory
+                                ? Color.fromARGB(255, 13, 32, 70)
+                                : Palette.facebookColor,
                       ),
                       child: Text(
                         category,
@@ -517,16 +605,60 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
-
-          // CustomButton(
-          //   onPressed: () {
-          //     print('dlgfdhjjg');
-          //     getNotifications();
-          //   },
-          //   text: 'ewfsefs',
-          // ),
         ],
       ),
     );
   }
+}
+
+class StoryBorderPainter extends CustomPainter {
+  final int storyCount;
+  final double strokeWidth;
+  final Color color;
+
+  StoryBorderPainter({
+    required this.storyCount,
+    this.strokeWidth = 2,
+    this.color = Colors.blueAccent,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (storyCount <= 0) return;
+
+    final radius = (size.width / 2);
+    final center = Offset(size.width / 2, size.height / 2);
+    final paint =
+        Paint()
+          ..color = color
+          ..strokeWidth = strokeWidth
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
+
+    if (storyCount == 1) {
+      // Full circle
+      canvas.drawCircle(center, radius, paint);
+    } else {
+      final gapSize = 9; // degrees of gap between segments
+      final sweepAngle = (360 - (storyCount * gapSize)) / storyCount;
+
+      double startAngle = -90; // starting from top
+
+      for (int i = 0; i < storyCount; i++) {
+        canvas.drawArc(
+          Rect.fromCircle(center: center, radius: radius),
+          radians(startAngle),
+          radians(sweepAngle),
+          false,
+          paint,
+        );
+        startAngle += sweepAngle + gapSize;
+      }
+    }
+  }
+
+  double radians(double degrees) => degrees * 3.1415926535 / 180;
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
