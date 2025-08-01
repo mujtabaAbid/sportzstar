@@ -21,7 +21,7 @@ const String notificationScreenRoute = '/notification';
 
 //PostScreens
 const String postDetailScreenRoute = '/post-details';
-
+const String createPostScreenRoute  = '/create-Post';
 //StoryScreen
 const String storyScreenRoute = '/story';
 
@@ -30,6 +30,8 @@ const String storyScreenRoute = '/story';
 const String editProfileScreenRoute = '/edit-profile';
 const String userProfileScreenRoute = '/user-profile';
 const String settingsScreenRoute = '/settings-screen';
+const String addFriendListScreenRoute = '/add-friends-screen';
+
 
 // others (Not Implimented)
 const String changePasswordScreenRoute = '/change-password-screen';

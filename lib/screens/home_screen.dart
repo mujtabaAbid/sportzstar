@@ -296,7 +296,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                       ),
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          pushNamedNavigate(
+                            context: context,
+                            pageName: addFriendListScreenRoute,
+                          );
+                        },
                         icon: Icon(Icons.add, color: Colors.white, size: 28),
                       ),
                     ),
@@ -309,7 +314,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: IconButton(
                         onPressed: () {
-                          
+                          pushNamedNavigate(
+                            context: context,
+                            pageName: createPostScreenRoute,
+                          );
                         },
                         icon: Icon(
                           Icons.add_a_photo_outlined,
