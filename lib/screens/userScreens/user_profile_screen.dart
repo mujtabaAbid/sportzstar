@@ -35,41 +35,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   String postsCount = '';
   String totalLikes = '';
   String totalcomments = '';
-  // List<dynamic> filteredPosts = [];
 
   final List<Map<String, dynamic>> myPostsGrid = [
     {'name': 'profile', 'icon': Icons.person},
     {'name': 'video', 'icon': Icons.grid_on},
     {'name': 'text', 'icon': Icons.video_collection_outlined},
   ];
-
-  // Future<void> _launchLink(String url) async {
-  //   final Uri uri = Uri.parse(url.startsWith('http') ? url : 'https://$url');
-  //   if (await canLaunchUrl(uri)) {
-  //     await launchUrl(uri, mode: LaunchMode.externalApplication);
-  //   } else {
-  //     throw 'Could not launch $url';
-  //   }
-  // }
-
-  // final List<Map<String, dynamic>> posts = [
-  //   {
-  //     'post_type': 'image',
-  //     'data': 'assets/profile/twoImage.jpeg', // Replace with real URL or Asset
-  //     'total_likes': '96k',
-  //   },
-  //   {
-  //     'post_type': 'Videos',
-  //     'data': 'assets/profile/oneImage.jpeg', // Replace with real URL or Asset
-  //     'total_likes': '66k',
-  //   },
-  //   {
-  //     'post_type': 'text',
-  //     'data':
-  //         'assets/profile/threeImage.jpeg', // Replace with real URL or Asset
-  //     'total_likes': '100k',
-  //   },
-  // ];
 
   Future<void> getUserData() async {
     setState(() {
@@ -79,13 +50,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       final pref = await getDataFromLocalStorage(name: 'userData');
       userData = json.decode(pref);
       print('userData ===----==>>>$userData');
-      // _selectedGender = userData['gender'];
     } catch (e) {
       print('error in getting user data------>>>>>>>$e');
     }
-    // setState(() {
-    //   _isLoading = false;
-    // });
+
   }
 
   Future<void> getUserPosts() async {
@@ -96,7 +64,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             listen: false,
           ).getAllUserPosts();
       allUserPosts = response;
-      print('userData ===----==>>>$allUserPosts');
+      print('userData Posts===----==>>>$allUserPosts');
 
       postsCount = allUserPosts.length.toString();
       // Calculate total likes
@@ -470,13 +438,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         fontSize: 18,
                                       ),
                                     ),
-                                     SizedBox(height: 10,),
+                                    SizedBox(height: 10),
                                     Container(
                                       width: double.infinity,
                                       padding: EdgeInsets.all(12),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(12),
-                                        color: const Color.fromARGB(54, 96, 125, 139),
+                                        color: const Color.fromARGB(
+                                          54,
+                                          96,
+                                          125,
+                                          139,
+                                        ),
                                       ),
                                       child: Column(
                                         crossAxisAlignment:
@@ -521,7 +494,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                 fontSize: 14,
                                               ),
                                             ),
-                                              if ((userData['bio'] ?? '')
+                                          if ((userData['bio'] ?? '')
                                               .toString()
                                               .isNotEmpty)
                                             if ((userData['player_category'] ??
@@ -548,21 +521,26 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         ],
                                       ),
                                     ),
-                                    SizedBox(height: 10,),
+                                    SizedBox(height: 10),
                                     Text(
                                       'Bio',
                                       style: TextStyle(
-                                        color:  Colors.white,
+                                        color: Colors.white,
                                         fontSize: 18,
                                       ),
                                     ),
-                                     SizedBox(height: 10,),
+                                    SizedBox(height: 10),
                                     Container(
-                                       width: double.infinity,
+                                      width: double.infinity,
                                       padding: EdgeInsets.all(12),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(12),
-                                        color: const Color.fromARGB(54, 96, 125, 139),
+                                        color: const Color.fromARGB(
+                                          54,
+                                          96,
+                                          125,
+                                          139,
+                                        ),
                                       ),
                                       child: Column(
                                         crossAxisAlignment:
@@ -582,42 +560,47 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       ),
                                     ),
 
-
-                                   
-                                      SizedBox(height: 10),
-                                       Text(
-                                        'Social Media',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      'Social Media',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
                                       ),
-                                      SizedBox(height: 10),
+                                    ),
+                                    SizedBox(height: 10),
                                     Container(
                                       width: double.infinity,
                                       padding: EdgeInsets.all(12),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(12),
-                                        color: const Color.fromARGB(54, 96, 125, 139),
+                                        color: const Color.fromARGB(
+                                          54,
+                                          96,
+                                          125,
+                                          139,
+                                        ),
                                       ),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          if (userData['social_links'] != null &&
-                                        (userData['social_links'] as List)
-                                            .isNotEmpty)
-                                      ...List<Widget>.from(
-                                        (userData['social_links'] as List).map(
-                                          (linkData) => Text(
-                                            '${linkData['platform']}: ${linkData['link']}',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
+                                          if (userData['social_links'] !=
+                                                  null &&
+                                              (userData['social_links'] as List)
+                                                  .isNotEmpty)
+                                            ...List<Widget>.from(
+                                              (userData['social_links'] as List)
+                                                  .map(
+                                                    (linkData) => Text(
+                                                      '${linkData['platform']}: ${linkData['link']}',
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ),
                                             ),
-                                          ),
-                                        ),
-                                      ),
                                         ],
                                       ),
                                     ),
@@ -648,29 +631,34 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     if ((userData['medals'] ?? '')
                                         .toString()
                                         .isNotEmpty)
-                                        Text(
+                                      Text(
                                         'Medals',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 18,
                                         ),
                                       ),
-                                       SizedBox(height: 10,),
-                                      Container(
-                                          width: double.infinity,
+                                    SizedBox(height: 10),
+                                    Container(
+                                      width: double.infinity,
                                       padding: EdgeInsets.all(12),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(12),
-                                         color: const Color.fromARGB(54, 96, 125, 139),
-                                      ),
-                                        child: Text(
-                                          '${userData['medals']}',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                          ),
+                                        color: const Color.fromARGB(
+                                          54,
+                                          96,
+                                          125,
+                                          139,
                                         ),
                                       ),
+                                      child: Text(
+                                        '${userData['medals']}',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
                                     // Career History (List)
                                     if ((userData['career_history'] ?? [])
                                             is List &&
@@ -682,85 +670,97 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 18,
-                                          
                                         ),
                                       ),
-                                       SizedBox(height: 10,),
-                                     Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                         color: const Color.fromARGB(54, 96, 125, 139),
-                                      ),  
-                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start, 
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                           ...List<Widget>.from(
-                                          (userData['career_history'] as List).map(
-                                            (career) => Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                if ((career['title'] ?? '')
-                                                    .toString()
-                                                    .isNotEmpty)
-                                                  Text(
-                                                    '🔹 Title: ${career['title']}',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 14,
-                                                    ),
-                                                  ),
-                                                if ((career['clubName'] ?? '')
-                                                    .toString()
-                                                    .isNotEmpty)
-                                                  Text(
-                                                    '🏛 Club: ${career['clubName']}',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 14,
-                                                    ),
-                                                  ),
-                                                if ((career['description'] ?? '')
-                                                    .toString()
-                                                    .isNotEmpty)
-                                                  Text(
-                                                    '📄 Description: ${career['description']}',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 14,
-                                                    ),
-                                                  ),
-                                                if ((career['start_date'] ?? '')
-                                                    .toString()
-                                                    .isNotEmpty)
-                                                  Text(
-                                                    '📅 Start: ${career['start_date']}',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 14,
-                                                    ),
-                                                  ),
-                                                if ((career['end_date'] ?? '')
-                                                    .toString()
-                                                    .isNotEmpty)
-                                                  Text(
-                                                    '📅 End: ${career['end_date']}',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 14,
-                                                    ),
-                                                  ),
-                                                const SizedBox(height: 6),
-                                              ],
-                                            ),
+                                      SizedBox(height: 10),
+                                      Container(
+                                        width: double.infinity,
+                                        padding: EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          color: const Color.fromARGB(
+                                            54,
+                                            96,
+                                            125,
+                                            139,
                                           ),
                                         ),
-                                        ],
-                                       ),
-                                     )
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            ...List<Widget>.from(
+                                              (userData['career_history'] as List).map(
+                                                (career) => Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    if ((career['title'] ?? '')
+                                                        .toString()
+                                                        .isNotEmpty)
+                                                      Text(
+                                                        '🔹 Title: ${career['title']}',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                    if ((career['clubName'] ??
+                                                            '')
+                                                        .toString()
+                                                        .isNotEmpty)
+                                                      Text(
+                                                        '🏛 Club: ${career['clubName']}',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                    if ((career['description'] ??
+                                                            '')
+                                                        .toString()
+                                                        .isNotEmpty)
+                                                      Text(
+                                                        '📄 Description: ${career['description']}',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                    if ((career['start_date'] ??
+                                                            '')
+                                                        .toString()
+                                                        .isNotEmpty)
+                                                      Text(
+                                                        '📅 Start: ${career['start_date']}',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                    if ((career['end_date'] ??
+                                                            '')
+                                                        .toString()
+                                                        .isNotEmpty)
+                                                      Text(
+                                                        '📅 End: ${career['end_date']}',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                    const SizedBox(height: 6),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ],
                                 ),

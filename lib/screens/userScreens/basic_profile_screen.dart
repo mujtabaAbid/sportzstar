@@ -176,10 +176,10 @@ class _BasicProfileScreenState extends State<BasicProfileScreen> {
       closeKeyboard(context: context);
 
       try {
-        final response = await Provider.of<UserProvider>(
-          context,
-          listen: false,
-        ).updateBasicUserProfile(formData: _formData);
+        // final response = await Provider.of<UserProvider>(
+        //   context,
+        //   listen: false,
+        // ).updateBasicUserProfile(formData: _formData);
 
         // alertNotification(
         //   context: context,

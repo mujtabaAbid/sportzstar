@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/captaliza.dart';
 import 'package:sportzstar/helper/local_storage.dart';
+import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/provider/user_provider.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
@@ -16,6 +17,7 @@ import '../../helper/basic_enum.dart';
 import '../../helper/close_keyboard.dart';
 import '../../provider/home_provider.dart';
 import '../../widgets/alerts/alert_notification_widget.dart';
+import '../bottom_navigation_bar.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -33,11 +35,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final List<String> allOptions = ['Facebook', 'Instagram', 'Twitter'];
   final List<String?> selectedItems = [];
   final List<TextEditingController> controllers = [];
-
   final List<String?> selectCareerHistoryItems = [];
   File? _image;
   List<DateTime?> startDates = [];
   List<DateTime?> endDates = [];
+  List<TextEditingController> titleControllers = [TextEditingController()];
 
   List<TextEditingController> startDateControllers = [TextEditingController()];
   List<TextEditingController> endDateControllers = [TextEditingController()];
@@ -171,7 +173,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void addNewItemCareerHistory() {
     setState(() {
       selectCareerHistoryItems.add('');
-      controllers.add(TextEditingController());
+      titleControllers.add(TextEditingController());
       clubNameControllers.add(TextEditingController());
       descriptionControllers.add(TextEditingController());
       startDateControllers.add(TextEditingController());
@@ -212,64 +214,116 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return _formData[type] = value;
   }
 
-  void handleSubmit() {
-    final form = _formKey.currentState;
-    if (form != null && form.validate()) {
-      form.save();
+  void handleSubmit() async {
+    String startYear =
+        dobController.text.isNotEmpty
+            ? dobController.text
+            : userData['start_year'] != null
+            ? userData['start_year'].toString()
+            : "";
+    if (startYear.isNotEmpty) {
+      final form = _formKey.currentState;
+      if (form != null && form.validate()) {
+        form.save();
 
-      // Prepare social_links array
-      List<Map<String, dynamic>> socialLinks = [];
-      for (int i = 0; i < selectedItems.length; i++) {
-        if (selectedItems[i] != null && controllers[i].text.isNotEmpty) {
-          socialLinks.add({
-            "platform": selectedItems[i],
-            "link": controllers[i].text,
+        // Prepare social_links array
+        List<Map<String, dynamic>> socialLinks = [];
+        for (int i = 0; i < selectedItems.length; i++) {
+          if (selectedItems[i] != null && controllers[i].text.isNotEmpty) {
+            socialLinks.add({
+              "platform": selectedItems[i],
+              "link": controllers[i].text,
+            });
+          }
+        }
+
+        if (socialLinks.isEmpty) {
+          print(
+            'social links are empty -------------------${userData['social_links']}',
+          );
+        } else if (socialLinks == []) {
+          print('social links are empty []-------------- $socialLinks');
+        } else {
+          print('social links are ---->$socialLinks');
+        }
+
+        // Prepare career_history array
+        List<Map<String, dynamic>> careerHistory = [];
+        for (int i = 0; i < selectCareerHistoryItems.length; i++) {
+          careerHistory.add({
+            // "game_name":
+            //     userData["player_category"] ??
+            //     "", // or a separate field if needed
+            "clubName": clubNameControllers[i].text,
+            "title": titleControllers[i].text,
+            "start_date":
+                startDates[i] != null
+                    ? startDates[i]!.toIso8601String().split('T')[0]
+                    : "",
+            "end_date":
+                endDates[i] != null
+                    ? endDates[i]!.toIso8601String().split('T')[0]
+                    : "",
+            "description": descriptionControllers[i].text,
           });
         }
+
+        // Final data map
+        Map<String, dynamic> finalData = {
+          "email": _formData['email'],
+          "full_name": _formData['full_name'],
+          "age": int.tryParse(_formData['age'].toString()) ?? 0,
+          "gender": _formData['gender'] ?? 'male',
+          "player_category":
+              _formData['player_category'] ?? userData["player_category"],
+          "bio": _formData['bio'],
+          "start_year": startYear,
+          "medals": _formData['medals'],
+          "social_links":
+              socialLinks.isNotEmpty ? socialLinks : userData['social_links'],
+          "career_history": careerHistory,
+        };
+
+        print('Final JSON to send:------->>>> $finalData');
+
+        // final response = await Provider.of<UserProvider>(
+        //   context,
+        //   listen: false,
+        // ).updateUserProfile(formData: _formData);
+
+        // if (response.statusCode == 200) {
+        //   final responseData = json.decode(response.body);
+        //   //On success function first show success message
+        //   alertNotification(
+        //     context: context,
+        //     message: responseData['detail'],
+        //     messageType: AlertMessageType.success,
+        //   );
+
+        //   //then update local storage
+        //   final data = json.encode(responseData['user']);
+        //   addDataToLocalStorage(name: 'userData', value: data);
+
+        //   //then send to profile screen
+        //   Navigator.of(context).push(
+        //     MaterialPageRoute(
+        //       builder: (context) => BottomNavigationBarScreen(pageIndex: 4),
+        //     ),
+        //   );
+        // } else {
+        //   alertNotification(
+        //     context: context,
+        //     message: 'Something wrong, try again later',
+        //     messageType: AlertMessageType.error,
+        //   );
+        // }
       }
-
-      // Prepare career_history array
-      List<Map<String, dynamic>> careerHistory = [];
-      for (int i = 0; i < selectCareerHistoryItems.length; i++) {
-        careerHistory.add({
-          "game_name":
-              userData["player_category"] ??
-              "", // or a separate field if needed
-          "clubName": clubNameControllers[i].text,
-          "title": controllers[i].text,
-          "start_date":
-              startDates[i] != null
-                  ? startDates[i]!.toIso8601String().split('T')[0]
-                  : "",
-          "end_date":
-              endDates[i] != null
-                  ? endDates[i]!.toIso8601String().split('T')[0]
-                  : "",
-          "description": descriptionControllers[i].text,
-        });
-      }
-
-      // Add start year
-      String startYear = dobController.text;
-
-      // Final data map
-      Map<String, dynamic> finalData = {
-        "email": _formData['email'],
-        "full_name": _formData['full_name'],
-        "age": int.tryParse(_formData['age'].toString()) ?? 0,
-        "gender": _formData['gender'] ?? 'male',
-        "player_category": _formData['player_category'],
-        "bio": _formData['bio'],
-        "start_year": startYear,
-        "medals": _formData['medals'],
-        "social_links": socialLinks,
-        "career_history": careerHistory,
-      };
-
-      print('Final JSON to send: $finalData');
-
-      // 🔁 Send this to your API
-      // await ApiService.updateProfile(finalData);
+    } else {
+      alertNotification(
+        context: context,
+        message: 'Start Year field is required',
+        messageType: AlertMessageType.error,
+      );
     }
   }
 
@@ -378,6 +432,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 // age
                 InputWidget(
                   keyboardType: TextInputType.number,
+                  initialValue: userData['age'].toString() ?? '',
                   noValidator:
                       userData['age'].toString().isNotEmpty ? true : false,
                   highlightErrorBorder: true,
@@ -464,12 +519,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
+                  value:
+                      userData['player_category'] != null &&
+                              userData['player_category'] != ''
+                          ? userData['player_category']
+                          : null,
                   hint: Text(
-                    userData['player_category'] != null &&
-                            userData['player_category'] != ''
-                        ? userData['player_category']
-                        : 'Select Player Category',
-                  ), // <-- this shows the placeholder
+                    'Select Player Category',
+                    style: TextStyle(color: Colors.white), // hint text color
+                  ),
+                  style: TextStyle(color: Colors.white), // selected value color
+                  dropdownColor: Colors.black, // dropdown background if needed
                   decoration: InputDecoration(
                     labelStyle: TextStyle(color: Colors.white),
                     filled: true,
@@ -492,17 +552,34 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           .map(
                             (category) => DropdownMenuItem(
                               value: category,
-                              child: Text(category),
+                              child: Text(
+                                category,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ), // dropdown item text
+                              ),
                             ),
                           )
                           .toList(),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      alertNotification(
+                        context: context,
+                        message: 'Please select Player category',
+                        messageType: AlertMessageType.error,
+                      );
+                      return 'Please select a category';
+                    }
+                    return null;
+                  },
                   onChanged: (value) {
-                    print(
-                      'ksdjfhsdjhifgsdihfgiusdghiusdhfiusdjhf----->>>>$value',
+                    handleSave(
+                      'player_category',
+                      value ?? userData['player_category'],
                     );
-                    handleSave('player_category', value!);
                   },
                 ),
+
                 const SizedBox(height: 16),
                 //bios
                 InputWidget(
@@ -601,43 +678,70 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        DropdownButtonFormField<String>(
-                          value: selectedItems[index],
-                          hint: Text('Select Link'),
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Color.fromARGB(51, 224, 224, 224),
-                            // border: OutlineInputBorder(),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: BorderSide(color: Colors.transparent),
+                        Theme(
+                          data: Theme.of(context).copyWith(
+                            canvasColor: const Color.fromARGB(
+                              255,
+                              44,
+                              44,
+                              44,
+                            ), // Dropdown background color (optional)
+                          ),
+                          child: DropdownButtonFormField<String>(
+                            value: selectedItems[index],
+                            hint: Text(
+                              'Select Link',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ), // Hint color
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: BorderSide(color: Colors.transparent),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: BorderSide(
-                                color: Palette.facebookColor,
+                            style: TextStyle(
+                              color: Colors.white,
+                            ), // 🔹 Selected item text color
+                            decoration: InputDecoration(
+                              labelStyle: TextStyle(color: Colors.white),
+                              filled: true,
+                              fillColor: Color.fromARGB(51, 224, 224, 224),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(
+                                  color: Palette.facebookColor,
+                                ),
                               ),
                             ),
+                            items:
+                                getRemainingOptions(index)
+                                    .map(
+                                      (option) => DropdownMenuItem(
+                                        value: option,
+                                        child: Text(
+                                          option,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ), // Dropdown item text color
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedItems[index] = value!;
+                                handleSave('platform', value);
+                              });
+                            },
                           ),
-                          items:
-                              getRemainingOptions(index)
-                                  .map(
-                                    (option) => DropdownMenuItem(
-                                      value: option,
-                                      child: Text(option),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedItems[index] = value!;
-                              handleSave('platform', value);
-                            });
-                          },
                         ),
                         if (selectedItems[index] != null) ...[
                           const SizedBox(height: 10),
@@ -651,6 +755,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               fontWeight: FontWeight.normal,
                             ),
                             decoration: InputDecoration(
+                              filled: true,
+                              fillColor: const Color.fromARGB(
+                                51,
+                                224,
+                                224,
+                                224,
+                              ),
                               labelStyle: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -700,7 +811,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       padding: EdgeInsets.only(left: 8),
                       child: Text(
                         'Career History',
-                        style: TextStyle(color: Colors.white, fontSize: 14),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
@@ -713,10 +828,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Title',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         TextFormField(
                           onSaved:
                               (value) => handleSave('title', value.toString()),
-                          controller: controllers[index],
+                          controller: titleControllers[index],
                           cursorColor: Colors.white,
                           style: const TextStyle(
                             color: Colors.white,
@@ -725,12 +854,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: const Color.fromARGB(51, 224, 224, 224),
-                            labelText: 'Title',
+                            // labelText: 'Title',
                             labelStyle: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
-                            // hintText: 'e.g. Software Developer at ABC Company',
+                            hintText: 'Title',
                             hintStyle: const TextStyle(color: Colors.white),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(16.0),
@@ -745,8 +874,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        // const SizedBox(height: 10),
                         // Club Name Field
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Club Name',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         TextFormField(
                           controller: clubNameControllers[index],
                           cursorColor: Colors.white,
@@ -757,11 +900,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: const Color.fromARGB(51, 224, 224, 224),
-                            labelText: 'Club Name',
+                            // labelText: 'Club Name',
                             labelStyle: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
+                            hintText: 'Club Name',
                             hintStyle: const TextStyle(color: Colors.white),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(16.0),
@@ -777,7 +921,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
-
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Description',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         // Description Field
                         TextFormField(
                           controller: descriptionControllers[index],
@@ -790,11 +947,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: const Color.fromARGB(51, 224, 224, 224),
-                            labelText: 'Description',
+                            // labelText: 'Description',
                             labelStyle: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
+                            hintText: 'Description',
                             hintStyle: const TextStyle(color: Colors.white),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(16.0),

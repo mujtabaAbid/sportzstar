@@ -177,9 +177,36 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> updateBasicUserProfile({
+  Future<dynamic> updateUserProfile({
     required Map<String, String> formData,
   }) async {
-    print('form data in update user profilw----------->>>>$formData');
+    try {
+      final response = await http.patch(
+        Uri.parse(updateUserApi),
+        headers: {'Accept': 'application/json'},
+        body: formData,
+      );
+      // final responseData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        // print(
+        //   '------------------updateUserProfile Successfully------------------> $responseData',
+        // );
+        return response;
+      } else {
+        print(
+          '------------------updateUserProfile error------------------> ${response.body}',
+        );
+        return response;
+      }
+    } on HttpExpectionString catch (error) {
+      print(
+        'error in login function HttpExpectionString-----updateUserProfile--------->  $error',
+      );
+      return error.toString();
+    } catch (e) {
+      print(
+        'error in login function HttpExpectionString-----updateUserProfile--------->  $e',
+      );
+    }
   }
 }
