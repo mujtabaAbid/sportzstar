@@ -14,6 +14,7 @@ const updateUserApi = '${apiUrl}update-user/'; //patch
 const verifyEmailApi = '${apiUrl}verify-email/';
 const getCodeApi = '${apiUrl}get_code/';
 const updatePasswordApi = '${apiUrl}update_password/';
+// const userDataApi = '${apiUrl}users/';
 const deleteUserApi =
     '${apiUrl}auth/get_notifications/3/'; //<-- (delete) 3= userid
 // const notificationsApi = '${apiUrl}get_notifications/1/'; //get

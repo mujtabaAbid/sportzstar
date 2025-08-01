@@ -1,18 +1,19 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sportzstar/config/palette.dart';
+import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:video_player/video_player.dart';
 
-class AddPostScreen extends StatefulWidget {
-  const AddPostScreen({Key? key}) : super(key: key);
+class CreatePostScreen extends StatefulWidget {
+  const CreatePostScreen({super.key});
 
   @override
-  State<AddPostScreen> createState() => _AddPostScreenState();
+  State<CreatePostScreen> createState() => _CreatePostScreenState();
 }
 
-class _AddPostScreenState extends State<AddPostScreen> {
+class _CreatePostScreenState extends State<CreatePostScreen> {
   final TextEditingController _textController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
 
@@ -81,53 +82,118 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MainLayoutWidget(
+      isLoading: false,
       appBar: AppBar(
-        title: const Text("Add Post"),
-        centerTitle: true,
+        title: const Text("Add Post", style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextFormField(
               controller: _textController,
-              maxLines: 5,
+              maxLines: 4,
               decoration: const InputDecoration(
                 hintText: "What's on your mind?",
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
+
+            // Image Preview
+            if (_selectedImage != null)
+              SizedBox(
+                height: 400,
+                child: Image.file(_selectedImage!, fit: BoxFit.cover),
+              ),
+
+            // Video Preview
+            if (_selectedVideo != null &&
+                _videoController != null &&
+                _videoController!.value.isInitialized)
+              SizedBox(
+                height: 400,
+                child: AspectRatio(
+                  aspectRatio: _videoController!.value.aspectRatio,
+                  child: VideoPlayer(_videoController!),
+                ),
+              ),
+
+            const SizedBox(height: 20),
+
+            // Post Button above icons
+
+            // Icon Row (centered)
             Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.image, color: Colors.green),
-                  onPressed: _pickImage,
-                  tooltip: 'Pick Image',
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(115, 53, 53, 53),
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                  ),
+                  child: IconButton(
+                    onPressed: _pickImage,
+                    icon: Icon(Icons.image, color: Colors.white, size: 28),
+                  ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.videocam, color: Colors.red),
-                  onPressed: _pickVideo,
-                  tooltip: 'Pick Video',
+                SizedBox(width: 8),
+                //   children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(115, 53, 53, 53),
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                  ),
+                  child: IconButton(
+                    onPressed: _pickVideo,
+                    icon: Icon(Icons.videocam, color: Colors.white, size: 28),
+                  ),
                 ),
+                // IconButton(
+                //   icon: const Icon(Icons.image, color: Colors.green, size: 34),
+                //   onPressed: _pickImage,
+                //   tooltip: 'Pick Image',
+                // ),
+                // IconButton(
+                //   icon: const Icon(Icons.videocam, color: Colors.red, size: 34),
+                //   onPressed: _pickVideo,
+                //   tooltip: 'Pick Video',
+                // ),
               ],
             ),
-            const SizedBox(height: 16),
-            if (_selectedImage != null)
-              Image.file(_selectedImage!, height: 200, fit: BoxFit.cover),
-            if (_selectedVideo != null && _videoController != null && _videoController!.value.isInitialized)
-              AspectRatio(
-                aspectRatio: _videoController!.value.aspectRatio,
-                child: VideoPlayer(_videoController!),
-              ),
+
+            // ElevatedButton.icon(
+
+            //   style:  ElevatedButton.styleFrom(
+            //     padding: EdgeInsets.all(12),
+            //             backgroundColor: Palette.facebookColor,
+            //           ),
+            //   onPressed: _postContent,
+            //   icon: const Icon(Icons.publish, color: Colors.white, size: 18,),
+            //   label: const Text("Post", style: TextStyle(color: Colors.white, fontSize: 18),),
+            // ),
             const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: _postContent,
-              icon: const Icon(Icons.publish),
-              label: const Text("Post"),
-            )
           ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+        color: Colors.transparent,
+        child: ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(12),
+            backgroundColor: Palette.facebookColor,
+          ),
+          onPressed: _postContent,
+          icon: const Icon(Icons.publish, color: Colors.white, size: 18),
+          label: const Text(
+            "Post",
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
         ),
       ),
     );

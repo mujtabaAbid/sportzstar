@@ -14,6 +14,7 @@ import 'package:sportzstar/screens/userScreens/edit_profile_screen.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
 import 'package:sportzstar/widgets/post_card_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../helper/local_storage.dart';
 import '../postScreens/post_detail_screen.dart';
@@ -26,7 +27,7 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  String selectedCategory = 'image'; // 👈 default selected is 'Grid'
+  String selectedCategory = 'profile'; // 👈 default selected is 'Grid'
   Map<String, dynamic> userData = {};
   Map<String, dynamic> secondUser = {};
   List<dynamic> allUserPosts = [];
@@ -37,10 +38,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   // List<dynamic> filteredPosts = [];
 
   final List<Map<String, dynamic>> myPostsGrid = [
-    {'name': 'image', 'icon': Icons.person},
+    {'name': 'profile', 'icon': Icons.person},
     {'name': 'video', 'icon': Icons.grid_on},
     {'name': 'text', 'icon': Icons.video_collection_outlined},
   ];
+
+  // Future<void> _launchLink(String url) async {
+  //   final Uri uri = Uri.parse(url.startsWith('http') ? url : 'https://$url');
+  //   if (await canLaunchUrl(uri)) {
+  //     await launchUrl(uri, mode: LaunchMode.externalApplication);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 
   // final List<Map<String, dynamic>> posts = [
   //   {
@@ -167,7 +177,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       noDefaultBackground: true,
       // backgroundColor: Colors.white,
       body: CustomScrollView(
-        physics: NeverScrollableScrollPhysics(),
+        // physics: NeverScrollableScrollPhysics(),
         slivers: [
           SliverAppBar(
             automaticallyImplyLeading: false,
@@ -446,272 +456,596 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             ),
                           ),
 
-                          selectedCategory == 'text'
-                              ? ListView.builder(
-                                shrinkWrap: true,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 0,
-                                ),
-                                itemCount:
-                                    allUserPosts
-                                        .where(
-                                          (post) =>
-                                              post['post_type'] ==
-                                              selectedCategory,
-                                        )
-                                        .length,
-                                itemBuilder: (context, index) {
-                                  final filteredPosts =
-                                      allUserPosts
-                                          .where(
-                                            (post) =>
-                                                post['post_type'] ==
-                                                selectedCategory,
-                                          )
-                                          .toList();
-                                  final post = filteredPosts[index];
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (_) =>
-                                                  PostDetailScreen(post: post),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.only(bottom: 8),
-                                      padding: const EdgeInsets.all(12),
+                          selectedCategory == 'profile'
+                              ? Container(
+                                margin: EdgeInsets.only(bottom: 200),
+                                width: MediaQuery.of(context).size.width,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Player Info',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                     SizedBox(height: 10,),
+                                    Container(
+                                      width: double.infinity,
+                                      padding: EdgeInsets.all(12),
                                       decoration: BoxDecoration(
-                                        color: const Color.fromARGB(
-                                          255,
-                                          218,
-                                          218,
-                                          218,
-                                        ),
-                                        borderRadius: BorderRadius.circular(8),
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: const Color.fromARGB(54, 96, 125, 139),
                                       ),
                                       child: Column(
-                                        spacing: 6,
-
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            '${post['post_description']}',
-                                            style: const TextStyle(
+                                            'Name: ${userData['full_name'] ?? 'N/A'}',
+                                            style: TextStyle(
+                                              color: Colors.white,
                                               fontSize: 14,
                                             ),
                                           ),
-
-                                          Row(
-                                            spacing: 6,
-                                            children: [
-                                              Icon(
-                                                Icons.thumb_up,
-                                                size: 16,
-                                                color:
-                                                    post['total_likes'] == 0
-                                                        ? Palette.basicgray
-                                                        : Palette.basicgreen,
-                                              ),
-                                              Text(
-                                                post['total_likes'].toString(),
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                              SizedBox(width: 6),
-                                              Icon(
-                                                Icons.comment_outlined,
-                                                size: 16,
-                                                color:
-                                                    post['total_comments'] == 0
-                                                        ? Palette.darkgray
-                                                        : Palette.basicgreen,
-                                              ),
-                                              Text(
-                                                post['total_comments']
-                                                    .toString(),
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ],
+                                          Text(
+                                            'Username: @${userData['username'] ?? 'N/A'}',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                            ),
                                           ),
+                                          Text(
+                                            'Email: ${userData['email'] ?? 'N/A'}',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          if (userData['age'] != null)
+                                            Text(
+                                              'Age: ${userData['age']}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          if ((userData['gender'] ?? '')
+                                              .toString()
+                                              .isNotEmpty)
+                                            Text(
+                                              'Gender: ${userData['gender']}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                              if ((userData['bio'] ?? '')
+                                              .toString()
+                                              .isNotEmpty)
+                                            if ((userData['player_category'] ??
+                                                    '')
+                                                .toString()
+                                                .isNotEmpty)
+                                              Text(
+                                                'Player: ${userData['player_category']}',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                          if ((userData['start_year'] ?? '')
+                                              .toString()
+                                              .isNotEmpty)
+                                            Text(
+                                              'Start Year: ${userData['start_year']}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                              ),
+                                            ),
                                         ],
                                       ),
                                     ),
-                                  );
-                                },
-                              )
-                              : GridView.builder(
-                                shrinkWrap: true,
-                                // physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 0,
-                                ),
-                                itemCount:
-                                    allUserPosts
-                                        .where(
-                                          (post) =>
-                                              post['post_type'] ==
-                                              selectedCategory,
-                                        )
-                                        .length,
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      mainAxisSpacing: 6,
-                                      crossAxisSpacing: 6,
-                                      childAspectRatio: 1,
+                                    SizedBox(height: 10,),
+                                    Text(
+                                      'Bio',
+                                      style: TextStyle(
+                                        color:  Colors.white,
+                                        fontSize: 18,
+                                      ),
                                     ),
-                                itemBuilder: (context, index) {
-                                  final filteredPosts =
+                                     SizedBox(height: 10,),
+                                    Container(
+                                       width: double.infinity,
+                                      padding: EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: const Color.fromARGB(54, 96, 125, 139),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          if ((userData['bio'] ?? '')
+                                              .toString()
+                                              .isNotEmpty)
+                                            Text(
+                                              '${userData['bio']}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+
+
+                                   
+                                      SizedBox(height: 10),
+                                       Text(
+                                        'Social Media',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                    Container(
+                                      width: double.infinity,
+                                      padding: EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: const Color.fromARGB(54, 96, 125, 139),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          if (userData['social_links'] != null &&
+                                        (userData['social_links'] as List)
+                                            .isNotEmpty)
+                                      ...List<Widget>.from(
+                                        (userData['social_links'] as List).map(
+                                          (linkData) => Text(
+                                            '${linkData['platform']}: ${linkData['link']}',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+
+                                    // Social Links (List)
+                                    // if ((userData['social_links'] as List)
+                                    //     .isNotEmpty)
+                                    //   ...List<Widget>.from(
+                                    //     (userData['social_links'] as List).map(
+                                    //       (linkData) => GestureDetector(
+                                    //         // onTap:
+                                    //         //     () => _launchLink(
+                                    //         //       linkData['link'],
+                                    //         //     ),
+                                    //         child: Text(
+                                    //           '${linkData['platform']}: ${linkData['link']}',
+                                    //           style: const TextStyle(
+                                    //             color: Colors.lightBlueAccent,
+                                    //             fontSize: 14,
+                                    //             decoration:
+                                    //                 TextDecoration.underline,
+                                    //           ),
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    if ((userData['medals'] ?? '')
+                                        .toString()
+                                        .isNotEmpty)
+                                        Text(
+                                        'Medals',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                       SizedBox(height: 10,),
+                                      Container(
+                                          width: double.infinity,
+                                      padding: EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                         color: const Color.fromARGB(54, 96, 125, 139),
+                                      ),
+                                        child: Text(
+                                          '${userData['medals']}',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    // Career History (List)
+                                    if ((userData['career_history'] ?? [])
+                                            is List &&
+                                        (userData['career_history'] ?? [])
+                                            .isNotEmpty) ...[
+                                      const SizedBox(height: 10),
+                                      const Text(
+                                        'Career History:',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          
+                                        ),
+                                      ),
+                                       SizedBox(height: 10,),
+                                     Container(
+                                      width: double.infinity,
+                                      padding: EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                         color: const Color.fromARGB(54, 96, 125, 139),
+                                      ),  
+                                       child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start, 
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                           ...List<Widget>.from(
+                                          (userData['career_history'] as List).map(
+                                            (career) => Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                if ((career['title'] ?? '')
+                                                    .toString()
+                                                    .isNotEmpty)
+                                                  Text(
+                                                    '🔹 Title: ${career['title']}',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                if ((career['clubName'] ?? '')
+                                                    .toString()
+                                                    .isNotEmpty)
+                                                  Text(
+                                                    '🏛 Club: ${career['clubName']}',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                if ((career['description'] ?? '')
+                                                    .toString()
+                                                    .isNotEmpty)
+                                                  Text(
+                                                    '📄 Description: ${career['description']}',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                if ((career['start_date'] ?? '')
+                                                    .toString()
+                                                    .isNotEmpty)
+                                                  Text(
+                                                    '📅 Start: ${career['start_date']}',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                if ((career['end_date'] ?? '')
+                                                    .toString()
+                                                    .isNotEmpty)
+                                                  Text(
+                                                    '📅 End: ${career['end_date']}',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                const SizedBox(height: 6),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        ],
+                                       ),
+                                     )
+                                    ],
+                                  ],
+                                ),
+                              )
+                              : selectedCategory == 'text'
+                              ? Container(
+                                margin: EdgeInsets.only(bottom: 200),
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 0,
+                                  ),
+                                  itemCount:
                                       allUserPosts
                                           .where(
                                             (post) =>
                                                 post['post_type'] ==
                                                 selectedCategory,
                                           )
-                                          .toList();
-                                  final post = filteredPosts[index];
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (_) =>
-                                                  PostDetailScreen(post: post),
+                                          .length,
+                                  itemBuilder: (context, index) {
+                                    final filteredPosts =
+                                        allUserPosts
+                                            .where(
+                                              (post) =>
+                                                  post['post_type'] ==
+                                                  selectedCategory,
+                                            )
+                                            .toList();
+                                    final post = filteredPosts[index];
+
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (_) => PostDetailScreen(
+                                                  post: post,
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.only(
+                                          bottom: 8,
                                         ),
-                                      );
-                                      print(
-                                        'here we will open the post details----${post['post_type']}',
-                                      );
-                                    },
-                                    child: Stack(
-                                      children: [
-                                        post['post_type'] == 'text'
-                                            ? Text(post['post_description'])
-                                            : post['post_type'] == 'video'
-                                            ? Text(post['video_url'])
-                                            : Container(
-                                              // height: 150,
-                                              // width: 150,
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                  image: NetworkImage(
-                                                    post['image_url'],
-                                                  ),
-                                                 
-                                                  fit: BoxFit.cover,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                            ),
-                                        Positioned(
-                                          bottom: 6,
-                                          left: 6,
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.favorite,
-                                                size: 14,
-                                                color:
-                                                    post['total_likes'] == 0
-                                                        ? const Color.fromARGB(
-                                                          255,
-                                                          155,
-                                                          155,
-                                                          155,
-                                                        )
-                                                        : Color.fromARGB(
-                                                          255,
-                                                          199,
-                                                          70,
-                                                          70,
-                                                        ),
-                                              ),
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                post['total_likes'].toString(),
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ],
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          color: const Color.fromARGB(
+                                            255,
+                                            218,
+                                            218,
+                                            218,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
                                           ),
                                         ),
-                                        // Positioned(
-                                        //   top: 0,
-                                        //   right: 0,
-                                        //   child: Container(
-                                        //     height: 24,
-                                        //     width: 30,
-                                        //     color: Colors.red,
-                                        //     child: PopupMenuButton<String>(
-                                        //       padding: EdgeInsets.zero,
-                                        //       constraints: BoxConstraints(),
-                                        //       icon: Icon(
-                                        //         Icons.more_horiz,
-                                        //         color: Colors.white,
-                                        //         size: 24,
-                                        //       ),
-                                        //       onSelected: (String value) {
-                                        //         if (value == 'delete') {
-                                        //           deletePost(
-                                        //             postId: post['post_id'],
-                                        //           );
-                                        //           print(
-                                        //             '---delete post function call button--------',
-                                        //           );
-                                        //         } else if (value == 'update') {
-                                        //           print(
-                                        //             '---update post function call button--------',
-                                        //           );
-                                        //         }
-                                        //       },
-                                        //       itemBuilder:
-                                        //           (BuildContext context) => [
-                                        //             PopupMenuItem<String>(
-                                        //               value: 'delete',
-                                        //               child: Row(
-                                        //                 children: [
-                                        //                   Icon(
-                                        //                     Icons.delete,
-                                        //                     color: Colors.red,
-                                        //                   ),
-                                        //                   SizedBox(width: 8),
-                                        //                   Text('Delete Post'),
-                                        //                 ],
-                                        //               ),
-                                        //             ),
-                                        //             PopupMenuItem<String>(
-                                        //               value: 'update',
-                                        //               child: Row(
-                                        //                 children: [
-                                        //                   Icon(
-                                        //                     Icons.edit,
-                                        //                     color: Colors.blue,
-                                        //                   ),
-                                        //                   SizedBox(width: 8),
-                                        //                   Text('Edit Post'),
-                                        //                 ],
-                                        //               ),
-                                        //             ),
-                                        //           ],
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                      ],
-                                    ),
-                                  );
-                                },
+                                        child: Column(
+                                          spacing: 6,
+
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${post['post_description']}',
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+
+                                            Row(
+                                              spacing: 6,
+                                              children: [
+                                                Icon(
+                                                  Icons.thumb_up,
+                                                  size: 16,
+                                                  color:
+                                                      post['total_likes'] == 0
+                                                          ? Palette.basicgray
+                                                          : Palette.basicgreen,
+                                                ),
+                                                Text(
+                                                  post['total_likes']
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 6),
+                                                Icon(
+                                                  Icons.comment_outlined,
+                                                  size: 16,
+                                                  color:
+                                                      post['total_comments'] ==
+                                                              0
+                                                          ? Palette.darkgray
+                                                          : Palette.basicgreen,
+                                                ),
+                                                Text(
+                                                  post['total_comments']
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                              : Container(
+                                margin: EdgeInsets.only(bottom: 200),
+                                child: GridView.builder(
+                                  shrinkWrap: true,
+                                  // physics: const NeverScrollableScrollPhysics(),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 0,
+                                  ),
+                                  itemCount:
+                                      allUserPosts
+                                          .where(
+                                            (post) =>
+                                                post['post_type'] != 'text',
+                                          )
+                                          .length,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        mainAxisSpacing: 6,
+                                        crossAxisSpacing: 6,
+                                        childAspectRatio: 1,
+                                      ),
+                                  itemBuilder: (context, index) {
+                                    final filteredPosts =
+                                        allUserPosts
+                                            .where(
+                                              (post) =>
+                                                  post['post_type'] != 'text',
+                                            )
+                                            .toList();
+                                    final post = filteredPosts[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (_) => PostDetailScreen(
+                                                  post: post,
+                                                ),
+                                          ),
+                                        );
+                                        print(
+                                          'here we will open the post details----${post['post_type']}',
+                                        );
+                                      },
+                                      child: Stack(
+                                        children: [
+                                          // post['post_type'] == 'text'
+                                          //     ? Text(post['post_description'])
+                                          //     : post['post_type'] == 'video'
+                                          //     ? Text(post['video_url'])
+                                          //     :
+                                          Container(
+                                            // height: 150,
+                                            // width: 150,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: NetworkImage(
+                                                  post['image_url'],
+                                                ),
+
+                                                fit: BoxFit.cover,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            bottom: 6,
+                                            left: 6,
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.favorite,
+                                                  size: 14,
+                                                  color:
+                                                      post['total_likes'] == 0
+                                                          ? const Color.fromARGB(
+                                                            255,
+                                                            155,
+                                                            155,
+                                                            155,
+                                                          )
+                                                          : Color.fromARGB(
+                                                            255,
+                                                            199,
+                                                            70,
+                                                            70,
+                                                          ),
+                                                ),
+                                                const SizedBox(width: 4),
+                                                Text(
+                                                  post['total_likes']
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          // Positioned(
+                                          //   top: 0,
+                                          //   right: 0,
+                                          //   child: Container(
+                                          //     height: 24,
+                                          //     width: 30,
+                                          //     color: Colors.red,
+                                          //     child: PopupMenuButton<String>(
+                                          //       padding: EdgeInsets.zero,
+                                          //       constraints: BoxConstraints(),
+                                          //       icon: Icon(
+                                          //         Icons.more_horiz,
+                                          //         color: Colors.white,
+                                          //         size: 24,
+                                          //       ),
+                                          //       onSelected: (String value) {
+                                          //         if (value == 'delete') {
+                                          //           deletePost(
+                                          //             postId: post['post_id'],
+                                          //           );
+                                          //           print(
+                                          //             '---delete post function call button--------',
+                                          //           );
+                                          //         } else if (value == 'update') {
+                                          //           print(
+                                          //             '---update post function call button--------',
+                                          //           );
+                                          //         }
+                                          //       },
+                                          //       itemBuilder:
+                                          //           (BuildContext context) => [
+                                          //             PopupMenuItem<String>(
+                                          //               value: 'delete',
+                                          //               child: Row(
+                                          //                 children: [
+                                          //                   Icon(
+                                          //                     Icons.delete,
+                                          //                     color: Colors.red,
+                                          //                   ),
+                                          //                   SizedBox(width: 8),
+                                          //                   Text('Delete Post'),
+                                          //                 ],
+                                          //               ),
+                                          //             ),
+                                          //             PopupMenuItem<String>(
+                                          //               value: 'update',
+                                          //               child: Row(
+                                          //                 children: [
+                                          //                   Icon(
+                                          //                     Icons.edit,
+                                          //                     color: Colors.blue,
+                                          //                   ),
+                                          //                   SizedBox(width: 8),
+                                          //                   Text('Edit Post'),
+                                          //                 ],
+                                          //               ),
+                                          //             ),
+                                          //           ],
+                                          //     ),
+                                          //   ),
+                                          // ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                         ],
                       ),

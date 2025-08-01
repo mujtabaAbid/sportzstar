@@ -6,9 +6,14 @@ import 'package:sportzstar/screens/authScreens/otp_verify_screen.dart';
 import 'package:sportzstar/screens/authScreens/verify_email_screen.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/screens/postScreens/post_detail_screen.dart';
+
 import 'package:sportzstar/screens/userScreens/basic_profile_screen.dart';
+
+import 'package:sportzstar/screens/userScreens/add_friends.dart';
+
 import 'package:sportzstar/started_screen.dart';
 
+import '../screens/postScreens/create_post.dart';
 import '../screens/storyScreens/story_screen.dart';
 import '../screens/userScreens/edit_profile_screen.dart';
 import '../screens/userScreens/settings_screen.dart';
@@ -102,6 +107,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const EventScreen());
     case addEventScreenRoute:
       return MaterialPageRoute(builder: (_) => const AddEventScreen());
+    case createPostScreenRoute:
+      return MaterialPageRoute(builder: (_) => const CreatePostScreen());
+    case addFriendListScreenRoute:
+      return MaterialPageRoute(builder: (_) => const AddFriendsList());
 
     // case confirmEmailScreenRoute:
     //   return MaterialPageRoute(

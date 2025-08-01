@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -32,16 +31,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final List<String> allOptions = ['Facebook', 'Instagram', 'Twitter'];
   final List<String?> selectedItems = [];
   final List<TextEditingController> controllers = [];
-  final List<String> allCareerHistoryOptions = [
-    'Badminton',
-    'Circket',
-    'Football',
-    'Hockey',
-  ];
+
   final List<String?> selectCareerHistoryItems = [];
   File? _image;
   List<DateTime?> startDates = [];
   List<DateTime?> endDates = [];
+
+  List<TextEditingController> startDateControllers = [TextEditingController()];
+  List<TextEditingController> endDateControllers = [TextEditingController()];
+  List<TextEditingController> clubNameControllers = [TextEditingController()];
+  List<TextEditingController> descriptionControllers = [
+    TextEditingController(),
+  ];
 
   final _usernameController = TextEditingController();
   final _bioController = TextEditingController();
@@ -165,30 +166,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void addNewItemCareerHistory() {
-    if (selectCareerHistoryItems.length < allCareerHistoryOptions.length) {
-      selectCareerHistoryItems.add(null); // Placeholder for the new dropdown
+    setState(() {
+      selectCareerHistoryItems.add('');
       controllers.add(TextEditingController());
+      clubNameControllers.add(TextEditingController());
+      descriptionControllers.add(TextEditingController());
+      startDateControllers.add(TextEditingController());
+      endDateControllers.add(TextEditingController());
       startDates.add(null);
       endDates.add(null);
-      setState(() {});
-    }
+    });
   }
 
-  List<String> getRemainingOptionsCareerHistory(int index) {
-    final used =
-        selectCareerHistoryItems
-            .where((item) => item != null)
-            .cast<String>()
-            .toList();
-    if (selectCareerHistoryItems[index] != null) {
-      used.remove(
-        selectCareerHistoryItems[index],
-      ); // Allow re-selecting the current
-    }
-    return allCareerHistoryOptions
-        .where((item) => !used.contains(item))
-        .toList();
-  }
+  // List<String> getRemainingOptionsCareerHistory(int index) {
+  //   final used =
+  //       selectCareerHistoryItems
+  //           .where((item) => item != null)
+  //           .cast<String>()
+  //           .toList();
+  //   if (selectCareerHistoryItems[index] != null) {
+  //     used.remove(
+  //       selectCareerHistoryItems[index],
+  //     ); // Allow re-selecting the current
+  //   }
+  //   return allCareerHistoryOptions
+  //       .where((item) => !used.contains(item))
+  //       .toList();
+  // }
 
   @override
   void initState() {
@@ -650,9 +654,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 //social_links
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
+                  children: const [
                     Padding(
-                      padding: const EdgeInsets.only(left: 8),
+                      padding: EdgeInsets.only(left: 8),
                       child: Text(
                         'Career History',
                         style: TextStyle(color: Colors.white, fontSize: 14),
@@ -668,151 +672,147 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        DropdownButtonFormField<String>(
-                          value: selectCareerHistoryItems[index],
-                          hint: Text('Select Career History'),
+                        TextFormField(
+                          controller: controllers[index],
+                          cursorColor: Colors.white,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.normal,
+                          ),
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: Color.fromARGB(51, 224, 224, 224),
-                            // border: OutlineInputBorder(),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: BorderSide(color: Colors.transparent),
+                            fillColor: const Color.fromARGB(51, 224, 224, 224),
+                            labelText: 'Title',
+                            labelStyle: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
                             ),
+                            // hintText: 'e.g. Software Developer at ABC Company',
+                            hintStyle: const TextStyle(color: Colors.white),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(16.0),
+                              borderSide: BorderSide.none,
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: BorderSide(
-                                color: Palette.facebookColor,
+                              borderRadius: BorderRadius.circular(20.0),
+                              borderSide: const BorderSide(
+                                color: Colors.grey,
+                                width: 2.0,
                               ),
                             ),
                           ),
-                          items:
-                              getRemainingOptionsCareerHistory(index)
-                                  .map(
-                                    (option) => DropdownMenuItem(
-                                      value: option,
-                                      child: Text(option),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectCareerHistoryItems[index] = value!;
-                            });
-                          },
                         ),
-                        if (selectCareerHistoryItems[index] != null) ...[
-                          const SizedBox(height: 10),
-                          TextFormField(
-                            controller: controllers[index],
-                            cursorColor: Colors.white,
-                            style: const TextStyle(
+                        const SizedBox(height: 10),
+                        // Club Name Field
+                        TextFormField(
+                          controller: clubNameControllers[index],
+                          cursorColor: Colors.white,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromARGB(51, 224, 224, 224),
+                            labelText: 'Club Name',
+                            labelStyle: const TextStyle(
                               color: Colors.white,
-                              fontWeight: FontWeight.normal,
+                              fontWeight: FontWeight.bold,
                             ),
-                            decoration: InputDecoration(
-                              labelStyle: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              hintText:
-                                  'Enter ${selectCareerHistoryItems[index]} description',
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16.0),
-                                borderSide: BorderSide.none,
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                                borderSide: BorderSide(
-                                  color: Colors.grey,
-                                  width: 2.0,
-                                ),
+                            hintStyle: const TextStyle(color: Colors.white),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                              borderSide: const BorderSide(
+                                color: Colors.grey,
+                                width: 2.0,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            style: const TextStyle(color: Colors.white),
-                            controller: dobController,
-                            readOnly: true,
-                            onTap: () => pickDate(context, index, true),
+                        ),
+                        const SizedBox(height: 10),
 
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Color.fromARGB(51, 224, 224, 224),
-                              hintText:
-                                  startDates[index] != null
-                                      ? formatDate(startDates[index]!)
-                                      : "Select Start Date",
-                              labelStyle: TextStyle(color: Colors.white),
-                              hintStyle: TextStyle(color: Colors.white),
-                              border: OutlineInputBorder(),
-                              suffixIcon: Icon(Icons.calendar_today),
+                        // Description Field
+                        TextFormField(
+                          controller: descriptionControllers[index],
+                          maxLines: 3,
+                          cursorColor: Colors.white,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromARGB(51, 224, 224, 224),
+                            labelText: 'Description',
+                            labelStyle: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ),
-                          // Start Date
-                          // InkWell(
-                          //   onTap: () => pickDate(context, index, true),
-                          //   child: Container(
-                          //     padding: EdgeInsets.symmetric(
-                          //       vertical: 16,
-                          //       horizontal: 12,
-                          //     ),
-                          //     decoration: BoxDecoration(
-                          //       border: Border.all(color: Colors.grey),
-                          //       borderRadius: BorderRadius.circular(4),
-                          //     ),
-                          //     child: Text(
-                          //       startDates[index] != null
-                          //           ? "Start Date: ${formatDate(startDates[index]!)}"
-                          //           : "Select Start Date",
-                          //       style: TextStyle(color: Colors.white),
-                          //     ),
-                          //   ),
-                          // ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            style: const TextStyle(color: Colors.white),
-                            controller: dobController,
-                            readOnly: true,
-                            onTap: () => pickDate(context, index, false),
-
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Color.fromARGB(51, 224, 224, 224),
-                              hintText:
-                                  endDates[index] != null
-                                      ? formatDate(endDates[index]!)
-                                      : "Select End Date",
-                              labelStyle: TextStyle(color: Colors.white),
-                              hintStyle: TextStyle(color: Colors.white),
-                              border: OutlineInputBorder(),
-                              suffixIcon: Icon(Icons.calendar_today),
+                            hintStyle: const TextStyle(color: Colors.white),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                              borderSide: BorderSide.none,
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          if (index == selectCareerHistoryItems.length - 1 &&
-                              selectCareerHistoryItems
-                                      .whereType<String>()
-                                      .length <
-                                  allCareerHistoryOptions.length)
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.add_circle,
-                                  color: Colors.blue,
-                                  size: 30,
-                                ),
-                                onPressed: addNewItemCareerHistory,
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                              borderSide: const BorderSide(
+                                color: Colors.grey,
+                                width: 2.0,
                               ),
                             ),
-                          const SizedBox(height: 20),
-                        ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        TextField(
+                          style: const TextStyle(color: Colors.white),
+                          controller: startDateControllers[index],
+                          readOnly: true,
+                          onTap: () => pickDate(context, index, true),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromARGB(51, 224, 224, 224),
+                            hintText:
+                                startDates[index] != null
+                                    ? formatDate(startDates[index]!)
+                                    : "Select Start Date",
+                            hintStyle: const TextStyle(color: Colors.white),
+                            labelStyle: const TextStyle(color: Colors.white),
+                            border: const OutlineInputBorder(),
+                            suffixIcon: const Icon(Icons.calendar_today),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        TextField(
+                          style: const TextStyle(color: Colors.white),
+                          controller: endDateControllers[index],
+                          readOnly: true,
+                          onTap: () => pickDate(context, index, false),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromARGB(51, 224, 224, 224),
+                            hintText:
+                                endDates[index] != null
+                                    ? formatDate(endDates[index]!)
+                                    : "Select End Date",
+                            hintStyle: const TextStyle(color: Colors.white),
+                            labelStyle: const TextStyle(color: Colors.white),
+                            border: const OutlineInputBorder(),
+                            suffixIcon: const Icon(Icons.calendar_today),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        if (index == selectCareerHistoryItems.length - 1)
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.add_circle,
+                                color: Colors.blue,
+                                size: 30,
+                              ),
+                              onPressed: addNewItemCareerHistory,
+                            ),
+                          ),
+
+                        const SizedBox(height: 20),
                       ],
                     );
                   }),
