@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/captaliza.dart';
 import 'package:sportzstar/helper/local_storage.dart';
 import 'package:sportzstar/provider/user_provider.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
+import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
 
 import '../../helper/basic_enum.dart';
@@ -110,8 +112,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _isLoading = true;
     });
     try {
+      // final preferance = await SharedPreferences.getInstance();
+      // final data = preferance.getString('userData');
       final pref = await getDataFromLocalStorage(name: 'userData');
-      userData = json.decode(pref);
+      setState(() {
+        userData = json.decode(pref);
+      });
       print('userData =====>>>$userData');
       // _selectedGender = userData['gender'];
     } catch (e) {
@@ -123,9 +129,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> getSports() async {
-    setState(() {
-      _isLoading = true;
-    });
     try {
       final response =
           await Provider.of<HomeProvider>(
@@ -175,6 +178,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       endDateControllers.add(TextEditingController());
       startDates.add(null);
       endDates.add(null);
+      // _isLoading = false;
     });
   }
 
@@ -208,44 +212,65 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return _formData[type] = value;
   }
 
-  Future<void> handleSubmit(StateSetter setModalState) async {
-    setState(() {
-      _isLoading = true;
-    });
-    if (_formKey.currentState?.validate() ?? false) {
-      _formKey.currentState?.save();
-      closeKeyboard(context: context);
+  void handleSubmit() {
+    final form = _formKey.currentState;
+    if (form != null && form.validate()) {
+      form.save();
 
-      try {
-        final response = await Provider.of<UserProvider>(
-          context,
-          listen: false,
-        ).updateUserProfile(formData: _formData);
-
-        // alertNotification(
-        //   context: context,
-        //   message: 'Comment Saved',
-        //   messageType: AlertMessageType.success,
-        // );
-      } catch (e) {
-        alertNotification(
-          context: context,
-          message: 'Something went wrong, try again later.',
-          messageType: AlertMessageType.error,
-        );
-        print('Error saving comment: $e');
+      // Prepare social_links array
+      List<Map<String, dynamic>> socialLinks = [];
+      for (int i = 0; i < selectedItems.length; i++) {
+        if (selectedItems[i] != null && controllers[i].text.isNotEmpty) {
+          socialLinks.add({
+            "platform": selectedItems[i],
+            "link": controllers[i].text,
+          });
+        }
       }
-    } else {
-      alertNotification(
-        context: context,
-        message: 'Please enter a valid comment.',
-        messageType: AlertMessageType.error,
-      );
-    }
 
-    setState(() {
-      _isLoading = false;
-    });
+      // Prepare career_history array
+      List<Map<String, dynamic>> careerHistory = [];
+      for (int i = 0; i < selectCareerHistoryItems.length; i++) {
+        careerHistory.add({
+          "game_name":
+              userData["player_category"] ??
+              "", // or a separate field if needed
+          "clubName": clubNameControllers[i].text,
+          "title": controllers[i].text,
+          "start_date":
+              startDates[i] != null
+                  ? startDates[i]!.toIso8601String().split('T')[0]
+                  : "",
+          "end_date":
+              endDates[i] != null
+                  ? endDates[i]!.toIso8601String().split('T')[0]
+                  : "",
+          "description": descriptionControllers[i].text,
+        });
+      }
+
+      // Add start year
+      String startYear = dobController.text;
+
+      // Final data map
+      Map<String, dynamic> finalData = {
+        "email": _formData['email'],
+        "full_name": _formData['full_name'],
+        "age": int.tryParse(_formData['age'].toString()) ?? 0,
+        "gender": _formData['gender'] ?? 'male',
+        "player_category": _formData['player_category'],
+        "bio": _formData['bio'],
+        "start_year": startYear,
+        "medals": _formData['medals'],
+        "social_links": socialLinks,
+        "career_history": careerHistory,
+      };
+
+      print('Final JSON to send: $finalData');
+
+      // 🔁 Send this to your API
+      // await ApiService.updateProfile(finalData);
+    }
   }
 
   Future<void> pickDate(BuildContext context, int index, bool isStart) async {
@@ -260,8 +285,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       setState(() {
         if (isStart) {
           startDates[index] = picked;
+          onSaved:
+          handleSave('start_date', picked.toString());
         } else {
           endDates[index] = picked;
+          handleSave('end_date', picked.toString());
         }
       });
     }
@@ -303,7 +331,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     .toString()
                                     .isNotEmpty
                             ? NetworkImage(userData['profile_picture'])
-                            : const AssetImage('assets/profile/profile.jpeg')
+                            : const AssetImage('assets/profile/user.png')
                                 as ImageProvider,
                   ),
                 ),
@@ -312,45 +340,58 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 // FirstName Field
                 InputWidget(
                   highlightErrorBorder: true,
+                  noValidator: true,
                   onSaved: (value) {
-                    handleSave('full_name', value ?? userData['full_name']);
+                    handleSave('email', userData['email']);
+                    handleSave(
+                      'full_name',
+                      value.isNotEmpty ? value : userData['full_name'],
+                    );
                   },
                   heading: 'Full Name',
                   label: userData['full_name'],
+                  initialValue: userData['full_name'],
                 ),
+                // InputWidget(
+                //   highlightErrorBorder: true,
+                //   noValidator: true, // ValidationBuilder().build(),
+                //   keyboardType: TextInputType.text,
+                //   onSaved: (value) {
+                //     handleSave('first_name', value);
+                //   },
+                //   heading: 'First Name',
+                //   label: userData['first_name'] ?? 'First Name',
+                //   icon: 'assets/images/icons/user.png',
+                //   textCapitalization: TextCapitalization.words,
+                // ),
                 const SizedBox(height: 16),
                 // Email Field
-                InputWidget(
-                  onSaved:
-                      (value) =>
-                          handleSave('email', value ?? userData['email']),
-                  highlightErrorBorder: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email is required';
-                    }
-                    final emailRegex = RegExp(
-                      r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$",
-                    );
-                    if (!emailRegex.hasMatch(value)) {
-                      return 'Enter a valid email';
-                    }
-                    return null;
-                  },
-                  heading: 'Email Address',
-                  label: userData['email'] ?? 'Email Address',
-                  // icon: 'assets/images/icons/email.png',
-                ),
+                // InputWidget(
+                //   readOnly: true,
+
+                //   onSaved: (value) => handleSave('email', userData['email']),
+                //   highlightErrorBorder: true,
+                //   heading: 'Email Address',
+                //   label: userData['email'],
+                // ),
                 const SizedBox(height: 16),
                 // age
                 InputWidget(
                   keyboardType: TextInputType.number,
+                  noValidator:
+                      userData['age'].toString().isNotEmpty ? true : false,
                   highlightErrorBorder: true,
                   onSaved: (value) {
-                    handleSave('age', value ?? userData['age']);
+                    print(
+                      'age value ----$value and default ----${userData['age']}',
+                    );
+                    handleSave(
+                      'age',
+                      value.isNotEmpty ? value : userData['age'].toString(),
+                    );
                   },
                   fieldType: InputType.number,
-                  heading: 'Date of Birth',
+                  heading: 'Age',
                   label: userData['age'].toString(),
                 ),
                 const SizedBox(height: 16),
@@ -368,6 +409,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ],
                 ),
                 const SizedBox(height: 8),
+                //gender
                 DropdownButtonFormField<String>(
                   value: capitalize(userData['gender'] ?? 'Male'),
                   // borderRadius: BorderRadius.all(Radius.circular(12),),
@@ -422,15 +464,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
-                  // hint: Text( 'Select Player Category'),
-                  // value:
-                  //     userData['player_category'] != null &&
-                  //             userData['player_category'] != '' &&
-                  //             sportsCategories.contains(
-                  //               userData['player_category'],
-                  //             )
-                  //         ? userData['player_category']
-                  //         : null,
                   hint: Text(
                     userData['player_category'] != null &&
                             userData['player_category'] != ''
@@ -441,8 +474,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     labelStyle: TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Color.fromARGB(51, 224, 224, 224),
-                    // labelText: 'Gender',
-                    // border: OutlineInputBorder(),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide(color: Colors.transparent),
@@ -458,7 +489,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   items:
                       sportsCategories
-                          // ['Professional', 'Practice', 'Timepass']
                           .map(
                             (category) => DropdownMenuItem(
                               value: category,
@@ -471,29 +501,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       'ksdjfhsdjhifgsdihfgiusdghiusdhfiusdjhf----->>>>$value',
                     );
                     handleSave('player_category', value!);
-                    // setState(() {
-                    //   _selectCateory = value!;
-                    // });
                   },
                 ),
                 const SizedBox(height: 16),
                 //bios
                 InputWidget(
-                  controller: _bioController,
+                  // controller: _bioController,
                   highlightErrorBorder: true,
+                  noValidator: true,
                   onSaved: (value) {
-                    handleSave('bio', value ?? userData['bio']);
+                    handleSave(
+                      'bio',
+                      value.isNotEmpty ? value : userData['bio'],
+                    );
                   },
                   heading: 'Bio',
                   label: userData['bio'] ?? 'Bio',
                 ),
                 const SizedBox(height: 16),
+                //start year
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    // Padding(
-                    // padding: const EdgeInsets.all(8.0),
-                    // child:
                     Text(
                       'Start Year',
                       style: TextStyle(color: Colors.white, fontSize: 14),
@@ -511,7 +540,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Color.fromARGB(51, 224, 224, 224),
-                    hintText: userData['start_year'] ?? "YYYY",
+                    hintText:
+                        userData['start_year'].isNotEmpty
+                            ? userData['start_year']
+                            : "YYYY",
                     labelStyle: TextStyle(color: Colors.white),
                     hintStyle: TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
@@ -529,18 +561,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     suffixIcon: Icon(Icons.calendar_today),
                   ),
                 ),
-                // Age Field
                 const SizedBox(height: 16),
                 // Medals
                 InputWidget(
                   controller: _medalController,
+                  noValidator: true,
                   highlightErrorBorder: true,
                   onSaved: (value) {
                     // handleSave('email', value);
-                    handleSave('medals', value ?? userData['medals']);
+                    handleSave(
+                      'medals',
+                      value.isNotEmpty ? value : userData['medals'],
+                    );
                   },
                   heading: 'Medals',
-                  label: userData['medals'] ?? 'Medals',
+                  label:
+                      userData['medals'].isNotEmpty
+                          ? userData['medals']
+                          : 'Medals',
                 ),
 
                 const SizedBox(height: 16),
@@ -597,12 +635,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           onChanged: (value) {
                             setState(() {
                               selectedItems[index] = value!;
+                              handleSave('platform', value);
                             });
                           },
                         ),
                         if (selectedItems[index] != null) ...[
                           const SizedBox(height: 10),
                           TextFormField(
+                            onSaved:
+                                (newValue) => handleSave('link', newValue!),
                             controller: controllers[index],
                             cursorColor: Colors.white,
                             style: const TextStyle(
@@ -673,6 +714,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextFormField(
+                          onSaved:
+                              (value) => handleSave('title', value.toString()),
                           controller: controllers[index],
                           cursorColor: Colors.white,
                           style: const TextStyle(
@@ -707,6 +750,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         TextFormField(
                           controller: clubNameControllers[index],
                           cursorColor: Colors.white,
+                          onSaved:
+                              (value) =>
+                                  handleSave('clubName', value.toString()),
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             filled: true,
@@ -736,6 +782,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         TextFormField(
                           controller: descriptionControllers[index],
                           maxLines: 3,
+                          onSaved:
+                              (value) =>
+                                  handleSave('description', value.toString()),
                           cursorColor: Colors.white,
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
@@ -817,6 +866,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     );
                   }),
                 ),
+                CustomButton(onPressed: () => handleSubmit(), text: 'Save'),
               ],
             ),
           ),
