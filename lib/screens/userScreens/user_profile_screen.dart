@@ -35,41 +35,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   String postsCount = '';
   String totalLikes = '';
   String totalcomments = '';
-  // List<dynamic> filteredPosts = [];
 
   final List<Map<String, dynamic>> myPostsGrid = [
     {'name': 'profile', 'icon': Icons.person},
     {'name': 'video', 'icon': Icons.grid_on},
     {'name': 'text', 'icon': Icons.video_collection_outlined},
   ];
-
-  // Future<void> _launchLink(String url) async {
-  //   final Uri uri = Uri.parse(url.startsWith('http') ? url : 'https://$url');
-  //   if (await canLaunchUrl(uri)) {
-  //     await launchUrl(uri, mode: LaunchMode.externalApplication);
-  //   } else {
-  //     throw 'Could not launch $url';
-  //   }
-  // }
-
-  // final List<Map<String, dynamic>> posts = [
-  //   {
-  //     'post_type': 'image',
-  //     'data': 'assets/profile/twoImage.jpeg', // Replace with real URL or Asset
-  //     'total_likes': '96k',
-  //   },
-  //   {
-  //     'post_type': 'Videos',
-  //     'data': 'assets/profile/oneImage.jpeg', // Replace with real URL or Asset
-  //     'total_likes': '66k',
-  //   },
-  //   {
-  //     'post_type': 'text',
-  //     'data':
-  //         'assets/profile/threeImage.jpeg', // Replace with real URL or Asset
-  //     'total_likes': '100k',
-  //   },
-  // ];
 
   Future<void> getUserData() async {
     setState(() {
@@ -79,13 +50,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       final pref = await getDataFromLocalStorage(name: 'userData');
       userData = json.decode(pref);
       print('userData ===----==>>>$userData');
-      // _selectedGender = userData['gender'];
     } catch (e) {
       print('error in getting user data------>>>>>>>$e');
     }
-    // setState(() {
-    //   _isLoading = false;
-    // });
+
   }
 
   Future<void> getUserPosts() async {
@@ -96,7 +64,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             listen: false,
           ).getAllUserPosts();
       allUserPosts = response;
-      print('userData ===----==>>>$allUserPosts');
+      print('userData Posts===----==>>>$allUserPosts');
 
       postsCount = allUserPosts.length.toString();
       // Calculate total likes

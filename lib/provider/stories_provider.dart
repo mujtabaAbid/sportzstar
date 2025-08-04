@@ -12,9 +12,31 @@ class StoriesProvider with ChangeNotifier {
   Future<dynamic> userData() async {
     final data = await getDataFromLocalStorage(name: 'userData');
     final userData = json.decode(data);
-    print('object--->>>$userData');
-    print('object--->>>${userData['id']}');
+
     return userData;
+  }
+
+  Future<dynamic> getAllStories() async {
+    try {
+      final response = await http.get(
+        Uri.parse(getAllStoriesApi),
+        headers: {'Accept': 'application/json'},
+        // body: {'comment_id': commentId, 'user_id': user['id'].toString()},
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        print('get All stories success response -------->>>>>   $responseData');
+        return responseData;
+      } else {
+        print(
+          'get All stories error response -------->>>>>   ${response.body}',
+        );
+      }
+    } catch (e) {
+      print('get All stories error response ---e----->>>>>   $e');
+    }
   }
 
   Future<dynamic> getStories([int? userId]) async {

@@ -47,6 +47,8 @@ class HomeProvider with ChangeNotifier {
   Future<dynamic> usersList() async {
     try {
       final authToken = await getDataFromLocalStorage(name: 'access');
+
+      print('sfsdfsfsfsf------access00-->>>>>>$authToken');
       final response = await http.get(
         Uri.parse(usersListApi),
         headers: {
@@ -131,10 +133,10 @@ class HomeProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-        print('getAllPosts --1-->>>> $responseData');
+        print('getAllSports ---->>>> $responseData');
         return responseData;
       } else {
-        print('getAllPosts --2-error->>>> ${response.body}');
+        print('getAllSports ---error->>>> ${response.body}');
       }
     } catch (e) {
       print('getAllPosts  error --e-->>>> $e');

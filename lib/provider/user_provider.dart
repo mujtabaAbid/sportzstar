@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sportzstar/helper/http_exception.dart';
-
+import 'package:mime/mime.dart';
 import '../helper/api.dart';
 
 class UserProvider with ChangeNotifier {
@@ -58,6 +59,7 @@ class UserProvider with ChangeNotifier {
         final responseData = json.decode(response.body);
         final SharedPreferences provider =
             await SharedPreferences.getInstance();
+        await provider.clear();
         provider.setString('userData', json.encode(responseData['user']));
         await provider.setString('refresh', responseData['refresh']);
         await provider.setString('access', responseData['access']);
@@ -179,7 +181,65 @@ class UserProvider with ChangeNotifier {
 
   Future<dynamic> updateUserProfile({
     required Map<String, String> formData,
+    File? file,
   }) async {
-    print('form data in update user profilw----------->>>>$formData');
+    try {
+      // final request = http.MultipartRequest('PATCH', Uri.parse(updateUserApi));
+      // request.headers['Accept'] = 'application/json';
+
+      // // Add all text fields
+      // formData.forEach((key, value) {
+      //   request.fields[key] = value;
+      // });
+
+      // Add image if exists
+      // if (file != null) {
+      //   print("Attaching image: ${file.path}");
+      //   request.files.add(
+      //     await http.MultipartFile.fromPath(
+      //       'profile_picture', // ✅ Make sure this is the correct field name
+      //       file.path,
+      //     ),
+      //   );
+      // } else {
+      //   print("No profile picture to upload.");
+      // }
+      if (file != null) {
+        final bytes = await file.readAsBytes();
+        String base64Image = base64Encode(bytes);
+
+        final mimeType = lookupMimeType(file.path) ?? 'image/jpeg';
+        // Create valid data URI
+        final String dataUri = 'data:$mimeType;base64,$base64Image';
+
+        // formData['profile_picture'] = dataUri; // send as string
+
+        formData.addAll({'profile_picture': dataUri});
+      } else {
+        print("No profile picture to upload.");
+      }
+
+      // Send the request
+      // final streamedResponse = await request.send();
+      // final response = await http.Response.fromStream(streamedResponse);
+      final response = await http.patch(
+        Uri.parse(updateUserApi),
+        headers: {'Accept': 'application/json'},
+        body: formData,
+      );
+
+      if (response.statusCode == 200) {
+        print("Profile updated successfully:------- ${response.body}");
+        return response;
+      } else {
+        print(
+          "Profile update failed------- [${response.statusCode}]: ${response.body}",
+        );
+        return response;
+      }
+    } catch (e) {
+      print("Error during updateUserProfile:----e--- $e");
+      return e.toString();
+    }
   }
 }

@@ -14,6 +14,7 @@ import '../../helper/close_keyboard.dart';
 import '../../provider/home_provider.dart';
 import '../../widgets/alerts/alert_notification_widget.dart';
 import '../../widgets/video_player_widget.dart';
+import '../bottom_navigation_bar.dart';
 
 class StoryScreen extends StatefulWidget {
   const StoryScreen({super.key});
@@ -95,6 +96,12 @@ class _StoryScreenState extends State<StoryScreen> {
           postType: _postType, // either "image" or "video"
         );
         print('story added successfully------------>>>$response');
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => BottomNavigationBarScreen(pageIndex: 1),
+          ),
+        );
       } catch (e) {
         alertNotification(
           context: context,
@@ -180,6 +187,7 @@ class _StoryScreenState extends State<StoryScreen> {
         centerTitle: true,
       ),
       floatingActionButton: Container(
+        margin: EdgeInsets.only(bottom: 60),
         decoration: BoxDecoration(
           gradient: Palette.lightGreenGradient,
           borderRadius: BorderRadius.circular(20),

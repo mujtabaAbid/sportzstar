@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sportzstar/helper/basic_enum.dart';
+import 'package:sportzstar/provider/friends_provider.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
+import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
 
 import '../../provider/home_provider.dart';
 
@@ -34,7 +39,7 @@ class _AddFriendsListState extends State<AddFriendsList>
       final usersData =
           await Provider.of<HomeProvider>(context, listen: false).usersList();
 
-      print('API Response: $usersData');
+      print('get all users data:----------------------->> $usersData');
 
       // Clear previous data
       friends.clear();
@@ -115,6 +120,140 @@ class _AddFriendsListState extends State<AddFriendsList>
     allUsers();
   }
 
+  Future<void> addFriend({required int friendId}) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final response = await Provider.of<FriendsProvider>(
+        context,
+        listen: false,
+      ).addFriendFunction(friendId: friendId);
+      final responseData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        alertNotification(
+          context: context,
+          message: responseData['message'].toString(),
+          messageType: AlertMessageType.success,
+        );
+        await allUsers();
+      } else {
+        alertNotification(
+          context: context,
+          message: responseData['detail'].toString(),
+          messageType: AlertMessageType.error,
+        );
+        print('error in add friend function---->>>${response.body}');
+      }
+    } catch (e) {
+      print('error in add friend function---->>>$e');
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> unfriend({required int friendId}) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final response = await Provider.of<FriendsProvider>(
+        context,
+        listen: false,
+      ).unFriendFunction(friendId: friendId);
+      final responseData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        alertNotification(
+          context: context,
+          message: responseData['message'].toString(),
+          messageType: AlertMessageType.success,
+        );
+        await allUsers();
+      } else {
+        alertNotification(
+          context: context,
+          message: responseData['detail'].toString(),
+          messageType: AlertMessageType.error,
+        );
+        print('error in add friend function---->>>${response.body}');
+      }
+    } catch (e) {
+      print('error in add friend function---->>>$e');
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> acceptFriend({required int friendId}) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final response = await Provider.of<FriendsProvider>(
+        context,
+        listen: false,
+      ).acceptFriendRequest(friendId: friendId);
+      final responseData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        alertNotification(
+          context: context,
+          message: responseData['message'].toString(),
+          messageType: AlertMessageType.success,
+        );
+        await allUsers();
+      } else {
+        alertNotification(
+          context: context,
+          message: responseData['detail'].toString(),
+          messageType: AlertMessageType.error,
+        );
+        print('error in add friend function---->>>${response.body}');
+      }
+    } catch (e) {
+      print('error in add friend function---->>>$e');
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> rejectFriend({required int friendId}) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final response = await Provider.of<FriendsProvider>(
+        context,
+        listen: false,
+      ).rejectFriendRequest(friendId: friendId);
+      final responseData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        alertNotification(
+          context: context,
+          message: responseData['message'].toString(),
+          messageType: AlertMessageType.success,
+        );
+        await allUsers();
+      } else {
+        alertNotification(
+          context: context,
+          message: responseData['detail'].toString(),
+          messageType: AlertMessageType.error,
+        );
+        print('error in add friend function---->>>${response.body}');
+      }
+    } catch (e) {
+      print('error in add friend function---->>>$e');
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+
+
   Widget _buildUserTile(Map<String, dynamic> otherUsers) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -161,16 +300,89 @@ class _AddFriendsListState extends State<AddFriendsList>
             ),
           ),
           const SizedBox(width: 8),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue.shade700,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            ),
-            child: const Text(
-              "Add Friend",
-              style: TextStyle(color: Colors.white),
-            ),
+          Builder(
+            builder: (_) {
+              final index = _tabController.index;
+              if (index == 0) {
+                // User tab
+                return ElevatedButton(
+                  onPressed: () {
+                    print("Send friend request to ${otherUsers['id']}");
+                    addFriend(friendId: otherUsers['id']);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade700,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                  ),
+                  child: const Text(
+                    "Add Friend",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                );
+              } else if (index == 1) {
+                // Sent tab
+                return const SizedBox(); // No button
+              } else if (index == 2) {
+                // Received tab
+                return Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        print("Accept friend request from ${otherUsers['id']}");
+                        acceptFriend(friendId: otherUsers['id']);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        padding: const EdgeInsets.all(0),
+                      ),
+                      child: const Text(
+                        "Accept",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    SizedBox(width: 6),
+                    ElevatedButton(
+                      onPressed: () {
+                        print("Reject friend request from ${otherUsers['id']}");
+                        rejectFriend(friendId: otherUsers['id']);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.all(0),
+                      ),
+                      child: const Text(
+                        "Reject",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                );
+              } else if (index == 3) {
+                // Friends tab
+                return ElevatedButton(
+                  onPressed: () {
+                    print("Unfriend user ${otherUsers['id']}");
+                    unfriend(friendId: otherUsers['id']);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                  ),
+                  child: const Text(
+                    "Unfriend",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                );
+              } else {
+                return const SizedBox(); // Fallback
+              }
+            },
           ),
         ],
       ),
@@ -215,7 +427,7 @@ class _AddFriendsListState extends State<AddFriendsList>
                 ),
                 child: TextFormField(
                   controller: _searchController,
-                   onChanged: _filterSearchResults,
+                  onChanged: _filterSearchResults,
                   cursorColor: Colors.white,
                   style: const TextStyle(
                     color: Colors.white,

@@ -8,6 +8,7 @@ const String otpScreenRoute = '/otp-screen';
 const String resetPasswordScreenRoute = '/reset-password';
 const String verifyEmailScreenRoute = '/verify-email';
 const String signupScreenRoute = '/signup';
+const String basicProfileScreenRoute = '/basic-user-profile';
 
 // generalScreens
 const String aboutUsScreenRoute = '/about-us';
