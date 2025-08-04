@@ -422,16 +422,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
-                  // hint: Text( 'Select Player Category'),
-                  // value:
-                  //     userData['player_category'] != null &&
-                  //             userData['player_category'] != '' &&
-                  //             sportsCategories.contains(
-                  //               userData['player_category'],
-                  //             )
-                  //         ? userData['player_category']
-                  //         : null,
-                  hint: Text(
+                         hint: Text(
                     userData['player_category'] != null &&
                             userData['player_category'] != ''
                         ? userData['player_category']

@@ -285,34 +285,7 @@ class _StoryScreenState extends State<StoryScreen> {
                           },
                           child: const Text('Add'),
                         ),
-                        // Container(
-                        //   decoration: BoxDecoration(
-                        //     gradient: LinearGradient(
-                        //       colors: [Colors.blue, Colors.purple],
-                        //     ),
-                        //     borderRadius: BorderRadius.circular(8),
-                        //   ),
-                        //   child: ElevatedButton(
-                        //     onPressed: () {
-                        //       Navigator.of(context).pop();
-                        //     },
-                        //     style: ElevatedButton.styleFrom(
-                        //       backgroundColor: Colors.transparent,
-                        //       shadowColor: Colors.transparent,
-                        //       padding: const EdgeInsets.symmetric(
-                        //         horizontal: 24,
-                        //         vertical: 12,
-                        //       ),
-                        //       shape: RoundedRectangleBorder(
-                        //         borderRadius: BorderRadius.circular(8),
-                        //       ),
-                        //     ),
-                        //     child: const Text(
-                        //       'Add',
-                        //       style: TextStyle(color: Colors.white),
-                        //     ),
-                        //   ),
-                        // ),
+                    
                       ],
                     );
                   },

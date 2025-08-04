@@ -1,3 +1,7 @@
 import 'package:flutter/material.dart';
 
-class FriendsProvider with ChangeNotifier {}
+class FriendsProvider with ChangeNotifier {
+  
+  
+
+}
