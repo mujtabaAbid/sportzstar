@@ -268,8 +268,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           });
         }
 
-        // Final data map
-        Map<String, dynamic> finalData = {
+        // Clean career history (remove maps with all empty/null fields)
+        List<Map<String, dynamic>> cleanedCareerHistory =
+            careerHistory
+                .where(
+                  (entry) => entry.values.any(
+                    (value) =>
+                        value != null && value.toString().trim().isNotEmpty,
+                  ),
+                )
+                .toList();
+
+        // Clean social links (same approach)
+        List<Map<String, dynamic>> cleanedSocialLinks =
+            socialLinks
+                .where(
+                  (entry) => entry.values.any(
+                    (value) =>
+                        value != null && value.toString().trim().isNotEmpty,
+                  ),
+                )
+                .toList();
+
+        Map<String, dynamic> rawData = {
           "email": _formData['email'],
           "full_name": _formData['full_name'],
           "age": int.tryParse(_formData['age'].toString()) ?? 0,
@@ -280,43 +301,56 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           "start_year": startYear,
           "medals": _formData['medals'],
           "social_links":
-              socialLinks.isNotEmpty ? socialLinks : userData['social_links'],
-          "career_history": careerHistory,
+              cleanedSocialLinks.isNotEmpty
+                  ? cleanedSocialLinks
+                  : userData['social_links'] ?? [],
+          "career_history": cleanedCareerHistory,
         };
+
+        // Remove top-level keys with null, empty strings, or empty lists
+        Map<String, dynamic> finalData = Map.fromEntries(
+          rawData.entries.where((entry) {
+            final value = entry.value;
+            if (value == null) return false;
+            if (value is String && value.trim().isEmpty) return false;
+            if (value is List && value.isEmpty) return false;
+            return true;
+          }),
+        );
 
         print('Final JSON to send:------->>>> $finalData');
 
-        // final response = await Provider.of<UserProvider>(
-        //   context,
-        //   listen: false,
-        // ).updateUserProfile(formData: _formData);
+        final response = await Provider.of<UserProvider>(
+          context,
+          listen: false,
+        ).updateUserProfile(formData: _formData, file: _image);
 
-        // if (response.statusCode == 200) {
-        //   final responseData = json.decode(response.body);
-        //   //On success function first show success message
-        //   alertNotification(
-        //     context: context,
-        //     message: responseData['detail'],
-        //     messageType: AlertMessageType.success,
-        //   );
+        if (response.statusCode == 200) {
+          final responseData = json.decode(response.body);
+          //On success function first show success message
+          alertNotification(
+            context: context,
+            message: responseData['detail'],
+            messageType: AlertMessageType.success,
+          );
 
-        //   //then update local storage
-        //   final data = json.encode(responseData['user']);
-        //   addDataToLocalStorage(name: 'userData', value: data);
+          //then update local storage
+          final data = json.encode(responseData['user']);
+          addDataToLocalStorage(name: 'userData', value: data);
 
-        //   //then send to profile screen
-        //   Navigator.of(context).push(
-        //     MaterialPageRoute(
-        //       builder: (context) => BottomNavigationBarScreen(pageIndex: 4),
-        //     ),
-        //   );
-        // } else {
-        //   alertNotification(
-        //     context: context,
-        //     message: 'Something wrong, try again later',
-        //     messageType: AlertMessageType.error,
-        //   );
-        // }
+          //then send to profile screen
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => BottomNavigationBarScreen(pageIndex: 4),
+            ),
+          );
+        } else {
+          alertNotification(
+            context: context,
+            message: 'Something wrong, try again later',
+            messageType: AlertMessageType.error,
+          );
+        }
       }
     } else {
       alertNotification(

@@ -301,18 +301,18 @@ class _HomeScreenState extends State<HomeScreen> {
       noDefaultBackground: true,
       body: Column(
         children: [
-          TextButton(
-            onPressed: () {
-              pushNamedNavigate(
-                context: context,
-                pageName: basicProfileScreenRoute,
-              );
-            },
-            child: Text(
-              'data',
-              style: TextStyle(color: Colors.amber, fontSize: 36),
-            ),
-          ),
+          // TextButton(
+          //   onPressed: () {
+          //     pushNamedNavigate(
+          //       context: context,
+          //       pageName: basicProfileScreenRoute,
+          //     );
+          //   },
+          //   // child: Text(
+          //   //   'data',
+          //   //   style: TextStyle(color: Colors.amber, fontSize: 36),
+          //   // ),
+          // ),
           //app name and notifications section
           Container(
             padding: EdgeInsets.only(bottom: 20, top: 60),
@@ -401,7 +401,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                       ),
                       child: IconButton(
-
                         onPressed: () {
                           pushNamedNavigate(
                             context: context,
