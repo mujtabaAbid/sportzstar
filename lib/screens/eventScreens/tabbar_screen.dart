@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sportzstar/config/palette.dart';
-import 'package:sportzstar/explore/add_event_screen.dart';
+// import 'package:sportzstar/screens/eventScreens/add_event_screen.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
 

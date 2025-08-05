@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sportzstar/chats/chat_list_screen.dart';
-import 'package:sportzstar/explore/add_event_screen.dart' show AddEventScreen;
-import 'package:sportzstar/explore/tabbar_screen.dart';
+// import 'package:sportzstar/screens/eventScreens/add_event_screen.dart' show AddEventScreen;
+import 'package:sportzstar/screens/eventScreens/tabbar_screen.dart';
 import 'package:sportzstar/screens/authScreens/otp_verify_screen.dart';
 import 'package:sportzstar/screens/authScreens/verify_email_screen.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
@@ -105,8 +105,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const ChatListScreen());
     case eventScreenRoute:
       return MaterialPageRoute(builder: (_) => const EventScreen());
-    case addEventScreenRoute:
-      return MaterialPageRoute(builder: (_) => const AddEventScreen());
+    // case addEventScreenRoute:
+    //   return MaterialPageRoute(builder: (_) => const AddEventScreen());
     case createPostScreenRoute:
       return MaterialPageRoute(builder: (_) => const CreatePostScreen());
     case addFriendListScreenRoute:
