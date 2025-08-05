@@ -5,14 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:sportzstar/config/palette.dart';
+import 'package:sportzstar/provider/event_provider.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
 
 import '../../helper/basic_enum.dart';
 import '../../helper/close_keyboard.dart';
+import '../../helper/page_navigate.dart';
 import '../../widgets/alerts/alert_notification_widget.dart';
 import 'package:mime/mime.dart';
+
+import '../bottom_navigation_bar.dart';
 
 class AddEventScreen extends StatefulWidget {
   const AddEventScreen({super.key});
@@ -25,7 +31,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   final ImagePicker _picker = ImagePicker();
   List<XFile> _images = [];
   final _formKey = GlobalKey<FormState>();
-  final Map<String, String> _formData = {};
+  final Map<String, dynamic> _formData = {};
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _hostNameController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
@@ -88,34 +94,81 @@ class _AddEventScreenState extends State<AddEventScreen> {
   }
 
   Future<void> handleSubmit() async {
-    setState(() {
-      _isLoading = true;
-    });
+    // setState(() {
+    //   _isLoading = true;
+    // });
     if (_formKey.currentState?.validate() ?? false) {
       if (_selectedImage != null) {
-        _formKey.currentState?.save();
+        if (_images.isNotEmpty) {
+          _formKey.currentState?.save();
 
-        closeKeyboard(context: context);
+          closeKeyboard(context: context);
 
-        if (_selectedImage != null) {
-          final bytes = await _selectedImage!.readAsBytes();
-          String base64Image = base64Encode(bytes);
-          final mimeType = lookupMimeType(_selectedImage!.path) ?? 'image/jpeg';
-          // Create valid data URI
-          final String dataUri = 'data:$mimeType;base64,$base64Image';
+          if (_selectedImage != null) {
+            final bytes = await _selectedImage!.readAsBytes();
+            String base64Image = base64Encode(bytes);
+            final mimeType =
+                lookupMimeType(_selectedImage!.path) ?? 'image/jpeg';
+            // Create valid data URI
+            final String dataUri = 'data:$mimeType;base64,$base64Image';
 
-          // formData['profile_picture'] = dataUri; // send as string
+            // formData['profile_picture'] = dataUri; // send as string
 
-          _formData.addAll({'profile_picture': dataUri});
+            _formData.addAll({'profile_picture': dataUri});
+          }
+          List<String> imageList = [];
+          for (XFile xfile in _images) {
+            final bytes =
+                await xfile.readAsBytes(); // ✅ directly read bytes from XFile
+            String base64Image = base64Encode(bytes);
+
+            final mimeType = lookupMimeType(xfile.path) ?? 'image/jpeg';
+            final String dataUri = 'data:$mimeType;base64,$base64Image';
+
+            imageList.add(dataUri);
+          }
+          // _formData.addAll({'event_images': imageList.join(',')});
+
+          final eventHost = {
+            'host_name': _hostNameController.text,
+            'host_image': imageList.join(','),
+          };
+          _formData.addAll({'event_host': eventHost});
+
+          final response = await Provider.of<EventProvider>(
+            context,
+            listen: false,
+          ).createEvent(formData: _formData);
+          if (response.statusCode == 201) {
+            final responseData = json.decode(response.body);
+
+            print('response of create Event ----->>> $responseData');
+            alertNotification(
+              context: context,
+              message: responseData['message'],
+              messageType: AlertMessageType.success,
+            );
+
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => BottomNavigationBarScreen(pageIndex: 2),
+              ),
+            );
+            // pushNamedAndRemoveUntilNavigate(
+            //   pageName: otpScreenRoute,
+            //   argument: {'email': _formData['email'].toString()},
+            //   context: context,
+            // );
+          } else {
+            print('response of create Event -errror---->>> ${response.body}');
+          }
+        } else {
+          alertNotification(
+            context: context,
+            message: 'Event Images Are Required',
+            messageType: AlertMessageType.error,
+          );
         }
-
-        print('handleSubmit--->$_formData');
-
-        // pushNamedAndRemoveUntilNavigate(
-        //   pageName: otpScreenRoute,
-        //   argument: {'email': _formData['email'].toString()},
-        //   context: context,
-        // );
       } else {
         alertNotification(
           context: context,
@@ -159,7 +212,15 @@ class _AddEventScreenState extends State<AddEventScreen> {
   Widget build(BuildContext context) {
     return MainLayoutWidget(
       isLoading: _isLoading,
-      appBar: AppBar(title: const Text("Create Event")),
+      appBar: AppBar(
+        title: const Text(
+          "Create Event",
+          style: TextStyle(color: Colors.white),
+        ),
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -181,7 +242,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                   height: 150,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 224, 224, 224),
+                    color: Color.fromARGB(40, 224, 224, 224),
                     borderRadius: BorderRadius.circular(12),
                     image:
                         _images.isNotEmpty
@@ -214,7 +275,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                       width: 50,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: Color.fromARGB(255, 224, 224, 224),
+                        color: Color.fromARGB(71, 224, 224, 224),
                         image:
                             _images.length > index
                                 ? DecorationImage(
@@ -264,6 +325,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 heading: 'Description of Event',
                 label: 'Description of Event',
                 controller: _titleController,
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.newline,
                 onSaved:
                     (value) => handleSave('event_description', value ?? ''),
                 maxLines: 5,
@@ -368,6 +431,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
               const SizedBox(height: 20),
               CustomButton(
+                color: Palette.facebookColor,
                 onPressed: () {
                   handleSubmit();
                 },

@@ -14,41 +14,33 @@ class EventProvider with ChangeNotifier {
     return userData;
   }
 
-  Future<dynamic> createEvent({
-    required Map<String, String> formData,
-    required List<File> files,
-  }) async {
+  Future<dynamic> createEvent({required Map<String, dynamic> formData}) async {
     final user = await userData();
+    print('creat event function call and user id ======>>>${user['id']}');
+    formData.addAll({
+      'user_id': user['id'].toString(),
+      'event_title': 'my event',
+    });
+    final logData = Map<String, dynamic>.from(formData);
+    logData.remove('profile_picture');
 
-    formData.addAll({'user_id': user['id'], 'event_title': 'my event'});
+    print('create event function call and user id ======>>> $logData');
     try {
-      if (files.isNotEmpty) {
-        List<String> imageList = [];
+      final response = await http.post(
+        Uri.parse(createEventApi),
+        headers: {'Accept': 'application/json'},
+        body: jsonEncode(formData),
+      );
+      // final responseData = json.decode(response.body);
 
-        for (File file in files) {
-          final bytes = await file.readAsBytes();
-          String base64Image = base64Encode(bytes);
+      if (response.statusCode == 201) {
+        print('success response of create event------->${response.body}');
 
-          final mimeType = lookupMimeType(file.path) ?? 'image/jpeg';
-          final String dataUri = 'data:$mimeType;base64,$base64Image';
-
-          imageList.add(dataUri);
-        }
-
-        // Option 1: send as JSON array string (recommended)
-        // formData.addAll({'event_images': jsonEncode(imageList)});
-
-        // Option 2: send as comma-separated string
-        formData.addAll({'event_images': imageList.join(',')});
+        return response;
       } else {
-        print("No images to upload.");
+        print('error in create event function -------->>>>${response.body}');
+        return response;
       }
-
-      // final response = await http.post(
-      //   Uri.parse(createEventApi),
-      //   headers: {'Accept': 'application/json'},
-      //   // body: {'comment_id': commentId, 'user_id': user['id'].toString()},
-      // );
     } catch (e) {
       print('error in create event function------->>>$e');
     }
