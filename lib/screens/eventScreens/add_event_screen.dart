@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,11 @@ import 'package:intl/intl.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
+
+import '../../helper/basic_enum.dart';
+import '../../helper/close_keyboard.dart';
+import '../../widgets/alerts/alert_notification_widget.dart';
+import 'package:mime/mime.dart';
 
 class AddEventScreen extends StatefulWidget {
   const AddEventScreen({super.key});
@@ -20,21 +26,20 @@ class _AddEventScreenState extends State<AddEventScreen> {
   List<XFile> _images = [];
   final _formKey = GlobalKey<FormState>();
   final Map<String, String> _formData = {};
-  bool _isloading = false;
   final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _hostNameController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
   File? _selectedImage;
+  bool _isLoading = false;
 
   DateTime? _selectedDate;
   int currentImageIndex = 0;
 
   Future<void> _pickImages() async {
     final picked = await _picker.pickMultiImage();
-    if (picked != null) {
-      setState(() {
-        _images = picked.take(5).toList();
-      });
-    }
+    setState(() {
+      _images = picked.take(5).toList();
+    });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -77,27 +82,83 @@ class _AddEventScreenState extends State<AddEventScreen> {
       });
     }
   }
- 
+
   String handleSave(String type, String value) {
     return _formData[type] = value;
   }
- 
-Future<void> _selectTime(BuildContext context) async {
-  final TimeOfDay? pickedTime = await showTimePicker(
-    context: context,
-    initialTime: TimeOfDay.now(),
-  );
-  if (pickedTime != null) {
-    final now = DateTime.now();
-    final dt = DateTime(now.year, now.month, now.day, pickedTime.hour, pickedTime.minute);
-    final formattedTime = TimeOfDay.fromDateTime(dt).format(context);
-    _timeController.text = formattedTime;
+
+  Future<void> handleSubmit() async {
+    setState(() {
+      _isLoading = true;
+    });
+    if (_formKey.currentState?.validate() ?? false) {
+      if (_selectedImage != null) {
+        _formKey.currentState?.save();
+
+        closeKeyboard(context: context);
+
+        if (_selectedImage != null) {
+          final bytes = await _selectedImage!.readAsBytes();
+          String base64Image = base64Encode(bytes);
+          final mimeType = lookupMimeType(_selectedImage!.path) ?? 'image/jpeg';
+          // Create valid data URI
+          final String dataUri = 'data:$mimeType;base64,$base64Image';
+
+          // formData['profile_picture'] = dataUri; // send as string
+
+          _formData.addAll({'profile_picture': dataUri});
+        }
+
+        print('handleSubmit--->$_formData');
+
+        // pushNamedAndRemoveUntilNavigate(
+        //   pageName: otpScreenRoute,
+        //   argument: {'email': _formData['email'].toString()},
+        //   context: context,
+        // );
+      } else {
+        alertNotification(
+          context: context,
+          message: 'Host Image is Required',
+          messageType: AlertMessageType.error,
+        );
+      }
+    } else {
+      print('Form is not valid');
+      alertNotification(
+        context: context,
+        message: 'Please Enter Required data.',
+        messageType: AlertMessageType.error,
+      );
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
-}
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (pickedTime != null) {
+      final now = DateTime.now();
+      final dt = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        pickedTime.hour,
+        pickedTime.minute,
+      );
+      final formattedTime = TimeOfDay.fromDateTime(dt).format(context);
+      _timeController.text = formattedTime;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MainLayoutWidget(
-      isLoading: _isloading,
+      isLoading: _isLoading,
       appBar: AppBar(title: const Text("Create Event")),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -175,15 +236,18 @@ Future<void> _selectTime(BuildContext context) async {
               InputWidget(
                 heading: 'Title of Event',
                 label: 'Title of Event',
-                     onSaved: (value) => handleSave('event_title', value ?? ''),
+                onSaved: (value) => handleSave('event_title', value ?? ''),
               ),
               const SizedBox(height: 10),
               GestureDetector(
                 onTap: () => _selectDate(context),
                 child: AbsorbPointer(
                   child: InputWidget(
-                    suffixIcon: const Icon(Icons.calendar_today, color: Colors.white,),
-                         onSaved: (value) => handleSave('event_date', value ?? ''),
+                    suffixIcon: const Icon(
+                      Icons.calendar_today,
+                      color: Colors.white,
+                    ),
+                    onSaved: (value) => handleSave('event_date', value ?? ''),
                     heading: 'Select Date',
                     label: 'Select Date',
                     controller: TextEditingController(
@@ -200,19 +264,19 @@ Future<void> _selectTime(BuildContext context) async {
                 heading: 'Description of Event',
                 label: 'Description of Event',
                 controller: _titleController,
-                    onSaved: (value) => handleSave('event_description', value ?? ''),
+                onSaved:
+                    (value) => handleSave('event_description', value ?? ''),
                 maxLines: 5,
               ),
               const SizedBox(height: 10),
               GestureDetector(
-                 onTap: () => _selectTime(context),
+                onTap: () => _selectTime(context),
                 child: AbsorbPointer(
                   child: InputWidget(
-                  
                     heading: 'Enter time of Event',
                     label: 'Enter time 0f Event',
                     controller: _timeController,
-                        onSaved: (value) => handleSave('event_time', value ?? ''),
+                    onSaved: (value) => handleSave('event_time', value ?? ''),
                   ),
                 ),
               ),
@@ -221,7 +285,7 @@ Future<void> _selectTime(BuildContext context) async {
               InputWidget(
                 heading: 'Location',
                 label: 'Add Location',
-                    onSaved: (value) => handleSave('event_location', value ?? ''),
+                onSaved: (value) => handleSave('event_location', value ?? ''),
               ),
 
               const SizedBox(height: 10),
@@ -248,23 +312,27 @@ Future<void> _selectTime(BuildContext context) async {
                               : null,
                       child:
                           _selectedImage == null
-                              ? const Icon(
-                                Icons.person,
-                                color: Colors.black,
-                              )
+                              ? const Icon(Icons.person, color: Colors.black)
                               : null,
                     ),
                   ),
                   SizedBox(width: 10),
                   Expanded(
                     child: TextFormField(
-                          onSaved: (value) => handleSave('host_name', value ?? ''),
+                      // onSaved: (value) => handleSave('host_name', value ?? ''),
+                      controller: _hostNameController,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Host name is required';
+                        }
+                        return null;
+                      },
                       decoration: InputDecoration(
                         labelStyle: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
-                         hintText: 'Host Details',
+                        hintText: 'Host Details',
                         hintStyle: const TextStyle(color: Colors.grey),
 
                         // ✅ This shows +XX prefix inside the input field
@@ -299,7 +367,12 @@ Future<void> _selectTime(BuildContext context) async {
               ),
 
               const SizedBox(height: 20),
-              CustomButton(onPressed: () {}, text: 'Create Now'),
+              CustomButton(
+                onPressed: () {
+                  handleSubmit();
+                },
+                text: 'Create Now',
+              ),
             ],
           ),
         ),
