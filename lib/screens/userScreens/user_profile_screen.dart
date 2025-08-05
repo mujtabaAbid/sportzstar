@@ -18,6 +18,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../helper/local_storage.dart';
 import '../postScreens/post_detail_screen.dart';
+import 'full_image_view_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -53,7 +54,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     } catch (e) {
       print('error in getting user data------>>>>>>>$e');
     }
-
   }
 
   Future<void> getUserPosts() async {
@@ -176,63 +176,55 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 offset: const Offset(0, 50), // pushes down half image
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 50,
-                            backgroundColor: Colors.white,
-                            child: CircleAvatar(
-                              radius: 47,
-                              backgroundImage:
-                                  userData['profile_picture'] != null &&
-                                          userData['profile_picture'] != ''
-                                      ? NetworkImage(
-                                        userData['profile_picture'],
-                                      )
-                                      : AssetImage('assets/profile/dummy.png'),
-                            ),
-                          ),
-
-                          const SizedBox(width: 20),
-                          userData['id'] == secondUser['id']
-                              ? Expanded(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.email_outlined,
-                                        color: Colors.white,
-                                      ),
-                                      onPressed: () {},
-                                    ),
-                                    const SizedBox(width: 10),
-                                    ElevatedButton(
-                                      onPressed: () {},
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFFCBFE15,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
-                                        ),
-                                      ),
-                                      child: const Text(
-                                        'Follow',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                  ],
+                  child: InkWell(
+                      onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (_) => FullScreenImageViewer(
+                                imageUrl: userData['profile_picture'],
+                              ),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        InkWell(
+                           onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) => FullScreenImageViewer(
+                                  imageUrl: userData['profile_picture'],
                                 ),
-                              )
-                              : SizedBox(),
-                        ],
-                      ),
-                    ],
+                          ),
+                        );
+                      },
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 50,
+                                backgroundColor: Colors.white,
+                                child: CircleAvatar(
+                                  radius: 47,
+                                  backgroundImage:
+                                      userData['profile_picture'] != null &&
+                                              userData['profile_picture'] != ''
+                                          ? NetworkImage(
+                                            userData['profile_picture'],
+                                          )
+                                          : AssetImage(
+                                            'assets/profile/dummy.png',
+                                          ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

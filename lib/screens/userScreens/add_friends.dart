@@ -8,6 +8,7 @@ import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
 
 import '../../provider/home_provider.dart';
+import 'second_user_profile_screen.dart';
 
 class AddFriendsList extends StatefulWidget {
   const AddFriendsList({super.key});
@@ -255,136 +256,151 @@ class _AddFriendsListState extends State<AddFriendsList>
   }
 
   Widget _buildUserTile(Map<String, dynamic> otherUsers) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 25,
-            backgroundImage:
-                (otherUsers['profile_picture'] != null &&
-                        otherUsers['profile_picture'].toString().isNotEmpty)
-                    ? NetworkImage(otherUsers['profile_picture'].toString())
-                    : null,
-            backgroundColor: Colors.black12,
-            child:
-                (otherUsers['profile_picture'] == null ||
-                        otherUsers['profile_picture'].toString().isEmpty)
-                    ? const Icon(Icons.person, color: Colors.grey)
-                    : null,
-          ),
-
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  otherUsers['full_name'],
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                // if (otherUsers['player_category']!.isNotEmpty)
-                Text(
-                  otherUsers['player_category'].toString(),
-                  style: TextStyle(fontSize: 13, color: Colors.grey[600]),
-                ),
-              ],
+    return GestureDetector(
+      
+      onTap: () {
+        final index = _tabController.index;
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SecondUserProfileScreen(userData: otherUsers , userType: index == 0? 'User': index == 1 ?'Sent': index == 2 ? 'Received' : 'Friends' )),
+        );
+        print('');
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 25,
+              backgroundImage:
+                  (otherUsers['profile_picture'] != null &&
+                          otherUsers['profile_picture'].toString().isNotEmpty)
+                      ? NetworkImage(otherUsers['profile_picture'].toString())
+                      : null,
+              backgroundColor: Colors.black12,
+              child:
+                  (otherUsers['profile_picture'] == null ||
+                          otherUsers['profile_picture'].toString().isEmpty)
+                      ? const Icon(Icons.person, color: Colors.grey)
+                      : null,
             ),
-          ),
-          const SizedBox(width: 8),
-          Builder(
-            builder: (_) {
-              final index = _tabController.index;
-              if (index == 0) {
-                // User tab
-                return ElevatedButton(
-                  onPressed: () {
-                    print("Send friend request to ${otherUsers['id']}");
-                    addFriend(friendId: otherUsers['id']);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade700,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
+
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    otherUsers['full_name'],
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  child: const Text(
-                    "Add Friend",
-                    style: TextStyle(color: Colors.white),
+                  // if (otherUsers['player_category']!.isNotEmpty)
+                  Text(
+                    otherUsers['player_category'].toString(),
+                    style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                   ),
-                );
-              } else if (index == 1) {
-                // Sent tab
-                return const SizedBox(); // No button
-              } else if (index == 2) {
-                // Received tab
-                return Row(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        print("Accept friend request from ${otherUsers['id']}");
-                        acceptFriend(friendId: otherUsers['id']);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        padding: const EdgeInsets.all(0),
-                      ),
-                      child: const Text(
-                        "Accept",
-                        style: TextStyle(color: Colors.white),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Builder(
+              builder: (_) {
+                final index = _tabController.index;
+                if (index == 0) {
+                  // User tab
+                  return ElevatedButton(
+                    onPressed: () {
+                      print("Send friend request to ${otherUsers['id']}");
+                      addFriend(friendId: otherUsers['id']);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.shade700,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
                       ),
                     ),
-                    SizedBox(width: 6),
-                    ElevatedButton(
-                      onPressed: () {
-                        print("Reject friend request from ${otherUsers['id']}");
-                        rejectFriend(friendId: otherUsers['id']);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        padding: const EdgeInsets.all(0),
+                    child: const Text(
+                      "Add Friend",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
+                } else if (index == 1) {
+                  // Sent tab
+                  return const SizedBox(); // No button
+                } else if (index == 2) {
+                  // Received tab
+                  return Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          print(
+                            "Accept friend request from ${otherUsers['id']}",
+                          );
+                          acceptFriend(friendId: otherUsers['id']);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.all(0),
+                        ),
+                        child: const Text(
+                          "Accept",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
-                      child: const Text(
-                        "Reject",
-                        style: TextStyle(color: Colors.white),
+                      SizedBox(width: 6),
+                      ElevatedButton(
+                        onPressed: () {
+                          print(
+                            "Reject friend request from ${otherUsers['id']}",
+                          );
+                          rejectFriend(friendId: otherUsers['id']);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          padding: const EdgeInsets.all(0),
+                        ),
+                        child: const Text(
+                          "Reject",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  );
+                } else if (index == 3) {
+                  // Friends tab
+                  return ElevatedButton(
+                    onPressed: () {
+                      print("Unfriend user ${otherUsers['id']}");
+                      unfriend(friendId: otherUsers['id']);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
                       ),
                     ),
-                  ],
-                );
-              } else if (index == 3) {
-                // Friends tab
-                return ElevatedButton(
-                  onPressed: () {
-                    print("Unfriend user ${otherUsers['id']}");
-                    unfriend(friendId: otherUsers['id']);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
+                    child: const Text(
+                      "Unfriend",
+                      style: TextStyle(color: Colors.white),
                     ),
-                  ),
-                  child: const Text(
-                    "Unfriend",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                );
-              } else {
-                return const SizedBox(); // Fallback
-              }
-            },
-          ),
-        ],
+                  );
+                } else {
+                  return const SizedBox(); // Fallback
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -452,6 +468,7 @@ class _AddFriendsListState extends State<AddFriendsList>
               ),
               TabBar(
                 controller: _tabController,
+
                 labelColor: Colors.white,
                 unselectedLabelColor: Colors.grey,
                 indicatorColor: Colors.blue,
@@ -468,11 +485,8 @@ class _AddFriendsListState extends State<AddFriendsList>
       ),
       body: TabBarView(
         controller: _tabController,
+         physics: const NeverScrollableScrollPhysics(),
         children: [
-          // _buildTabView(otherUsers),
-          // _buildTabView(sendRequestsUsers),
-          // _buildTabView(recievedRequestUsers),
-          // _buildTabView(friends),
           _buildTabView(filteredOtherUsers),
           _buildTabView(filteredSendRequests),
           _buildTabView(filteredReceivedRequests),
