@@ -13,6 +13,7 @@ import 'package:sportzstar/screens/userScreens/add_friends.dart';
 
 import 'package:sportzstar/started_screen.dart';
 
+import '../screens/eventScreens/add_event_screen.dart';
 import '../screens/postScreens/create_post.dart';
 import '../screens/storyScreens/story_screen.dart';
 import '../screens/userScreens/edit_profile_screen.dart';
@@ -105,8 +106,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const ChatListScreen());
     case eventScreenRoute:
       return MaterialPageRoute(builder: (_) => const EventScreen());
-    // case addEventScreenRoute:
-    //   return MaterialPageRoute(builder: (_) => const AddEventScreen());
+    case addEventScreenRoute:
+      return MaterialPageRoute(builder: (_) => const AddEventScreen());
     case createPostScreenRoute:
       return MaterialPageRoute(builder: (_) => const CreatePostScreen());
     case addFriendListScreenRoute:
