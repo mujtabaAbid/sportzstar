@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sportzstar/config/palette.dart';
+import 'package:sportzstar/explore/tabbar_screen.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
+import 'package:sportzstar/provider/post_provider.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
+import 'package:sportzstar/screens/postScreens/post_detail_screen.dart';
+import 'package:sportzstar/screens/userScreens/add_friends.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 
 import '../../provider/home_provider.dart';
@@ -49,6 +53,36 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  Future<void> mediaIdFunction(dynamic mediaId, String postType) async {
+    print('Media ID=========>>>>>>: $mediaId and $postType');
+
+    try {
+      final response =  await Provider.of<PostProvider>(context, listen: false).getAllUserPosts();
+    print('This is $response');
+        // Find the post where post_id == mediaId
+    final postDetails = response.firstWhere(
+      (post) => post['post_id'] == mediaId,
+      orElse: () => null,
+    );
+
+    if (postDetails != null) {
+      print('Filtered Post Details: $postDetails');
+      // You can now use postDetails here
+
+
+      Navigator.push(context, MaterialPageRoute(builder: (context) => PostDetailScreen(post: postDetails,)));
+
+
+
+    } else {
+      print('No post found with post_id == $mediaId');
+    }
+    } catch (e) {
+    print('This is $e');
+      
+    }
   }
 
   String _formatDateOrTime(String dateTimeStr) {
@@ -129,10 +163,39 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       style: const TextStyle(color: Colors.white),
                     ),
                     onTap: () {
-                      pushNamedNavigate(
-                        context: context,
-                        pageName: postDetailScreenRoute,
-                      );
+                      if (chat['notification_type'] == 'accept_request') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => AddFriendsList(initialTabIndex: 3),
+                          ),
+                        );
+                      } else if (chat['notification_type'] == 'send_equest') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => AddFriendsList(initialTabIndex: 1),
+                          ),
+                        );
+                      } else if (chat['notification_type'] == 'like' ||
+                          chat['notification_type'] == 'comment') {
+                        mediaIdFunction(chat['media_id'], chat['notification_type']);
+
+
+                      } else if (chat['notification_type'] == 'event') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => EventScreen(),
+                          ),
+                        );
+                      } else {
+                        // Optional: handle other types or do nothing
+                        print('Notification type not handled');
+                      }
                     },
                   ),
                 ),

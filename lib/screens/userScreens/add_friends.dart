@@ -11,7 +11,8 @@ import '../../provider/home_provider.dart';
 import 'second_user_profile_screen.dart';
 
 class AddFriendsList extends StatefulWidget {
-  const AddFriendsList({super.key});
+    final int initialTabIndex;
+  const AddFriendsList({super.key, required this.initialTabIndex});
 
   @override
   State<AddFriendsList> createState() => _AddFriendsListState();
@@ -116,9 +117,11 @@ class _AddFriendsListState extends State<AddFriendsList>
 
   @override
   void initState() {
-    _tabController = TabController(length: 4, vsync: this);
-    // _tabController.index = 3;
-    // print('lkdfjsojfi----->>>>${_tabController.index}');
+    _tabController = TabController(
+      length: 4,
+      vsync: this,
+      initialIndex: widget.initialTabIndex,
+    );
     super.initState();
     allUsers();
   }

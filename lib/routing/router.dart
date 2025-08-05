@@ -110,7 +110,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case createPostScreenRoute:
       return MaterialPageRoute(builder: (_) => const CreatePostScreen());
     case addFriendListScreenRoute:
-      return MaterialPageRoute(builder: (_) => const AddFriendsList());
+      return MaterialPageRoute(builder: (_) => const AddFriendsList(initialTabIndex: 0,));
 
     // case confirmEmailScreenRoute:
     //   return MaterialPageRoute(
