@@ -3,6 +3,8 @@ import 'package:sportzstar/config/palette.dart';
 // import 'package:sportzstar/screens/eventScreens/add_event_screen.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
+import 'package:sportzstar/screens/eventScreens/all_events_tab.dart';
+import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 
 class EventScreen extends StatefulWidget {
   const EventScreen({super.key});
@@ -31,15 +33,17 @@ class _EventScreenState extends State<EventScreen> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MainLayoutWidget(
+      isLoading: false,
       appBar: AppBar(
-        backgroundColor: Colors.grey.shade50,
+        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
-        title: const Text('Events'),
+        title: const Text('Events', style: TextStyle(color: Colors.white),),
         bottom: TabBar(
+          unselectedLabelStyle: TextStyle(color: Colors.grey),
           indicatorSize: TabBarIndicatorSize.tab,
-          indicatorColor: Colors.black,
-          labelColor: Colors.black,
+          indicatorColor: Colors.white,
+          labelColor: Colors.white,
           controller: _tabController,
           tabs: const [
             Tab(text: 'All Events'),
@@ -55,31 +59,28 @@ class _EventScreenState extends State<EventScreen> with SingleTickerProviderStat
         ],
       ),
      floatingActionButton: _tabController.index == 1
-    ? FloatingActionButton(
-        heroTag: 'myEventsFAB', // <-- Add unique tag here
-        shape: const CircleBorder(),
-        elevation: 0,
-        tooltip: 'Add Event',
-        backgroundColor: Palette.darkgreen,
-        onPressed: () {
-         pushNamedNavigate(context: context, pageName: addEventScreenRoute);
-        },
-        child: const Icon(Icons.add, color: Colors.white),
-      )
+    ? Padding(
+      padding: const EdgeInsets.only(bottom: 80),
+      child: FloatingActionButton(
+        
+          heroTag: 'myEventsFAB', // <-- Add unique tag here
+          shape: const CircleBorder(),
+          elevation: 0,
+          tooltip: 'Add Event',
+          backgroundColor: Palette.darkgreen,
+          onPressed: () {
+           pushNamedNavigate(context: context, pageName: addEventScreenRoute);
+          },
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
+    )
     : null,
 
     );
   }
 }
 
-class AllEventsTab extends StatelessWidget {
-  const AllEventsTab({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text("All Events List"));
-  }
-}
 
 class MyEventsTab extends StatelessWidget {
   const MyEventsTab({super.key});
