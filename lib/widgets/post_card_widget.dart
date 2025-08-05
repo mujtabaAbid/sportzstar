@@ -12,7 +12,9 @@ import 'package:provider/provider.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/close_keyboard.dart';
 import 'package:sportzstar/helper/local_storage.dart';
+import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/provider/home_provider.dart';
+import 'package:sportzstar/provider/post_provider.dart';
 import 'package:sportzstar/screens/postScreens/post_detail_screen.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 // import 'package:sportzstar/widgets/input_widget.dart';
@@ -20,15 +22,22 @@ import 'package:sportzstar/widgets/video_player_widget.dart';
 // import 'package:permission_handler/permission_handler.dart';
 
 import '../helper/basic_enum.dart';
+import '../screens/bottom_navigation_bar.dart';
 import 'alerts/alert_notification_widget.dart';
 
 enum PostDisplayType { text, image, video }
 
 class PostCard extends StatefulWidget {
   final Map<String, dynamic> post;
+  final String selectedCategory;
   final PostDisplayType displayType; // ✅ Add this
 
-  const PostCard({required this.post, super.key, required this.displayType});
+  const PostCard({
+    required this.post,
+    super.key,
+    required this.displayType,
+    required this.selectedCategory,
+  });
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -44,7 +53,7 @@ class _PostCardState extends State<PostCard> {
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
   final Map<String, String> _formData = {};
-  final GlobalKey _repaintKey = GlobalKey();
+  // final GlobalKey _repaintKey = GlobalKey();
 
   Future<void> allpostsdata() async {
     try {
@@ -106,15 +115,58 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  void deleteComment(String commentId) async {
+  void deleteComment({
+    required int commentId,
+    required StateSetter setModalState,
+    required Map<String, dynamic> post,
+  }) async {
+    print(
+      'commentr id ------>>>> $commentId and type == ${commentId.runtimeType}',
+    );
     try {
-      final response = Provider.of<HomeProvider>(
+      final response = await Provider.of<HomeProvider>(
         context,
         listen: false,
       ).deleteComment(commentId);
-      print('responser of delete comment function --------->>>>>>$response');
+      if (response.statusCode == 200) {
+        // Then update the comment list in the post
+        print('comment deleted------->>>>>${response.body}');
+        setModalState(() {
+          post['comments_list'].removeWhere((comment) {
+            print(
+              'all comment id =====>>${comment['comment_id'].toString()} and ${comment['id'].toString()}',
+            );
+            return (comment['comment_id'] ?? comment['id']) == commentId;
+          });
+        });
+      } else {
+        print(
+          'responser of delete comment function --------->>>>>>${response.body}',
+        );
+      }
     } catch (e) {
-      print('responser of delete comment function --------->>>>>>$e');
+      print('responser of delete comment function ---e------>>>>>>$e');
+    }
+  }
+
+  void deletePost(int postId) async {
+    try {
+      final response = Provider.of<PostProvider>(
+        context,
+        listen: false,
+      ).deletePostFunction(postId: postId);
+      print('deletePost function  success--------->>>>>>$response');
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder:
+              (context) => BottomNavigationBarScreen(
+                pageIndex: 0,
+                selectCat: widget.selectedCategory,
+              ),
+        ),
+      );
+    } catch (e) {
+      print('deletePost error function e--------->>>>>>$e');
     }
   }
 
@@ -246,7 +298,7 @@ class _PostCardState extends State<PostCard> {
                         onSelected: (String value) {
                           if (value == 'delete') {
                             // Call your delete post function here
-                            // deletePost();
+                            deletePost(post['post_id']);
                             print(
                               '---delete post function call button--------',
                             );
@@ -270,19 +322,19 @@ class _PostCardState extends State<PostCard> {
                                   ],
                                 ),
                               ),
-                              PopupMenuItem<String>(
-                                value: 'update',
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.update_sharp,
-                                      color: Palette.basicgreen,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text('Update'),
-                                  ],
-                                ),
-                              ),
+                              // PopupMenuItem<String>(
+                              //   value: 'update',
+                              //   child: Row(
+                              //     children: [
+                              //       Icon(
+                              //         Icons.update_sharp,
+                              //         color: Palette.basicgreen,
+                              //       ),
+                              //       SizedBox(width: 8),
+                              //       Text('Update'),
+                              //     ],
+                              //   ),
+                              // ),
                             ],
                       )
                       : CustomButton(
@@ -591,12 +643,16 @@ class _PostCardState extends State<PostCard> {
                                                       ? IconButton(
                                                         onPressed: () {
                                                           print(
-                                                            '-------------function created but commented due to some changes required in backend-----------',
+                                                            '---=${comment['comment_id']} and ${comment['id']}-----------',
                                                           );
-                                                          // deleteComment(
-                                                          //   comment['comment_id'] ??
-                                                          //       comment['id'],
-                                                          // );
+                                                          deleteComment(
+                                                            commentId:
+                                                                comment['comment_id'] ??
+                                                                comment['id'],
+                                                            setModalState:
+                                                                setModalState,
+                                                            post: widget.post,
+                                                          );
                                                         },
                                                         icon: Icon(
                                                           Icons.delete,
@@ -655,7 +711,7 @@ class _PostCardState extends State<PostCard> {
                           // color: Palette.darkgray,
                         ),
                         const SizedBox(width: 4),
-                        Text('${post['total_comments']}'),
+                        Text('${post['comments_list'].length}'),
                       ],
                     ),
                   ),

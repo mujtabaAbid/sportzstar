@@ -19,7 +19,8 @@ import 'package:sportzstar/widgets/post_card_widget.dart';
 import '../helper/local_storage.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.selectCat});
+  final String? selectCat;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -33,8 +34,11 @@ class _HomeScreenState extends State<HomeScreen> {
     getSports();
     getStoryUsers();
     getPosts();
+    selectedCategory = widget.selectCat ?? '';
   }
 
+  // String selectedCategory = '';
+  String selectedCategory = '';
   List<Map<String, dynamic>> allUsersList = [];
   List<Map<String, dynamic>> posts = [];
   List<String> sportsCategories = [];
@@ -208,8 +212,6 @@ class _HomeScreenState extends State<HomeScreen> {
       _isLoading = false;
     });
   }
-
-  String selectedCategory = '';
 
   final List<dynamic> postsss = [
     {
@@ -606,18 +608,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Display post_description in PostCard
                   return PostCard(
                     post: post,
+                    selectedCategory: selectedCategory,
                     displayType: PostDisplayType.text,
                   );
                 } else if (post['post_type'] == 'image') {
                   // Display image_url and post_description in PostCard
                   return PostCard(
                     post: post,
+                    selectedCategory: selectedCategory,
                     displayType: PostDisplayType.image,
                   );
                 } else if (post['post_type'] == 'video') {
                   // Display video_url and post_description in PostCard
                   return PostCard(
                     post: post,
+                    selectedCategory: selectedCategory,
                     displayType: PostDisplayType.video,
                   );
                 } else {

@@ -63,7 +63,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               'created_at': DateTime.now().toString(),
             }),
         file: _mediaFile,
-        postType: _postType.isEmpty ? 'text' : _postType,
+        // postType: _postType.isEmpty ? 'text' : _postType,
       );
 
       print('Post added: $response');
@@ -131,7 +131,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     return MainLayoutWidget(
       isLoading: _isLoading,
       appBar: AppBar(
-        title: const Text("Add Post", style: TextStyle(color: Colors.white)),
+        title: const Text("Create Post", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
       ),
@@ -149,6 +149,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               ),
               const SizedBox(height: 12),
               TextFormField(
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'This field is required';
+                  }
+                  return null;
+                },
                 controller: _textController,
                 maxLines: 4,
                 onSaved: (value) => handleSave('post_description', value ?? ''),

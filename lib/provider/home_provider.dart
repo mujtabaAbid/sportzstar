@@ -235,21 +235,22 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> deleteComment(String commentId) async {
+  Future<dynamic> deleteComment(int commentId) async {
     final user = await userData();
+
+    print(
+      'user data and comment id --->>> |$commentId and ${user['id'].toString()}',
+    );
     try {
       final response = await http.post(
         Uri.parse(deleteCommentOnPostApi),
         headers: {'Accept': 'application/json'},
-        body: {'comment_id': commentId, 'user_id': user['id'].toString()},
+        body: jsonEncode({'comment_id': commentId, 'user_id': user['id']}),
       );
 
       if (response.statusCode == 200) {
         // final resp = await getAllPosts();
-        return {
-          'message':
-              '-----------This api was not checked properly due to some changes in backend-----------',
-        };
+        return response;
       } else {
         print(
           '-------comment not deleted, Something went wrong---------->>>>>>${response.body}',

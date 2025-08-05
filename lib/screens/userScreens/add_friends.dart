@@ -116,6 +116,8 @@ class _AddFriendsListState extends State<AddFriendsList>
   @override
   void initState() {
     _tabController = TabController(length: 4, vsync: this);
+    // _tabController.index = 3;
+    // print('lkdfjsojfi----->>>>${_tabController.index}');
     super.initState();
     allUsers();
   }
@@ -251,8 +253,6 @@ class _AddFriendsListState extends State<AddFriendsList>
       _isLoading = false;
     });
   }
-
-
 
   Widget _buildUserTile(Map<String, dynamic> otherUsers) {
     return Container(

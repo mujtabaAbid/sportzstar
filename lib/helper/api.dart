@@ -16,17 +16,17 @@ const getCodeApi = '${apiUrl}get_code/';
 const updatePasswordApi = '${apiUrl}update_password/';
 // const userDataApi = '${apiUrl}users/';
 const deleteUserApi =
-    '${apiUrl}auth/get_notifications/3/'; //<-- (delete) 3= userid
+    '${apiUrl}auth/get_notifications/3/'; //<-- (delete) 3= userid  //////////error in this api
 // const notificationsApi = '${apiUrl}get_notifications/1/'; //get
 String notificationApi({required int id}) {
   return '${apiUrl}get_notifications/$id/';
 }
 
-const readNotificationsApi = '${apiUrl}notification_/read/20/'; //get
+const readNotificationsApi = '${apiUrl}notification_/read/20/'; //get tomorrow InshAllah
 
 // posts
-const createPostApi = '${apiUrl}posts/create/';
-const updatePostApi = '${apiUrl}posts/update/1/'; //patch
+const createPostApi = '${apiUrl}posts/create/';  // working on it, i will make a call but no response
+const updatePostApi = '${apiUrl}posts/update/1/'; //patch  // wait for call response
 // const deletePostApi = '${apiUrl}posts/delete/1/'; //del
 String deletePostApi({required int id}) {
   return '${apiUrl}posts/delete/$id/';
@@ -60,7 +60,7 @@ const getAllStoriesApi = '${apiUrl}stories/'; //get
 
 //friends
 const addFriendApi = '${apiUrl}add-friend/';
-const getFriendApi = '${apiUrl}get-friends/1/'; //get
+const getFriendApi = '${apiUrl}get-friends/1/'; //get ---------------i can not understand its purpose
 const unfriendApi = '${apiUrl}unfriend/';
 const acceptFriendApi = '${apiUrl}accept-friend/';
 const rejectFriendApi = '${apiUrl}reject-friend/';

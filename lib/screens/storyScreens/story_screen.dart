@@ -45,7 +45,7 @@ class _StoryScreenState extends State<StoryScreen> {
     return !path.startsWith('http');
   }
 
-  Future<void> getAllStories() async {
+  Future<void> getUserStories() async {
     setState(() {
       _isLoading = true;
     });
@@ -55,6 +55,7 @@ class _StoryScreenState extends State<StoryScreen> {
             context,
             listen: false,
           ).getStories();
+
       stories.addAll(response['stories']);
       setState(() {
         totalStories = response['total_stories'];
@@ -126,7 +127,7 @@ class _StoryScreenState extends State<StoryScreen> {
   @override
   void initState() {
     super.initState();
-    getAllStories();
+    getUserStories();
   }
 
   Future<void> pickMedia() async {
@@ -293,7 +294,6 @@ class _StoryScreenState extends State<StoryScreen> {
                           },
                           child: const Text('Add'),
                         ),
-                    
                       ],
                     );
                   },
