@@ -67,13 +67,22 @@ class _AllEventsTabState extends State<AllEventsTab> {
                   style: TextStyle(color: Colors.white),
                 ),
               )
-              : ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: _events.length,
-                itemBuilder: (context, index) {
-                  final event = _events[index];
-                  return EventCard(event: event);
-                },
+              : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(16),
+                      itemCount: _events.length,
+                      itemBuilder: (context, index) {
+                        final event = _events[index];
+                        return EventCard(event: event);
+                      },
+                    ),
+                    SizedBox(height: 60,)
+                  ],
+                ),
               ),
     );
   }
@@ -143,7 +152,7 @@ class EventCard extends StatelessWidget {
         );
       },
       child: Card(
-        margin: const EdgeInsets.only(bottom: 16),
+        margin: const EdgeInsets.only(bottom: 24),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

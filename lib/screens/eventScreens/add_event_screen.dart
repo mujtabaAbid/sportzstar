@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/provider/event_provider.dart';
+import 'package:sportzstar/screens/eventScreens/add_guest_screen.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
@@ -425,7 +426,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
               CustomButton(
                 color: Palette.facebookColor,
                 onPressed: () {
-                  handleSubmit();
+                  // handleSubmit();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AddGuestScreen()));
                 },
                 text: 'Create Now',
               ),
