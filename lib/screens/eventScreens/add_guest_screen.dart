@@ -85,17 +85,17 @@ class _AddGuestScreenState extends State<AddGuestScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-
                         Navigator.pushAndRemoveUntil(
-  context,
-  MaterialPageRoute(
-    builder: (context) => BottomNavigationBarScreen(
-      pageIndex: 2,
-      eventIndex: 1,
-    ),
-  ),
-  (route) => false,
-);
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => BottomNavigationBarScreen(
+                                  pageIndex: 2,
+                                  eventIndex: 1,
+                                ),
+                          ),
+                          (route) => false,
+                        );
                         // Navigator.pop(context); // close dialog
                         // Navigator.pop(context); // go back to previous screen
                       },
