@@ -22,11 +22,16 @@ String notificationApi({required int id}) {
   return '${apiUrl}get_notifications/$id/';
 }
 
-const readNotificationsApi = '${apiUrl}notification_/read/20/'; //get tomorrow InshAllah
+// const readNotificationsApi ='${apiUrl}notification_/read/20/';
+String readNotificationsApi({required int id}) {
+  return '${apiUrl}notification_/read/$id/';
+}
 
 // posts
-const createPostApi = '${apiUrl}posts/create/';  // working on it, i will make a call but no response
-const updatePostApi = '${apiUrl}posts/update/1/'; //patch  // wait for call response
+const createPostApi =
+    '${apiUrl}posts/create/'; // working on it, i will make a call but no response
+const updatePostApi =
+    '${apiUrl}posts/update/1/'; //patch  // wait for call response
 // const deletePostApi = '${apiUrl}posts/delete/1/'; //del
 String deletePostApi({required int id}) {
   return '${apiUrl}posts/delete/$id/';
@@ -60,7 +65,8 @@ const getAllStoriesApi = '${apiUrl}stories/'; //get
 
 //friends
 const addFriendApi = '${apiUrl}add-friend/';
-const getFriendApi = '${apiUrl}get-friends/1/'; //get ---------------i can not understand its purpose
+const getFriendApi =
+    '${apiUrl}get-friends/1/'; //get ---------------i can not understand its purpose
 const unfriendApi = '${apiUrl}unfriend/';
 const acceptFriendApi = '${apiUrl}accept-friend/';
 const rejectFriendApi = '${apiUrl}reject-friend/';
@@ -69,7 +75,11 @@ const rejectFriendApi = '${apiUrl}reject-friend/';
 const createEventApi = '${apiUrl}create-event/';
 const listEventApi = '${apiUrl}events/'; //get
 const getEventByIdApi = '${apiUrl}events/1/'; //get
-const deleteEventByIdApi = '${apiUrl}events/delete/1/'; //get
+// const deleteEventByIdApi = '${apiUrl}events/delete/1/'; //get
+String deleteEventByIdApi({required int id}) {
+  return '${apiUrl}events/delete/$id/';
+}
+
 const addGuestInEventApi = '${apiUrl}add-event-guests/';
 
 //others

@@ -44,6 +44,25 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
+  Future<dynamic> readNotifications({required int notificationId}) async {
+    try {
+      final response = await http.get(
+        Uri.parse(readNotificationsApi(id: notificationId)),
+        headers: {'Accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print('deleteEventsFunction lists ---->>>> $responseData');
+        return responseData;
+      } else {
+        print('deleteEventsFunction lists ---error->>>> ${response.body}');
+      }
+    } catch (e) {
+      print('deleteEventsFunction lists  error --e-->>>> $e');
+    }
+  }
+
   Future<dynamic> usersList() async {
     try {
       final authToken = await getDataFromLocalStorage(name: 'access');
