@@ -10,9 +10,10 @@ import 'userScreens/user_profile_screen.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class BottomNavigationBarScreen extends StatefulWidget {
-  const BottomNavigationBarScreen({super.key, this.pageIndex, this.selectCat});
+  const BottomNavigationBarScreen({super.key, this.pageIndex, this.selectCat,this.eventIndex});
   final int? pageIndex;
   final String? selectCat;
+  final int? eventIndex;
 
   @override
   State<BottomNavigationBarScreen> createState() =>
@@ -31,7 +32,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
   List<Widget> get pages => [
     HomeScreen(selectCat: widget.selectCat),
     StoryScreen(),
-    EventScreen(),
+    EventScreen(eventIndex:widget.eventIndex),
     ChatListScreen(),
     UserProfileScreen(),
   ];
