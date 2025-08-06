@@ -16,26 +16,29 @@ class EventProvider with ChangeNotifier {
 
   Future<dynamic> createEvent({required Map<String, dynamic> formData}) async {
     final user = await userData();
-    print('creat event function call and user id ======>>>${user['id']}');
+    print('create event function call and user id ======>>>${user['id']}');
+
     formData.addAll({
       'user_id': user['id'].toString(),
-      'event_title': 'my event',
+      'event_type': 'my event',
     });
+
     final logData = Map<String, dynamic>.from(formData);
     logData.remove('profile_picture');
-
     print('create event function call and user id ======>>> $logData');
+
     try {
       final response = await http.post(
         Uri.parse(createEventApi),
-        headers: {'Accept': 'application/json'},
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
         body: jsonEncode(formData),
       );
-      // final responseData = json.decode(response.body);
 
       if (response.statusCode == 201) {
         print('success response of create event------->${response.body}');
-
         return response;
       } else {
         print('error in create event function -------->>>>${response.body}');
@@ -43,6 +46,7 @@ class EventProvider with ChangeNotifier {
       }
     } catch (e) {
       print('error in create event function------->>>$e');
+      return null;
     }
   }
 

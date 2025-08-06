@@ -111,15 +111,12 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 lookupMimeType(_selectedImage!.path) ?? 'image/jpeg';
             // Create valid data URI
             final String dataUri = 'data:$mimeType;base64,$base64Image';
-
-            // formData['profile_picture'] = dataUri; // send as string
-
             _formData.addAll({'profile_picture': dataUri});
           }
+
           List<String> imageList = [];
           for (XFile xfile in _images) {
-            final bytes =
-                await xfile.readAsBytes(); // ✅ directly read bytes from XFile
+            final bytes = await xfile.readAsBytes();
             String base64Image = base64Encode(bytes);
 
             final mimeType = lookupMimeType(xfile.path) ?? 'image/jpeg';
@@ -127,8 +124,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
             imageList.add(dataUri);
           }
-          // _formData.addAll({'event_images': imageList.join(',')});
-
+          _formData.addAll({'event_images': imageList});
           final eventHost = {
             'host_name': _hostNameController.text,
             'host_image': imageList.join(','),
@@ -139,6 +135,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
             context,
             listen: false,
           ).createEvent(formData: _formData);
+
           if (response.statusCode == 201) {
             final responseData = json.decode(response.body);
 
@@ -154,11 +151,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 builder: (context) => BottomNavigationBarScreen(pageIndex: 2),
               ),
             );
-            // pushNamedAndRemoveUntilNavigate(
-            //   pageName: otpScreenRoute,
-            //   argument: {'email': _formData['email'].toString()},
-            //   context: context,
-            // );
           } else {
             print('response of create Event -errror---->>> ${response.body}');
           }

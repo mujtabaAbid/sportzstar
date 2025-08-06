@@ -82,11 +82,3 @@ class _EventScreenState extends State<EventScreen> with SingleTickerProviderStat
 
 
 
-class MyEventsTab extends StatelessWidget {
-  const MyEventsTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text("My Events List"));
-  }
-}

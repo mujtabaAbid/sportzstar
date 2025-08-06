@@ -1,8 +1,12 @@
+import 'dart:convert';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sportzstar/provider/event_provider.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 
+import '../../helper/local_storage.dart';
 import 'all_events_details_screen.dart';
 
 class AllEventsTab extends StatefulWidget {
@@ -17,57 +21,63 @@ class _AllEventsTabState extends State<AllEventsTab> {
 
   List<EventModel> _events = [];
 
-
   Future<void> getAllEvents() async {
-  setState(() {
-    _isLoading = true;
-  });
-  try {
-    final response = await Provider.of<EventProvider>(
-      context,
-      listen: false,
-    ).getAllEventsFunction();
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final response =
+          await Provider.of<EventProvider>(
+            context,
+            listen: false,
+          ).getAllEventsFunction();
 
-    if (response != null && response is List) {
-      _events = response.map((e) => EventModel.fromJson(e)).toList();
+      if (response != null && response is List) {
+        _events = response.map((e) => EventModel.fromJson(e)).toList();
+
+      }
+
+
+
+
+    } catch (e) {
+      print('Error in getAllEvents: $e');
     }
-  } catch (e) {
-    print('Error in getAllEvents: $e');
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
-  setState(() {
-    _isLoading = false;
-  });
-}
- 
- @override
+  @override
   void initState() {
     getAllEvents();
     super.initState();
   }
- @override
-Widget build(BuildContext context) {
-  return Scaffold(
-  // isLoading: _isLoading,
-  body: _events.isEmpty
-      ? const Center(
-          child: Text(
-            'No Events Found',
-            style: TextStyle(color: Colors.white),
-          ),
-        )
-      : ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: _events.length,
-          itemBuilder: (context, index) {
-            final event = _events[index];
-            return EventCard(event: event);
-          },
-        ),
-);
-}
-}
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // isLoading: _isLoading,
+      body:
+          _events.isEmpty
+              ? const Center(
+                child: Text(
+                  'No Events Found',
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+              : ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: _events.length,
+                itemBuilder: (context, index) {
+                  final event = _events[index];
+                  return EventCard(event: event);
+                },
+              ),
+    );
+  }
+}
 
 class EventModel {
   final int eventId;
@@ -106,7 +116,7 @@ class EventModel {
       hostName: json['event_host_name'],
       hostPicture: json['event_host_picture'],
       title: json['event_title'],
-      type: json['event_type'],
+      type: json['event_type'] ?? '',
       date: json['event_date'],
       time: json['event_time'],
       location: json['event_location'],
@@ -115,7 +125,6 @@ class EventModel {
     );
   }
 }
-
 
 class EventCard extends StatelessWidget {
   final EventModel event;
@@ -145,18 +154,45 @@ class EventCard extends StatelessWidget {
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
               ),
-              child: event.pictures.isNotEmpty
-                  ? Image.network(
-                      event.pictures.first,
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    )
-                  : Container(
-                      height: 200,
-                      color: Colors.grey,
-                      child: const Center(child: Icon(Icons.image, size: 50)),
-                    ),
+              child:
+                  event.pictures.isNotEmpty
+                      ? CachedNetworkImage(
+                        imageUrl: event.pictures.first,
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        placeholder:
+                            (context, url) => Container(
+                              height: 200,
+                              color: Colors.grey[300],
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                        errorWidget:
+                            (context, url, error) => Container(
+                              height: 200,
+                              color: Colors.grey,
+                              child: const Icon(Icons.broken_image),
+                            ),
+                      )
+                      : Container(
+                        height: 200,
+                        color: Colors.grey,
+                        child: const Center(child: Icon(Icons.image, size: 50)),
+                      ),
+
+              // Image.network(
+              //   event.pictures.first,
+              //   height: 200,
+              //   width: double.infinity,
+              //   fit: BoxFit.cover,
+              // )
+              // : Container(
+              //   height: 200,
+              //   color: Colors.grey,
+              //   child: const Center(child: Icon(Icons.image, size: 50)),
+              // ),
             ),
             Padding(
               padding: const EdgeInsets.all(12.0),
@@ -173,7 +209,10 @@ class EventCard extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     event.title,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Row(
@@ -202,9 +241,87 @@ class EventCard extends StatelessWidget {
                 ],
               ),
             ),
+            // SizedBox(height: 30),
           ],
         ),
       ),
+    );
+  }
+}
+
+class MyEventsTab extends StatefulWidget {
+  const MyEventsTab({super.key});
+
+  @override
+  State<MyEventsTab> createState() => _MyEventsTabState();
+}
+
+class _MyEventsTabState extends State<MyEventsTab> {
+  bool _isLoading = false;
+  List<EventModel> _myEvents = [];
+
+  Future<void> getMyEvents() async {
+    final userData = await getDataFromLocalStorage(name: 'userData');
+
+    final data = json.decode(userData);
+
+    print('object====>>>>${data['id'].toString()}');
+    final userId = data['id'].toString();
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response =
+          await Provider.of<EventProvider>(
+            context,
+            listen: false,
+          ).getAllEventsFunction();
+
+      if (response != null && response is List) {
+        _myEvents =
+            response
+                .where((e) => e['user_id'].toString() == userId)
+                .map((e) => EventModel.fromJson(e))
+                .toList();
+      }
+    } catch (e) {
+      print('Error in getMyEvents: $e');
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getMyEvents();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _myEvents.isEmpty
+              ? const Center(
+                child: Text(
+                  'My Events Not Found',
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+              : ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: _myEvents.length,
+                itemBuilder: (context, index) {
+                  final event = _myEvents[index];
+                  return EventCard(event: event);
+                },
+              ),
     );
   }
 }
