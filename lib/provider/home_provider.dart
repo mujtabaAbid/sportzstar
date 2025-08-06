@@ -54,7 +54,7 @@ class HomeProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         print('deleteEventsFunction lists ---->>>> $responseData');
-        return responseData;
+        return response;
       } else {
         print('deleteEventsFunction lists ---error->>>> ${response.body}');
       }

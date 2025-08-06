@@ -50,7 +50,7 @@ const deleteCommentOnPostApi = '${apiUrl}posts/comment/delete';
 
 //stories
 const createStoryApi = '${apiUrl}stories/create/';
-const updateStoryApi = '${apiUrl}stories/update/1/'; //patch
+// const updateStoryApi = '${apiUrl}stories/update/1/'; //patch
 // const deleteStoryApi = '${apiUrl}stories/delete/<post_id>/'; //get
 String deleteStoryApi({required int id}) {
   return '${apiUrl}stories/delete/$id/';
