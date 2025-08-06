@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sportzstar/config/palette.dart';
+import 'package:sportzstar/helper/basic_enum.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/provider/post_provider.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/postScreens/post_detail_screen.dart';
 import 'package:sportzstar/screens/userScreens/add_friends.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
+import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
 
 import '../../provider/home_provider.dart';
 import '../eventScreens/tabbar_screen.dart';
@@ -49,6 +51,35 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       print('✅ All getNotifications:-------------------> $response');
     } catch (e) {
       print('❌ Error getNotifications:--------e---------> $e');
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> readNotification({required int notificationId}) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response = await Provider.of<HomeProvider>(
+        context,
+        listen: false,
+      ).readNotifications(notificationId: notificationId);
+
+      if (response.statusCode == 200) {
+        alertNotification(
+          context: context,
+          message: 'Mark as read',
+          messageType: AlertMessageType.success,
+        );
+        print('response----->>>>>>${response.body}');
+      } else {
+        print('response--error--->>>>>>${response.body}');
+      }
+    } catch (e) {
+      print('Error readNotification:--------e---------> $e');
     }
     setState(() {
       _isLoading = false;
@@ -106,107 +137,135 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MainLayoutWidget(
-      isLoading: _isLoading,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.white,
-        title: Text(
-          'Notifications',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+    return WillPopScope(
+      onWillPop: () async {
+        pushNamedAndRemoveUntilNavigate(
+          pageName: bottomNavigationBarRoute,
+          context: context,
+        );
+        return false;
+      },
+      child: MainLayoutWidget(
+        isLoading: _isLoading,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          title: Text(
+            'Notifications',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              pushNamedAndRemoveUntilNavigate(
+                pageName: bottomNavigationBarRoute,
+                context: context,
+              );
+            },
+          ),
         ),
-        centerTitle: true,
-      ),
-      body: Container(
-        child: ListView.builder(
-          itemCount: chatData.length,
-          itemBuilder: (context, index) {
-            final chat = chatData[index];
-            return Column(
-              children: [
-                Container(
-                  color:
-                      chat['is_read']
-                          ? const Color.fromARGB(255, 201, 200, 200)
-                          : Colors.transparent,
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                    leading: CircleAvatar(
-                      radius: 25,
-                      backgroundImage: NetworkImage(
-                        'http://77.37.125.189/${chat['profile']}',
+        body: Container(
+          child: ListView.builder(
+            itemCount: chatData.length,
+            itemBuilder: (context, index) {
+              final chat = chatData[index];
+              return Column(
+                children: [
+                  Container(
+                    color:
+                        chat['is_read']
+                            ? const Color.fromARGB(255, 201, 200, 200)
+                            : Colors.transparent,
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
                       ),
-                      child:
-                          ((chat['profile'] == null) || (chat['profile'] == ''))
-                              ? Icon(
-                                chat['notification_type'] == 'like'
-                                    ? Icons.thumb_up
-                                    : chat['notification_type'] == 'comment'
-                                    ? Icons.comment
-                                    : chat['notification_type'] == 'send_equest'
-                                    ? Icons.drive_file_move_rounded
-                                    : chat['notification_type'] == 'event'
-                                    ? Icons.event
-                                    : Icons.person_add,
-                              )
-                              : null,
-                    ),
-                    title: Text(
-                      chat['full_name'],
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                      leading: CircleAvatar(
+                        radius: 25,
+                        backgroundImage: NetworkImage(
+                          'http://77.37.125.189/${chat['profile']}',
+                        ),
+                        child:
+                            ((chat['profile'] == null) ||
+                                    (chat['profile'] == ''))
+                                ? Icon(
+                                  chat['notification_type'] == 'like'
+                                      ? Icons.thumb_up
+                                      : chat['notification_type'] == 'comment'
+                                      ? Icons.comment
+                                      : chat['notification_type'] ==
+                                          'send_equest'
+                                      ? Icons.drive_file_move_rounded
+                                      : chat['notification_type'] == 'event'
+                                      ? Icons.event
+                                      : Icons.person_add,
+                                )
+                                : null,
                       ),
+                      title: Text(
+                        chat['full_name'],
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      subtitle: Text(
+                        chat['message'],
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      trailing: Text(
+                        _formatDateOrTime(chat['created_at']),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        if (chat['notification_type'] == 'accept_request') {
+                          readNotification(notificationId: chat['id']);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      AddFriendsList(initialTabIndex: 3),
+                            ),
+                          );
+                        } else if (chat['notification_type'] == 'send_equest') {
+                          readNotification(notificationId: chat['id']);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      AddFriendsList(initialTabIndex: 1),
+                            ),
+                          );
+                        } else if (chat['notification_type'] == 'like' ||
+                            chat['notification_type'] == 'comment') {
+                          readNotification(notificationId: chat['id']);
+                          mediaIdFunction(
+                            chat['media_id'],
+                            chat['notification_type'],
+                          );
+                        } else if (chat['notification_type'] == 'event') {
+                          readNotification(notificationId: chat['id']);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EventScreen(),
+                            ),
+                          );
+                        } else {
+                          // Optional: handle other types or do nothing
+                          print('Notification type not handled');
+                        }
+                      },
                     ),
-                    subtitle: Text(
-                      chat['message'],
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    trailing: Text(
-                      _formatDateOrTime(chat['created_at']),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    onTap: () {
-                      if (chat['notification_type'] == 'accept_request') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => AddFriendsList(initialTabIndex: 3),
-                          ),
-                        );
-                      } else if (chat['notification_type'] == 'send_equest') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => AddFriendsList(initialTabIndex: 1),
-                          ),
-                        );
-                      } else if (chat['notification_type'] == 'like' ||
-                          chat['notification_type'] == 'comment') {
-                        mediaIdFunction(
-                          chat['media_id'],
-                          chat['notification_type'],
-                        );
-                      } else if (chat['notification_type'] == 'event') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EventScreen(),
-                          ),
-                        );
-                      } else {
-                        // Optional: handle other types or do nothing
-                        print('Notification type not handled');
-                      }
-                    },
                   ),
-                ),
-                Divider(),
-              ],
-            );
-          },
+                  Divider(),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
