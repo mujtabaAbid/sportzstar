@@ -7,7 +7,8 @@ import 'package:sportzstar/screens/eventScreens/all_events_tab.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 
 class EventScreen extends StatefulWidget {
-  const EventScreen({super.key});
+  final int? eventIndex;
+  const EventScreen({super.key,  this.eventIndex});
 
   @override
   State<EventScreen> createState() => _EventScreenState();
@@ -17,13 +18,17 @@ class _EventScreenState extends State<EventScreen> with SingleTickerProviderStat
   late TabController _tabController;
 
   @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    _tabController.addListener(() {
-      setState(() {}); // Rebuild to update FAB visibility
-    });
-  }
+void initState() {
+  super.initState();
+  _tabController = TabController(
+    length: 2,
+    vsync: this,
+    initialIndex:widget.eventIndex != null ? widget.eventIndex! : 0,
+  );
+  _tabController.addListener(() {
+    setState(() {});
+  });
+}
 
   @override
   void dispose() {
