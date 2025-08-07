@@ -184,26 +184,6 @@ class UserProvider with ChangeNotifier {
     File? file,
   }) async {
     try {
-      // final request = http.MultipartRequest('PATCH', Uri.parse(updateUserApi));
-      // request.headers['Accept'] = 'application/json';
-
-      // // Add all text fields
-      // formData.forEach((key, value) {
-      //   request.fields[key] = value;
-      // });
-
-      // Add image if exists
-      // if (file != null) {
-      //   print("Attaching image: ${file.path}");
-      //   request.files.add(
-      //     await http.MultipartFile.fromPath(
-      //       'profile_picture', // ✅ Make sure this is the correct field name
-      //       file.path,
-      //     ),
-      //   );
-      // } else {
-      //   print("No profile picture to upload.");
-      // }
       if (file != null) {
         final bytes = await file.readAsBytes();
         String base64Image = base64Encode(bytes);
@@ -218,16 +198,11 @@ class UserProvider with ChangeNotifier {
       } else {
         print("No profile picture to upload.");
       }
-
-      // Send the request
-      // final streamedResponse = await request.send();
-      // final response = await http.Response.fromStream(streamedResponse);
       final response = await http.patch(
         Uri.parse(updateUserApi),
         headers: {'Accept': 'application/json'},
         body: formData,
       );
-
       if (response.statusCode == 200) {
         print("Profile updated successfully:------- ${response.body}");
         return response;

@@ -251,7 +251,7 @@ class _StoryScreenState extends State<StoryScreen> {
                                 },
                                 style: const TextStyle(color: Colors.black),
                                 decoration: InputDecoration(
-                                  hintText: 'post_description',
+                                  hintText: 'Post Description',
                                   filled: true,
                                   fillColor: Colors.white,
                                 ),
@@ -318,7 +318,7 @@ class _StoryScreenState extends State<StoryScreen> {
                       width: MediaQuery.of(context).size.width,
                     ),
                     Image.asset('assets/images/nostories.png', scale: 2),
-
+      
                     Text(
                       'No Stories Found',
                       style: TextStyle(
@@ -374,7 +374,7 @@ class _StoryScreenState extends State<StoryScreen> {
                                           videoUrl: story['video_url'],
                                         ),
                               ),
-
+      
                               // Gradient overlay (always on top of media)
                               Positioned.fill(
                                 child: Container(
@@ -390,7 +390,7 @@ class _StoryScreenState extends State<StoryScreen> {
                                   ),
                                 ),
                               ),
-
+      
                               // Bottom info (icon + text)
                               Positioned(
                                 bottom: 6,

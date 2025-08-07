@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
+import 'package:sportzstar/provider/home_provider.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/authScreens/verify_email_screen.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
@@ -31,11 +32,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool obscurePassword = true;
   bool obscureConfirmPassword = true;
+  final TextEditingController _categoryController = TextEditingController();
 
   String? selectedGender;
 
   final List<String> genders = ['male', 'female', 'other'];
-
+  List<Map<String, dynamic>> sportsCategories = [];
   // Future<void> _selectDate(BuildContext context) async {
   //   final DateTime? picked = await showDatePicker(
   //     context: context,
@@ -75,6 +77,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
       handleSave('age', age.toString());
       // You can also set it to a controller if you have one like ageController.text = age.toString();
     }
+  }
+
+  Future<void> getSports() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final response =
+          await Provider.of<HomeProvider>(
+            context,
+            listen: false,
+          ).getAllSports();
+
+      sportsCategories.clear();
+      for (var item in response) {
+        sportsCategories.add(item); // store the full map
+      }
+      print('✅ All getSports:-------------------> $sportsCategories');
+    } catch (e) {
+      print('❌ Error getSports:--------e---------> $e');
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   bool _isLoading = false;
@@ -151,6 +177,80 @@ class _SignUpScreenState extends State<SignUpScreen> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  Future<String?> _showCategoryModal(BuildContext context) async {
+    return await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.85,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Text(
+                    'Select Your Category',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SizedBox(height: 16),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: sportsCategories.length,
+                    itemBuilder: (context, index) {
+                      final sport = sportsCategories[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context, sport['game_name']);
+                        },
+                        child: Container(
+                          margin: EdgeInsets.symmetric(vertical: 8),
+                          height: 140,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(sport['game_picture']),
+                              fit: BoxFit.cover,
+                              colorFilter: ColorFilter.mode(
+                                Colors.black.withOpacity(0.4),
+                                BlendMode.darken,
+                              ),
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            sport['game_name'],
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getSports();
   }
 
   @override
@@ -233,6 +333,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               TextField(
                 style: const TextStyle(color: Colors.white),
                 controller: dobController,
+
                 readOnly: true,
                 onTap: () => _selectDate(context),
                 decoration: InputDecoration(
@@ -321,7 +422,67 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       );
                     }).toList(),
               ),
+              const SizedBox(height: 16),
 
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // Padding(
+                  // padding: const EdgeInsets.only(left: 8),
+                  // child:
+                  Text(
+                    'Player Type',
+                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                  // ),
+                ],
+              ),
+              const SizedBox(height: 8),
+
+              // playerType,
+              TextFormField(
+                controller: _categoryController,
+                readOnly: true,
+                onTap: () async {
+                  final selectedCategory = await _showCategoryModal(context);
+                  if (selectedCategory != null) {
+                    _categoryController.text = selectedCategory;
+                    handleSave('player_category', selectedCategory);
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select player category';
+                  }
+                  return null;
+                },
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(
+                      16,
+                    ), // ✅ Rounded corners
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                    ), // ✅ Invisible border
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                  hintText: 'Select Player Category',
+                  filled: true,
+                  fillColor: Color.fromARGB(51, 224, 224, 224),
+                  suffixIcon: const Icon(
+                    Icons.arrow_drop_down_outlined,
+                    color: Color.fromARGB(255, 137, 137, 137),
+                  ),
+                ),
+              ),
               const SizedBox(height: 16),
               // Password Field
               InputWidget(
@@ -333,6 +494,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 suffixIcon: IconButton(
                   icon: Icon(
                     obscurePassword ? Icons.visibility_off : Icons.visibility,
+                     color: Colors.white,
                   ),
                   onPressed: () {
                     setState(() {
@@ -361,7 +523,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   icon: Icon(
                     obscureConfirmPassword
                         ? Icons.visibility_off
-                        : Icons.visibility,
+                        : Icons.visibility, 
+                        color: Colors.white,
                   ),
                   onPressed: () {
                     setState(() {

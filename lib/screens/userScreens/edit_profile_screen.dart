@@ -320,10 +320,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
         print('Final JSON to send:------->>>> $finalData');
 
-        final response = await Provider.of<UserProvider>(
-          context,
-          listen: false,
-        ).updateUserProfile(formData: _formData, file: _image);
+        // final response = await Provider.of<UserProvider>(
+        //   context,
+        //   listen: false,
+        // ).updateUserProfile(formData: _formData, file: _image);
+        final stringifiedFinalData = finalData.map((key, value) {
+  if (value is List || value is Map) {
+    return MapEntry(key, jsonEncode(value));
+  }
+  return MapEntry(key, value.toString());
+});
+
+final response = await Provider.of<UserProvider>(
+  context,
+  listen: false,
+).updateUserProfile(formData: stringifiedFinalData, file: _image);
+
 
         if (response.statusCode == 200) {
           final responseData = json.decode(response.body);
