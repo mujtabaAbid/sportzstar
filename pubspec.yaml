@@ -49,6 +49,7 @@ dependencies:
   url_launcher: ^6.3.2
   http_parser: ^4.1.2
   cached_network_image: ^3.4.1
+  carousel_slider: ^5.1.1
   # image_gallery_saver: ^1.7.1
 
 

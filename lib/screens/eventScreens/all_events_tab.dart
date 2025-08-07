@@ -11,6 +11,33 @@ import 'package:sportzstar/widgets/Loader/loading_widget.dart';
 import '../../helper/local_storage.dart';
 import 'all_events_details_screen.dart';
 
+class GuestModel {
+  final String name;
+  final String picture;
+
+  GuestModel({required this.name, required this.picture});
+
+  factory GuestModel.fromJson(Map<String, dynamic> json) {
+    return GuestModel(name: json['guest_name'], picture: json['guest_picture']);
+  }
+}
+
+class JoinerModel {
+  final int id;
+  final String name;
+  final String picture;
+
+  JoinerModel({required this.id, required this.name, required this.picture});
+
+  factory JoinerModel.fromJson(Map<String, dynamic> json) {
+    return JoinerModel(
+      id: json['joiner_id'],
+      name: json['joiner_name'],
+      picture: json['joiner_picture'],
+    );
+  }
+}
+
 class EventModel {
   final int userId;
   final int eventId;
@@ -25,6 +52,8 @@ class EventModel {
   final String location;
   final String description;
   final List<String> pictures;
+  final List<GuestModel> guestList;
+  final List<JoinerModel> joiners;
 
   EventModel({
     required this.userId,
@@ -40,6 +69,8 @@ class EventModel {
     required this.location,
     required this.description,
     required this.pictures,
+    required this.guestList,
+    required this.joiners,
   });
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
@@ -57,6 +88,14 @@ class EventModel {
       location: json['event_location'],
       description: json['event_description'],
       pictures: List<String>.from(json['event_pictures']),
+      guestList:
+          (json['guestList'] as List)
+              .map((e) => GuestModel.fromJson(e))
+              .toList(),
+      joiners:
+          (json['joiners'] as List)
+              .map((e) => JoinerModel.fromJson(e))
+              .toList(),
     );
   }
 }
@@ -73,7 +112,7 @@ class EventCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => EventDetailScreen(event: event),
+            builder: (context) => EventDetailScreen(event: event, ),
           ),
         );
       },
@@ -162,6 +201,86 @@ class EventCard extends StatelessWidget {
                       Text(event.hostName),
                     ],
                   ),
+
+                  // Guests
+                  if (event.guestList.isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Guests:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 6),
+                    SizedBox(
+                      height: 50,
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: event.guestList.length,
+                        separatorBuilder:
+                            (context, index) => const SizedBox(width: 8),
+                        itemBuilder: (context, index) {
+                          final guest = event.guestList[index];
+                          return Column(
+                            children: [
+                              CircleAvatar(
+                                radius: 18,
+                                backgroundImage: NetworkImage(guest.picture),
+                              ),
+                              const SizedBox(height: 2),
+                              Flexible(
+                                child: Text(
+                                  guest.name,
+                                  style: const TextStyle(fontSize: 10),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+
+                  // Joiners
+                  if (event.joiners.isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Joiners:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 6),
+                    SizedBox(
+                      height: 50,
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: event.joiners.length,
+                        separatorBuilder:
+                            (context, index) => const SizedBox(width: 8),
+                        itemBuilder: (context, index) {
+                          final joiner = event.joiners[index];
+                          return Column(
+                            children: [
+                              CircleAvatar(
+                                radius: 18,
+                                backgroundImage: NetworkImage(joiner.picture),
+                              ),
+                              const SizedBox(height: 2),
+                              Flexible(
+                                child: Text(
+                                  joiner.name,
+                                  style: const TextStyle(fontSize: 10),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

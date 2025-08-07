@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:sportzstar/screens/eventScreens/all_events_tab.dart';
+import 'package:sportzstar/screens/eventScreens/full_image_screen.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class EventDetailScreen extends StatefulWidget {
   final EventModel event;
@@ -71,38 +74,42 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(12),
                       ),
-                      child: Image.network(
-                        widget.event.pictures.first,
-                        width: double.infinity,
-                        height: 350,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (
-                          BuildContext context,
-                          Widget child,
-                          ImageChunkEvent? loadingProgress,
-                        ) {
-                          if (loadingProgress == null) {
-                            return child; // Image is fully loaded
-                          }
-                          return Container(
-                            width: double.infinity,
-                            height: 350,
-                            color: Colors.black12,
-                            child: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            width: double.infinity,
-                            height: 200,
-                            color: Colors.grey,
-                            child: const Center(
-                              child: Icon(Icons.broken_image, size: 50),
-                            ),
-                          );
-                        },
+                      child: CarouselSlider(
+                        options: CarouselOptions(
+                          height: 350,
+                          viewportFraction: 1.0,
+                          enableInfiniteScroll: false,
+                          autoPlay: true,
+                        ),
+                        items:
+                            widget.event.pictures.map((imageUrl) {
+                              return Builder(
+                                builder: (BuildContext context) {
+                                  return CachedNetworkImage(
+                                    imageUrl: imageUrl,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    placeholder:
+                                        (context, url) => Container(
+                                          height: 350,
+                                          color: Colors.grey[300],
+                                          child: const Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        ),
+                                    errorWidget:
+                                        (context, url, error) => Container(
+                                          height: 350,
+                                          color: Colors.grey,
+                                          child: const Icon(
+                                            Icons.broken_image,
+                                            size: 50,
+                                          ),
+                                        ),
+                                  );
+                                },
+                              );
+                            }).toList(),
                       ),
                     )
                     : Container(
@@ -118,7 +125,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey,
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -180,7 +187,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey,
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -188,7 +195,146 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   capitalizeEachWord(widget.event.description),
                   style: const TextStyle(fontSize: 16, color: Colors.grey),
                 ),
-                SizedBox(height: 12),
+                SizedBox(height: 6),
+                const Text(
+                  "Hosts",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) => FullImageScreen(
+                                  imageUrl: widget.event.hostPicture,
+                                ),
+                          ),
+                        );
+                      },
+                      child: CircleAvatar(
+                        radius: 18,
+                        backgroundImage: NetworkImage(widget.event.hostPicture),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      widget.event.hostName,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
+                if (widget.event.guestList.isNotEmpty) ...[
+                  const Text(
+                    "Guests",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Column(
+                    children:
+                        widget.event.guestList.map((guest) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (_) => FullImageScreen(
+                                              imageUrl: guest.picture,
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 20,
+                                    backgroundImage: NetworkImage(
+                                      guest.picture,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  guest.name,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                ],
+
+                const SizedBox(height: 8),
+                if (widget.event.joiners.isNotEmpty) ...[
+                  const Text(
+                    "Guests",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Column(
+                    children:
+                        widget.event.joiners.map((join) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (_) => FullImageScreen(
+                                              imageUrl: join.picture,
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 20,
+                                    backgroundImage: NetworkImage(join.picture),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  join.name,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                ],
+
+                SizedBox(height: 8),
               ],
             ),
           ),
