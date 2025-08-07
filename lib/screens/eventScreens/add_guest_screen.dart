@@ -1,23 +1,33 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 
+import '../../helper/basic_enum.dart';
+import '../../helper/close_keyboard.dart';
+import '../../provider/event_provider.dart';
+import '../../widgets/alerts/alert_notification_widget.dart';
 import 'tabbar_screen.dart';
+import 'package:mime/mime.dart';
 
 class AddGuestScreen extends StatefulWidget {
-  const AddGuestScreen({super.key});
+  final String eventId;
+  const AddGuestScreen({super.key, required this.eventId});
 
   @override
   State<AddGuestScreen> createState() => _AddGuestScreenState();
 }
 
 class _AddGuestScreenState extends State<AddGuestScreen> {
-  final _isloading = false;
+  bool _isLoading = false;
+  final _formKey = GlobalKey<FormState>();
+  final Map<String, dynamic> _formData = {};
 
   File? _selectedImage;
   final TextEditingController _nameController = TextEditingController();
@@ -33,104 +43,253 @@ class _AddGuestScreenState extends State<AddGuestScreen> {
     }
   }
 
-  void _addNow() {
-    String name = _nameController.text.trim();
-    if (name.isEmpty || _selectedImage == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please add image and name')),
-      );
-      return;
-    }
+  Future<void> handleSubmit() async {
+    // setState(() {
+    //   _isLoading = true;
+    // });
+    if (_formKey.currentState?.validate() ?? false) {
+      if (_selectedImage != null) {
+        _formKey.currentState?.save();
+        closeKeyboard(context: context);
 
-    showDialog(
-      context: context,
-      barrierDismissible: false, // Prevent closing by tapping outside
-      builder:
-          (context) => AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            contentPadding: const EdgeInsets.all(20),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.check_circle, color: Colors.green, size: 60),
-                const SizedBox(height: 16),
-                const Text(
-                  'Success!',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Image and guest name successfully added.',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: 16),
-                if (_selectedImage != null)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.file(
-                      _selectedImage!,
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
+        final bytes = await _selectedImage!.readAsBytes();
+        String base64Image = base64Encode(bytes);
+        final mimeType = lookupMimeType(_selectedImage!.path) ?? 'image/jpeg';
+        final String dataUri = 'data:$mimeType;base64,$base64Image';
+
+        final guestData = {
+          'event_id': widget.eventId,
+          'event_guests': [
+            {
+              'guest_name': _nameController.text,
+              'guest_image': dataUri,
+            }, //all data set
+          ],
+        };
+
+        _formData.addAll(guestData);
+
+        final response = await Provider.of<EventProvider>(
+          context,
+          listen: false,
+        ).addGuestInEvent(formData: _formData);
+
+        if (response.statusCode == 201) {
+          alertNotification(
+            context: context,
+            message: 'Guest Added',
+            messageType: AlertMessageType.success,
+          );
+
+          showDialog(
+            context: context,
+            barrierDismissible: false, // Prevent closing by tapping outside
+            builder:
+                (context) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                const SizedBox(height: 8),
-                Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => BottomNavigationBarScreen(
-                                  pageIndex: 2,
-                                  eventIndex: 1,
-                                ),
+                  contentPadding: const EdgeInsets.all(20),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                        size: 60,
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Success!',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Image and guest name successfully added.',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(height: 16),
+                      if (_selectedImage != null)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.file(
+                            _selectedImage!,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
                           ),
-                          (route) => false,
-                        );
-                        // Navigator.pop(context); // close dialog
-                        // Navigator.pop(context); // go back to previous screen
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[300],
-                        foregroundColor: Colors.black,
+                        ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _nameController.text,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      child: const Text('Done'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context); // close dialog
-                        setState(() {
-                          _selectedImage = null;
-                          _nameController.clear();
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.lightBlue,
-                        foregroundColor: Colors.white,
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => BottomNavigationBarScreen(
+                                        pageIndex: 2,
+                                        eventIndex: 1,
+                                      ),
+                                ),
+                                (route) => false,
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[300],
+                              foregroundColor: Colors.black,
+                            ),
+                            child: const Text('Done'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context); // close dialog
+                              setState(() {
+                                _selectedImage = null;
+                                _nameController.clear();
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.lightBlue,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: const Text('Add More'),
+                          ),
+                        ],
                       ),
-                      child: const Text('Add More'),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ],
-            ),
-          ),
-    );
+          );
+        }
+      } else {
+        alertNotification(
+          context: context,
+          message: 'Host Image is Required',
+          messageType: AlertMessageType.error,
+        );
+      }
+    } else {
+      print('Form is not valid');
+      alertNotification(
+        context: context,
+        message: 'Please Enter Required data.',
+        messageType: AlertMessageType.error,
+      );
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
+
+  // void _addNow() {
+  //   String name = _nameController.text.trim();
+  //   if (name.isEmpty || _selectedImage == null) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text('Please add image and name')),
+  //     );
+  //     return;
+  //   }
+  //   // showDialog(
+  //   //   context: context,
+  //   //   barrierDismissible: false, // Prevent closing by tapping outside
+  //   //   builder:
+  //   //       (context) => AlertDialog(
+  //   //         shape: RoundedRectangleBorder(
+  //   //           borderRadius: BorderRadius.circular(16),
+  //   //         ),
+  //   //         contentPadding: const EdgeInsets.all(20),
+  //   //         content: Column(
+  //   //           mainAxisSize: MainAxisSize.min,
+  //   //           children: [
+  //   //             const Icon(Icons.check_circle, color: Colors.green, size: 60),
+  //   //             const SizedBox(height: 16),
+  //   //             const Text(
+  //   //               'Success!',
+  //   //               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+  //   //             ),
+  //   //             const SizedBox(height: 10),
+  //   //             Text(
+  //   //               'Image and guest name successfully added.',
+  //   //               textAlign: TextAlign.center,
+  //   //               style: const TextStyle(fontSize: 16),
+  //   //             ),
+  //   //             const SizedBox(height: 16),
+  //   //             if (_selectedImage != null)
+  //   //               ClipRRect(
+  //   //                 borderRadius: BorderRadius.circular(10),
+  //   //                 child: Image.file(
+  //   //                   _selectedImage!,
+  //   //                   width: 100,
+  //   //                   height: 100,
+  //   //                   fit: BoxFit.cover,
+  //   //                 ),
+  //   //               ),
+  //   //             const SizedBox(height: 8),
+  //   //             Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+  //   //             const SizedBox(height: 20),
+  //   //             Row(
+  //   //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //   //               children: [
+  //   //                 ElevatedButton(
+  //   //                   onPressed: () {
+  //   //                     // Navigator.pushAndRemoveUntil(
+  //   //                     //   context,
+  //   //                     //   MaterialPageRoute(
+  //   //                     //     builder:
+  //   //                     //         (context) => BottomNavigationBarScreen(
+  //   //                     //           pageIndex: 2,
+  //   //                     //           eventIndex: 1,
+  //   //                     //         ),
+  //   //                     //   ),
+  //   //                     //   (route) => false,
+  //   //                     // );
+  //   //                     // Navigator.pop(context); // close dialog
+  //   //                     // Navigator.pop(context); // go back to previous screen
+  //   //                   },
+  //   //                   style: ElevatedButton.styleFrom(
+  //   //                     backgroundColor: Colors.grey[300],
+  //   //                     foregroundColor: Colors.black,
+  //   //                   ),
+  //   //                   child: const Text('Done'),
+  //   //                 ),
+  //   //                 ElevatedButton(
+  //   //                   onPressed: () {
+  //   //                     Navigator.pop(context); // close dialog
+  //   //                     setState(() {
+  //   //                       _selectedImage = null;
+  //   //                       _nameController.clear();
+  //   //                     });
+  //   //                   },
+  //   //                   style: ElevatedButton.styleFrom(
+  //   //                     backgroundColor: Colors.lightBlue,
+  //   //                     foregroundColor: Colors.white,
+  //   //                   ),
+  //   //                   child: const Text('Add More'),
+  //   //                 ),
+  //   //               ],
+  //   //             ),
+  //   //           ],
+  //   //         ),
+  //   //       ),
+  //   // );
+  // }
 
   @override
   Widget build(BuildContext context) {
     return MainLayoutWidget(
-      isLoading: _isloading,
+      isLoading: _isLoading,
       appBar: AppBar(
         title: Text('Add Guest', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.transparent,
@@ -182,15 +341,24 @@ class _AddGuestScreenState extends State<AddGuestScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              TextField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  hintText: 'Guest Name here',
-                  filled: true,
-                  fillColor: const Color.fromARGB(51, 224, 224, 224),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+              Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    hintText: 'Guest Name here',
+                    filled: true,
+                    fillColor: const Color.fromARGB(51, 224, 224, 224),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Name is required';
+                    }
+                    return null; // return null when validation passes
+                  },
                 ),
               ),
               const SizedBox(height: 30),
@@ -199,7 +367,7 @@ class _AddGuestScreenState extends State<AddGuestScreen> {
               Column(
                 children: [
                   CustomButton(
-                    onPressed: _addNow,
+                    onPressed: handleSubmit,
                     background: Palette.facebookColor,
                     text: 'Add Now',
                   ),
@@ -219,7 +387,18 @@ class _AddGuestScreenState extends State<AddGuestScreen> {
                   // ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      // Navigator.pop(context);
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => BottomNavigationBarScreen(
+                                pageIndex: 2,
+                                eventIndex: 1,
+                              ),
+                        ),
+                        (route) => false,
+                      );
                     },
                     child: Text('Skip', style: TextStyle(color: Colors.white)),
                   ),

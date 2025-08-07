@@ -95,9 +95,9 @@ class _AddEventScreenState extends State<AddEventScreen> {
   }
 
   Future<void> handleSubmit() async {
-    // setState(() {
-    //   _isLoading = true;
-    // });
+    setState(() {
+      _isLoading = true;
+    });
     if (_formKey.currentState?.validate() ?? false) {
       if (_selectedImage != null) {
         if (_images.isNotEmpty) {
@@ -105,15 +105,11 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
           closeKeyboard(context: context);
 
-          if (_selectedImage != null) {
-            final bytes = await _selectedImage!.readAsBytes();
-            String base64Image = base64Encode(bytes);
-            final mimeType =
-                lookupMimeType(_selectedImage!.path) ?? 'image/jpeg';
-            // Create valid data URI
-            final String dataUri = 'data:$mimeType;base64,$base64Image';
-            _formData.addAll({'profile_picture': dataUri});
-          }
+          final bytes = await _selectedImage!.readAsBytes();
+          String base64Image = base64Encode(bytes);
+          final mimeType = lookupMimeType(_selectedImage!.path) ?? 'image/jpeg';
+          // Create valid data URI
+          final String dataUri = 'data:$mimeType;base64,$base64Image';
 
           List<String> imageList = [];
           for (XFile xfile in _images) {
@@ -121,14 +117,14 @@ class _AddEventScreenState extends State<AddEventScreen> {
             String base64Image = base64Encode(bytes);
 
             final mimeType = lookupMimeType(xfile.path) ?? 'image/jpeg';
-            final String dataUri = 'data:$mimeType;base64,$base64Image';
+            final String multiImages = 'data:$mimeType;base64,$base64Image';
 
-            imageList.add(dataUri);
+            imageList.add(multiImages);
           }
           _formData.addAll({'event_images': imageList});
           final eventHost = {
             'host_name': _hostNameController.text,
-            'host_image': imageList.join(','),
+            'host_image': dataUri, //imageList.join(','),
           };
           _formData.addAll({'event_host': eventHost});
 
@@ -147,11 +143,22 @@ class _AddEventScreenState extends State<AddEventScreen> {
               messageType: AlertMessageType.success,
             );
 
-            Navigator.of(context).push(
+            print('responsesdpfkmsdp---->>>>>${responseData['event_id']}');
+            Navigator.push(
+              context,
               MaterialPageRoute(
-                builder: (context) => BottomNavigationBarScreen(pageIndex: 2),
+                builder:
+                    (context) => AddGuestScreen(
+                      eventId: responseData['event_id'].toString(),
+                    ),
               ),
             );
+
+            // Navigator.of(context).push(
+            //   MaterialPageRoute(
+            //     builder: (context) => BottomNavigationBarScreen(pageIndex: 2),
+            //   ),
+            // );
           } else {
             print('response of create Event -errror---->>> ${response.body}');
           }
@@ -424,10 +431,9 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
               const SizedBox(height: 20),
               CustomButton(
-                color: Palette.facebookColor,
+                background: Palette.facebookColor,
                 onPressed: () {
-                  // handleSubmit();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => AddGuestScreen()));
+                  handleSubmit();
                 },
                 text: 'Create Now',
               ),

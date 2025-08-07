@@ -4,91 +4,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sportzstar/provider/event_provider.dart';
+import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
+import 'package:sportzstar/widgets/Loader/loading_widget.dart';
 
 import '../../helper/local_storage.dart';
 import 'all_events_details_screen.dart';
 
-class AllEventsTab extends StatefulWidget {
-  const AllEventsTab({super.key});
-
-  @override
-  State<AllEventsTab> createState() => _AllEventsTabState();
-}
-
-class _AllEventsTabState extends State<AllEventsTab> {
-  bool _isLoading = false;
-
-  List<EventModel> _events = [];
-
-  Future<void> getAllEvents() async {
-    setState(() {
-      _isLoading = true;
-    });
-    try {
-      final response =
-          await Provider.of<EventProvider>(
-            context,
-            listen: false,
-          ).getAllEventsFunction();
-
-      if (response != null && response is List) {
-        _events = response.map((e) => EventModel.fromJson(e)).toList();
-
-      }
-
-
-
-
-    } catch (e) {
-      print('Error in getAllEvents: $e');
-    }
-
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  @override
-  void initState() {
-    getAllEvents();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // isLoading: _isLoading,
-      body:
-          _events.isEmpty
-              ? const Center(
-                child: Text(
-                  'No Events Found',
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-              : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(16),
-                      itemCount: _events.length,
-                      itemBuilder: (context, index) {
-                        final event = _events[index];
-                        return EventCard(event: event);
-                      },
-                    ),
-                    SizedBox(height: 60,)
-                  ],
-                ),
-              ),
-    );
-  }
-}
-
 class EventModel {
+  final int userId;
   final int eventId;
   final String creatorName;
   final String creatorPicture;
@@ -103,6 +27,7 @@ class EventModel {
   final List<String> pictures;
 
   EventModel({
+    required this.userId,
     required this.eventId,
     required this.creatorName,
     required this.creatorPicture,
@@ -119,6 +44,7 @@ class EventModel {
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
     return EventModel(
+      userId: json['user_id'],
       eventId: json['event_id'],
       creatorName: json['event_creator_name'],
       creatorPicture: json['event_creator_picture'],
@@ -203,6 +129,7 @@ class EventCard extends StatelessWidget {
               //   child: const Center(child: Icon(Icons.image, size: 50)),
               // ),
             ),
+
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(
@@ -268,19 +195,16 @@ class MyEventsTab extends StatefulWidget {
 class _MyEventsTabState extends State<MyEventsTab> {
   bool _isLoading = false;
   List<EventModel> _myEvents = [];
+  Map<String, String> userData = {};
 
   Future<void> getMyEvents() async {
-    final userData = await getDataFromLocalStorage(name: 'userData');
-
-    final data = json.decode(userData);
-
-    print('object====>>>>${data['id'].toString()}');
-    final userId = data['id'].toString();
-
     setState(() {
       _isLoading = true;
     });
-
+    final user = await getDataFromLocalStorage(name: 'userData');
+    final userData = json.decode(user);
+    print('object====>>>>${userData['id'].toString()}');
+    final userId = userData['id'].toString();
     try {
       final response =
           await Provider.of<EventProvider>(
@@ -298,7 +222,31 @@ class _MyEventsTabState extends State<MyEventsTab> {
     } catch (e) {
       print('Error in getMyEvents: $e');
     }
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
+  void deleteEvent(int eventId) async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final response = Provider.of<EventProvider>(
+        context,
+        listen: false,
+      ).deleteEventsFunction(eventId: eventId);
+      print('deletePost function  success--------->>>>>>$response');
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder:
+              (context) =>
+                  BottomNavigationBarScreen(pageIndex: 2, eventIndex: 1),
+        ),
+      );
+    } catch (e) {
+      print('deletePost error function e--------->>>>>>$e');
+    }
     setState(() {
       _isLoading = false;
     });
@@ -328,8 +276,125 @@ class _MyEventsTabState extends State<MyEventsTab> {
                 itemCount: _myEvents.length,
                 itemBuilder: (context, index) {
                   final event = _myEvents[index];
-                  return EventCard(event: event);
+                  return Stack(
+                    children: [
+                      EventCard(event: event),
+                      Positioned(
+                        top: 6,
+                        right: 6,
+                        child: Container(
+                          height: 24,
+                          width: 30,
+                          color: const Color.fromARGB(110, 63, 63, 63),
+                          child: PopupMenuButton<String>(
+                            padding: EdgeInsets.zero,
+                            constraints: BoxConstraints(),
+                            icon: Icon(
+                              Icons.more_horiz,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                            onSelected: (String value) {
+                              deleteEvent(event.eventId);
+                              print(
+                                '---delete post function call button---${event.eventId}-----',
+                              );
+                              // }
+                            },
+                            itemBuilder:
+                                (BuildContext context) => [
+                                  PopupMenuItem<String>(
+                                    value: 'delete',
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.delete, color: Colors.red),
+                                        SizedBox(width: 8),
+                                        Text('Delete Post'),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
                 },
+              ),
+    );
+  }
+}
+
+class AllEventsTab extends StatefulWidget {
+  const AllEventsTab({super.key});
+
+  @override
+  State<AllEventsTab> createState() => _AllEventsTabState();
+}
+
+class _AllEventsTabState extends State<AllEventsTab> {
+  bool _isLoading = false;
+
+  List<EventModel> _events = [];
+
+  Future<void> getAllEvents() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response =
+          await Provider.of<EventProvider>(
+            context,
+            listen: false,
+          ).getAllEventsFunction();
+
+      if (response != null && response is List) {
+        _events = response.map((e) => EventModel.fromJson(e)).toList();
+      }
+    } catch (e) {
+      print('Error in getAllEvents: $e');
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    getAllEvents();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // isLoading: _isLoading,
+      body:
+          _events.isEmpty
+              ? const Center(
+                child: Text(
+                  'No Events Found',
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
+              : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(16),
+                      itemCount: _events.length,
+                      itemBuilder: (context, index) {
+                        final event = _events[index];
+                        return EventCard(event: event);
+                      },
+                    ),
+                    SizedBox(height: 60),
+                  ],
+                ),
               ),
     );
   }

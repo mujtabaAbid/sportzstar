@@ -87,4 +87,26 @@ class EventProvider with ChangeNotifier {
       print('deleteEventsFunction lists  error --e-->>>> $e');
     }
   }
+
+  Future<dynamic> addGuestInEvent({
+    required Map<String, dynamic> formData,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(addGuestInEventApi),
+        headers: {'Accept': 'application/json'},
+        body: jsonEncode(formData),
+      );
+
+      if (response.statusCode == 201) {
+        final responseData = json.decode(response.body);
+        print('addGuestInEvent  ---->>>> $responseData');
+        return response;
+      } else {
+        print('addGuestInEvent  ---error->>>> ${response.body}');
+      }
+    } catch (e) {
+      print('addGuestInEvent   error --e-->>>> $e');
+    }
+  }
 }
