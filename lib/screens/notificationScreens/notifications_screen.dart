@@ -69,11 +69,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       ).readNotifications(notificationId: notificationId);
 
       if (response.statusCode == 200) {
-        alertNotification(
-          context: context,
-          message: 'Mark as read',
-          messageType: AlertMessageType.success,
-        );
+        // alertNotification(
+        //   context: context,
+        //   message: 'Mark as read',
+        //   messageType: AlertMessageType.success,
+        // );
         print('response----->>>>>>${response.body}');
       } else {
         print('response--error--->>>>>>${response.body}');
@@ -109,7 +109,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PostDetailScreen(post: postDetails),
+            builder:
+                (context) =>
+                    PostDetailScreen(post: postDetails, route: 'notification'),
           ),
         );
       } else {
@@ -175,7 +177,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   Container(
                     color:
                         chat['is_read']
-                            ? const Color.fromARGB(255, 201, 200, 200)
+                            ? const Color.fromARGB(45, 201, 200, 200)
                             : Colors.transparent,
                     child: ListTile(
                       contentPadding: const EdgeInsets.symmetric(
@@ -225,8 +227,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             context,
                             MaterialPageRoute(
                               builder:
-                                  (context) =>
-                                      AddFriendsList(initialTabIndex: 3),
+                                  (context) => AddFriendsList(
+                                    initialTabIndex: 3,
+                                    route: 'notification',
+                                  ),
                             ),
                           );
                         } else if (chat['notification_type'] == 'send_equest') {
@@ -235,8 +239,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             context,
                             MaterialPageRoute(
                               builder:
-                                  (context) =>
-                                      AddFriendsList(initialTabIndex: 1),
+                                  (context) => AddFriendsList(
+                                    initialTabIndex: 1,
+                                    route: 'notification',
+                                  ),
                             ),
                           );
                         } else if (chat['notification_type'] == 'like' ||

@@ -10,7 +10,12 @@ import 'userScreens/user_profile_screen.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 class BottomNavigationBarScreen extends StatefulWidget {
-  const BottomNavigationBarScreen({super.key, this.pageIndex, this.selectCat,this.eventIndex});
+  const BottomNavigationBarScreen({
+    super.key,
+    this.pageIndex,
+    this.selectCat,
+    this.eventIndex,
+  });
   final int? pageIndex;
   final String? selectCat;
   final int? eventIndex;
@@ -32,7 +37,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
   List<Widget> get pages => [
     HomeScreen(selectCat: widget.selectCat),
     StoryScreen(),
-    EventScreen(eventIndex:widget.eventIndex),
+    EventScreen(eventIndex: widget.eventIndex),
     ChatListScreen(),
     UserProfileScreen(),
   ];
@@ -56,7 +61,11 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
               backgroundColor: Palette.facebookColor,
               elevation: 4,
               shape: const CircleBorder(),
-              child: const Icon(Icons.add, size: 32, color: Colors.white),
+              child: Icon(
+                Icons.emoji_events_outlined,
+                size: 28,
+                color: selectedIndex == 2 ? Colors.white : Colors.grey,
+              ),
             ),
           ),
           floatingActionButtonLocation:

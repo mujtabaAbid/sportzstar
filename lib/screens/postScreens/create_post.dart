@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
 import 'package:sportzstar/helper/close_keyboard.dart';
+import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/provider/post_provider.dart';
+import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
@@ -67,6 +69,24 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       );
 
       print('Post added: $response');
+
+      if (response.statusCode == 201) {
+        alertNotification(
+          context: context,
+          message: 'Post Saved',
+          messageType: AlertMessageType.success,
+        );
+        pushNamedAndRemoveUntilNavigate(
+          pageName: bottomNavigationBarRoute,
+          context: context,
+        );
+      } else {
+        alertNotification(
+          context: context,
+          message: 'Something wrong. Try again later.',
+          messageType: AlertMessageType.error,
+        );
+      }
     } catch (e) {
       alertNotification(
         context: context,
@@ -91,7 +111,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
       setState(() {
         _mediaFile = imageFile;
-        _postType = 'image'; // ✅ this is correct
+        _postType = 'video'; // ✅ this is correct
         _selectedImage = imageFile;
         _selectedVideo = null;
       });

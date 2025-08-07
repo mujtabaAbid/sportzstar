@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
+import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/provider/friends_provider.dart';
+import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
 
@@ -11,8 +13,9 @@ import '../../provider/home_provider.dart';
 import 'second_user_profile_screen.dart';
 
 class AddFriendsList extends StatefulWidget {
-    final int initialTabIndex;
-  const AddFriendsList({super.key, required this.initialTabIndex});
+  final int initialTabIndex;
+  final String? route;
+  const AddFriendsList({super.key, required this.initialTabIndex, this.route});
 
   @override
   State<AddFriendsList> createState() => _AddFriendsListState();
@@ -122,6 +125,7 @@ class _AddFriendsListState extends State<AddFriendsList>
       vsync: this,
       initialIndex: widget.initialTabIndex,
     );
+    print('page route---->>> ${widget.route}');
     super.initState();
     allUsers();
   }
@@ -260,12 +264,24 @@ class _AddFriendsListState extends State<AddFriendsList>
 
   Widget _buildUserTile(Map<String, dynamic> otherUsers) {
     return GestureDetector(
-      
       onTap: () {
         final index = _tabController.index;
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SecondUserProfileScreen(userData: otherUsers , userType: index == 0? 'User': index == 1 ?'Sent': index == 2 ? 'Received' : 'Friends' )),
+          MaterialPageRoute(
+            builder:
+                (context) => SecondUserProfileScreen(
+                  userData: otherUsers,
+                  userType:
+                      index == 0
+                          ? 'User'
+                          : index == 1
+                          ? 'Sent'
+                          : index == 2
+                          ? 'Received'
+                          : 'Friends',
+                ),
+          ),
         );
         print('');
       },
@@ -432,6 +448,18 @@ class _AddFriendsListState extends State<AddFriendsList>
     return MainLayoutWidget(
       isLoading: _isLoading,
       appBar: AppBar(
+        leading:
+            widget.route == 'notification'
+                ? IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    pushNamedNavigate(
+                      pageName: notificationScreenRoute,
+                      context: context,
+                    );
+                  },
+                )
+                : null,
         title: const Text("Friends", style: TextStyle(color: Colors.white)),
         foregroundColor: Colors.white,
         backgroundColor: Colors.transparent,
@@ -486,15 +514,28 @@ class _AddFriendsListState extends State<AddFriendsList>
           ),
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-         physics: const NeverScrollableScrollPhysics(),
-        children: [
-          _buildTabView(filteredOtherUsers),
-          _buildTabView(filteredSendRequests),
-          _buildTabView(filteredReceivedRequests),
-          _buildTabView(filteredFriends),
-        ],
+      body: WillPopScope(
+        onWillPop: () async {
+          if (widget.route == 'notification') {
+            pushNamedNavigate(
+              pageName: notificationScreenRoute,
+              context: context,
+            );
+            return false; // Prevent default back navigation
+          } else {
+            return true; // Allow back navigation
+          }
+        },
+        child: TabBarView(
+          controller: _tabController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            _buildTabView(filteredOtherUsers),
+            _buildTabView(filteredSendRequests),
+            _buildTabView(filteredReceivedRequests),
+            _buildTabView(filteredFriends),
+          ],
+        ),
       ),
     );
   }

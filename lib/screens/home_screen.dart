@@ -604,31 +604,37 @@ class _HomeScreenState extends State<HomeScreen> {
                         )
                         .toList();
                 final post = filteredPosts[index];
-                if (post['post_type'] == 'text') {
-                  // Display post_description in PostCard
-                  return PostCard(
-                    post: post,
-                    selectedCategory: selectedCategory,
-                    displayType: PostDisplayType.text,
-                  );
-                } else if (post['post_type'] == 'image') {
-                  // Display image_url and post_description in PostCard
-                  return PostCard(
-                    post: post,
-                    selectedCategory: selectedCategory,
-                    displayType: PostDisplayType.image,
-                  );
-                } else if (post['post_type'] == 'video') {
-                  // Display video_url and post_description in PostCard
-                  return PostCard(
-                    post: post,
-                    selectedCategory: selectedCategory,
-                    displayType: PostDisplayType.video,
-                  );
-                } else {
-                  // Handle any other cases here, though your provided examples cover text, image, and video scenarios
-                  return SizedBox(); // Placeholder for other scenarios
-                }
+                return PostCard(
+                  post: post,
+                  selectedCategory: selectedCategory,
+                  displayType: PostDisplayType.text,
+                );
+
+                // if (post['post_type'] == 'text') {
+                //   // Display post_description in PostCard
+                //   return PostCard(
+                //     post: post,
+                //     selectedCategory: selectedCategory,
+                //     displayType: PostDisplayType.text,
+                //   );
+                // } else if (post['post_type'] == 'image') {
+                //   // Display image_url and post_description in PostCard
+                //   return PostCard(
+                //     post: post,
+                //     selectedCategory: selectedCategory,
+                //     displayType: PostDisplayType.image,
+                //   );
+                // } else if (post['post_type'] == 'video') {
+                //   // Display video_url and post_description in PostCard
+                //   return PostCard(
+                //     post: post,
+                //     selectedCategory: selectedCategory,
+                //     displayType: PostDisplayType.video,
+                //   );
+                // } else {
+                //   // Handle any other cases here, though your provided examples cover text, image, and video scenarios
+                //   return SizedBox(); // Placeholder for other scenarios
+                // }
               },
             ),
           ),

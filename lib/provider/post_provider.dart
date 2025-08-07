@@ -85,13 +85,14 @@ class PostProvider with ChangeNotifier {
       request.files.add(await http.MultipartFile.fromPath('video', file.path));
     } else {
       print("No file attached!");
+      formData['post_type'] = 'text';
     }
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
     if (response.statusCode == 201) {
       final responseData = json.decode(response.body);
       print("success response ====>>>>$responseData");
-      return jsonDecode(response.body);
+      return response;
     } else {
       throw Exception('Failed to upload post');
     }

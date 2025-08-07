@@ -170,44 +170,6 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  // void commentToggle() async {
-  //   setState(() {
-  //     addComment = !addComment;
-  //   });
-  // }
-
-  // Future<void> _captureAndSave() async {
-  //   try {
-  //     // Wait for the widget to finish rendering
-  //     await Future.delayed(Duration(milliseconds: 20));
-  //     await WidgetsBinding.instance.endOfFrame;
-
-  //     RenderRepaintBoundary boundary =
-  //         _repaintKey.currentContext!.findRenderObject()
-  //             as RenderRepaintBoundary;
-
-  //     ui.Image image = await boundary.toImage(pixelRatio: 3.0);
-  //     ByteData? byteData = await image.toByteData(
-  //       format: ui.ImageByteFormat.png,
-  //     );
-  //     Uint8List pngBytes = byteData!.buffer.asUint8List();
-
-  //     // Save to gallery (with permission)
-  //     if (Platform.isAndroid) {
-  //       await Permission.storage.request();
-  //     }
-
-  //     final result = await ImageGallerySaver.saveImage(pngBytes);
-  //     print("Saved: $result");
-
-  //     ScaffoldMessenger.of(
-  //       context,
-  //     ).showSnackBar(SnackBar(content: Text('Screenshot saved to gallery')));
-  //   } catch (e) {
-  //     print('Error capturing screenshot: $e');
-  //   }
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -261,15 +223,23 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
-    final String postType = post['post_type'] ?? '';
-    final String? imageUrl = post['image_url'];
+    // final String postType = post['post_type'] ?? '';
     final String? videoUrl = post['video_url'];
     final String? description = post['post_description'];
+    bool isVideoPost = false;
+    bool isImagePost = false;
 
-    final bool isTextPost =
-        postType == 'text' && imageUrl == null && videoUrl == null;
-    final bool isImagePost = postType == 'image' && videoUrl == null;
-    final bool isVideoPost = postType == 'video' && imageUrl == null;
+    if (videoUrl != null) {
+      if (videoUrl.endsWith('.mp4') ||
+          videoUrl.endsWith('.mov') ||
+          videoUrl.endsWith('.avi') ||
+          videoUrl.endsWith('.mkv')) {
+        isVideoPost = true;
+      } else {
+        isImagePost = true;
+      }
+    }
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -337,13 +307,14 @@ class _PostCardState extends State<PostCard> {
                               // ),
                             ],
                       )
-                      : CustomButton(
-                        onPressed: () {},
-                        width: 100,
-                        height: 30,
-                        background: Palette.facebookColor,
-                        text: 'Follow',
-                      ),
+                      : null,
+              // CustomButton(
+              //   onPressed: () {},
+              //   width: 100,
+              //   height: 30,
+              //   background: Palette.facebookColor,
+              //   text: 'Follow',
+              // ),
               leading: CircleAvatar(
                 radius: 24,
                 backgroundImage: NetworkImage(
@@ -366,7 +337,7 @@ class _PostCardState extends State<PostCard> {
 
             const SizedBox(height: 8),
             // Post Image
-            if (isImagePost && imageUrl != null)
+            if (isImagePost && videoUrl != null)
               // if (post['image_url'] != null &&
               //     post['image_url'].toString().isNotEmpty)
               Padding(
@@ -374,7 +345,7 @@ class _PostCardState extends State<PostCard> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    imageUrl,
+                    videoUrl,
                     // post['image_url'],
                     fit: BoxFit.cover,
                     width: double.infinity,
@@ -715,31 +686,6 @@ class _PostCardState extends State<PostCard> {
                       ],
                     ),
                   ),
-                  // TextButton(
-                  //   style: ButtonStyle(
-                  //     padding: WidgetStateProperty.all<EdgeInsets>(
-                  //       EdgeInsets.zero,
-                  //     ),
-                  //     minimumSize: WidgetStateProperty.all<Size>(Size(0, 0)),
-                  //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  //   ),
-                  //   onPressed: () {},
-                  //   child: Icon(Icons.file_upload_outlined, size: 20),
-                  // ),
-                  // // const SizedBox(width: 16),
-                  // TextButton(
-                  //   style: ButtonStyle(
-                  //     padding: WidgetStateProperty.all<EdgeInsets>(
-                  //       EdgeInsets.zero,
-                  //     ),
-                  //     minimumSize: WidgetStateProperty.all<Size>(Size(0, 0)),
-                  //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  //   ),
-                  //   onPressed: () {
-                  //     // _captureAndSave();
-                  //   },
-                  //   child: Icon(Icons.bookmarks_outlined, size: 20),
-                  // ),
                 ],
               ),
             ),
