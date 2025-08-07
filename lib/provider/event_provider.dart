@@ -109,4 +109,25 @@ class EventProvider with ChangeNotifier {
       print('addGuestInEvent   error --e-->>>> $e');
     }
   }
+
+  Future<dynamic> joinEventFun({required String eventId}) async {
+    final user = await userData();
+    try {
+      final response = await http.post(
+        Uri.parse(joinEventApi),
+        headers: {'Accept': 'application/json'},
+        body: {'user_id': user['id'].toString(), 'event_id': eventId},
+      );
+
+      if (response.statusCode == 201) {
+        final responseData = json.decode(response.body);
+        print('joinEvent  ------------>>>> $responseData');
+        return response;
+      } else {
+        print('joinEvent error--------->>>> ${response.body}');
+      }
+    } catch (e) {
+      print('joinEvent   error ---------e-->>>> $e');
+    }
+  }
 }
