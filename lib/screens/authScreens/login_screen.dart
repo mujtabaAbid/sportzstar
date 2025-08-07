@@ -189,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed:
-                            () => pushNamedAndRemoveUntilNavigate(
+                            () => pushNamedNavigate(
                               context: context,
                               pageName: forgetPasswordScreenRoute,
                             ),

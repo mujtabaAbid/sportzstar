@@ -40,7 +40,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final List<Map<String, dynamic>> myPostsGrid = [
     {'name': 'profile', 'icon': Icons.person},
     {'name': 'video', 'icon': Icons.grid_on},
-    {'name': 'text', 'icon': Icons.video_collection_outlined},
+    {'name': 'text', 'icon': Icons.text_format_outlined},
   ];
 
   Future<void> getUserData() async {
@@ -177,7 +177,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18.0),
                   child: InkWell(
-                      onTap: () {
+                    onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -191,17 +191,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     child: Column(
                       children: [
                         InkWell(
-                           onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (_) => FullScreenImageViewer(
-                                  imageUrl: userData['profile_picture'],
-                                ),
-                          ),
-                        );
-                      },
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (_) => FullScreenImageViewer(
+                                      imageUrl: userData['profile_picture'],
+                                    ),
+                              ),
+                            );
+                          },
                           child: Row(
                             children: [
                               CircleAvatar(
@@ -329,8 +329,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   ? userData['username']
                                   : '',
                               style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 14,
+                                fontSize: 18,
+                                color: Colors.white,
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -486,20 +486,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                 fontSize: 14,
                                               ),
                                             ),
-                                          if ((userData['bio'] ?? '')
+
+                                          if ((userData['player_category'] ??
+                                                  '')
                                               .toString()
                                               .isNotEmpty)
-                                            if ((userData['player_category'] ??
-                                                    '')
-                                                .toString()
-                                                .isNotEmpty)
-                                              Text(
-                                                'Player: ${userData['player_category']}',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 14,
-                                                ),
+                                            Text(
+                                              'Player: ${userData['player_category']}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
                                               ),
+                                            ),
                                           if ((userData['start_year'] ?? '')
                                               .toString()
                                               .isNotEmpty)
@@ -514,13 +512,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       ),
                                     ),
                                     SizedBox(height: 10),
-                                    Text(
-                                      'Bio',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
+
+                                    if ((userData['bio'] ?? '')
+                                        .toString()
+                                        .isNotEmpty)
+                                        Column(
+                                           crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                      Text(
+                                        'Bio',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                        ),
                                       ),
-                                    ),
                                     SizedBox(height: 10),
                                     Container(
                                       width: double.infinity,
@@ -538,49 +543,50 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          if ((userData['bio'] ?? '')
-                                              .toString()
-                                              .isNotEmpty)
-                                            Text(
-                                              '${userData['bio']}',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14,
-                                              ),
+                                          Text(
+                                            '${userData['bio']}',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
                                             ),
+                                          ),
                                         ],
                                       ),
-                                    ),
+                                    ),],),
 
                                     SizedBox(height: 10),
-                                    Text(
-                                      'Social Media',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    SizedBox(height: 10),
-                                    Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: const Color.fromARGB(
-                                          54,
-                                          96,
-                                          125,
-                                          139,
-                                        ),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          if (userData['social_links'] !=
+                                     if (userData['social_links'] !=
                                                   null &&
                                               (userData['social_links'] as List)
                                                   .isNotEmpty)
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Social Media',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                         SizedBox(height: 10),
+                                    Container(
+                                      width: double.infinity,
+                                      padding: EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: const Color.fromARGB(
+                                          54,
+                                          96,
+                                          125,
+                                          139,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                         
                                             ...List<Widget>.from(
                                               (userData['social_links'] as List)
                                                   .map(
@@ -596,41 +602,25 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         ],
                                       ),
                                     ),
+                                      ],
+                                    ),
+                                   
                                     SizedBox(height: 10),
 
-                                    // Social Links (List)
-                                    // if ((userData['social_links'] as List)
-                                    //     .isNotEmpty)
-                                    //   ...List<Widget>.from(
-                                    //     (userData['social_links'] as List).map(
-                                    //       (linkData) => GestureDetector(
-                                    //         // onTap:
-                                    //         //     () => _launchLink(
-                                    //         //       linkData['link'],
-                                    //         //     ),
-                                    //         child: Text(
-                                    //           '${linkData['platform']}: ${linkData['link']}',
-                                    //           style: const TextStyle(
-                                    //             color: Colors.lightBlueAccent,
-                                    //             fontSize: 14,
-                                    //             decoration:
-                                    //                 TextDecoration.underline,
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     ),
-                                    //   ),
                                     if ((userData['medals'] ?? '')
                                         .toString()
                                         .isNotEmpty)
-                                      Text(
-                                        'Medals',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    SizedBox(height: 10),
+                                      Column(
+                                         crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Medals',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
                                     Container(
                                       width: double.infinity,
                                       padding: EdgeInsets.all(12),
@@ -651,6 +641,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         ),
                                       ),
                                     ),
+                                        ],
+                                      ),
+                                    
                                     // Career History (List)
                                     if ((userData['career_history'] ?? [])
                                             is List &&

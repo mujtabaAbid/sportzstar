@@ -153,7 +153,7 @@ class _OTPScreenState extends State<OTPScreen> {
     print("Received arguments: $arguments");
     return MainLayoutWidget(
       isLoading: _isLoading,
-      appBar: AppBar(title: const Text("Verify OTP")),
+      appBar: AppBar(title: const Text("Verify OTP", style: TextStyle(color: Colors.white),), backgroundColor: Colors.transparent, foregroundColor: Colors.white,),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
