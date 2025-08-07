@@ -116,18 +116,6 @@ class EventCard extends StatelessWidget {
                         color: Colors.grey,
                         child: const Center(child: Icon(Icons.image, size: 50)),
                       ),
-
-              // Image.network(
-              //   event.pictures.first,
-              //   height: 200,
-              //   width: double.infinity,
-              //   fit: BoxFit.cover,
-              // )
-              // : Container(
-              //   height: 200,
-              //   color: Colors.grey,
-              //   child: const Center(child: Icon(Icons.image, size: 50)),
-              // ),
             ),
 
             Padding(
@@ -177,7 +165,6 @@ class EventCard extends StatelessWidget {
                 ],
               ),
             ),
-            // SizedBox(height: 30),
           ],
         ),
       ),
