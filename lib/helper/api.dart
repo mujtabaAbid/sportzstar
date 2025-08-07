@@ -74,7 +74,10 @@ const rejectFriendApi = '${apiUrl}reject-friend/';
 //events
 const createEventApi = '${apiUrl}create-event/';
 const listEventApi = '${apiUrl}events/'; //get
-const getEventByIdApi = '${apiUrl}events/1/'; //get
+// const getEventByIdApi = '${apiUrl}events/1/'; //get
+String getEventByIdApi({required int eventId}) {
+  return '${apiUrl}events/$eventId/';
+}
 // const deleteEventByIdApi = '${apiUrl}events/delete/1/'; //get
 String deleteEventByIdApi({required int id}) {
   return '${apiUrl}events/delete/$id/';

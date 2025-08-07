@@ -9,7 +9,7 @@ import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/Loader/loading_widget.dart';
 
 import '../../helper/local_storage.dart';
-import 'all_events_details_screen.dart';
+import 'event_details_screen.dart';
 
 class GuestModel {
   final String name;

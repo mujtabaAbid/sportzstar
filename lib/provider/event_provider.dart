@@ -112,11 +112,14 @@ class EventProvider with ChangeNotifier {
 
   Future<dynamic> joinEventFun({required String eventId}) async {
     final user = await userData();
+
+    final myBody = {'user_id': user['id'].toString(), 'event_id': eventId};
+    print('ksjdnfjksdnfjndsf----->>>>>$myBody');
     try {
       final response = await http.post(
         Uri.parse(joinEventApi),
         headers: {'Accept': 'application/json'},
-        body: {'user_id': user['id'].toString(), 'event_id': eventId},
+        body: json.encode(myBody),
       );
 
       if (response.statusCode == 201) {
@@ -125,9 +128,29 @@ class EventProvider with ChangeNotifier {
         return response;
       } else {
         print('joinEvent error--------->>>> ${response.body}');
+        return response;
       }
     } catch (e) {
       print('joinEvent   error ---------e-->>>> $e');
+    }
+  }
+
+  Future<dynamic> getEventById({required int eventId}) async {
+    try {
+      final response = await http.get(
+        Uri.parse(getEventByIdApi(eventId: eventId)),
+        headers: {'Accept': 'application/json'},
+      );
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print('getEventById  ------------>>>> $responseData');
+        return response;
+      } else {
+        print('getEventById error--------->>>> ${response.body}');
+        // return response;
+      }
+    } catch (e) {
+      print('getEventById error ---------e-->>>> $e');
     }
   }
 }
