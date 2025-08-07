@@ -203,84 +203,84 @@ class EventCard extends StatelessWidget {
                   ),
 
                   // Guests
-                  if (event.guestList.isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Guests:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 6),
-                    SizedBox(
-                      height: 50,
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: event.guestList.length,
-                        separatorBuilder:
-                            (context, index) => const SizedBox(width: 8),
-                        itemBuilder: (context, index) {
-                          final guest = event.guestList[index];
-                          return Column(
-                            children: [
-                              CircleAvatar(
-                                radius: 18,
-                                backgroundImage: NetworkImage(guest.picture),
-                              ),
-                              const SizedBox(height: 2),
-                              Flexible(
-                                child: Text(
-                                  guest.name,
-                                  style: const TextStyle(fontSize: 10),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                  ],
+                  // if (event.guestList.isNotEmpty) ...[
+                  //   const SizedBox(height: 10),
+                  //   const Text(
+                  //     'Guests:',
+                  //     style: TextStyle(fontWeight: FontWeight.bold),
+                  //   ),
+                  //   const SizedBox(height: 6),
+                  //   SizedBox(
+                  //     height: 50,
+                  //     child: ListView.separated(
+                  //       shrinkWrap: true,
+                  //       scrollDirection: Axis.horizontal,
+                  //       itemCount: event.guestList.length,
+                  //       separatorBuilder:
+                  //           (context, index) => const SizedBox(width: 8),
+                  //       itemBuilder: (context, index) {
+                  //         final guest = event.guestList[index];
+                  //         return Column(
+                  //           children: [
+                  //             CircleAvatar(
+                  //               radius: 18,
+                  //               backgroundImage: NetworkImage(guest.picture),
+                  //             ),
+                  //             const SizedBox(height: 2),
+                  //             Flexible(
+                  //               child: Text(
+                  //                 guest.name,
+                  //                 style: const TextStyle(fontSize: 10),
+                  //                 overflow: TextOverflow.ellipsis,
+                  //                 maxLines: 1,
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         );
+                  //       },
+                  //     ),
+                  //   ),
+                  // ],
 
-                  // Joiners
-                  if (event.joiners.isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Joiners:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 6),
-                    SizedBox(
-                      height: 50,
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: event.joiners.length,
-                        separatorBuilder:
-                            (context, index) => const SizedBox(width: 8),
-                        itemBuilder: (context, index) {
-                          final joiner = event.joiners[index];
-                          return Column(
-                            children: [
-                              CircleAvatar(
-                                radius: 18,
-                                backgroundImage: NetworkImage(joiner.picture),
-                              ),
-                              const SizedBox(height: 2),
-                              Flexible(
-                                child: Text(
-                                  joiner.name,
-                                  style: const TextStyle(fontSize: 10),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                  ],
+                  // // Joiners
+                  // if (event.joiners.isNotEmpty) ...[
+                  //   const SizedBox(height: 10),
+                  //   const Text(
+                  //     'Joiners:',
+                  //     style: TextStyle(fontWeight: FontWeight.bold),
+                  //   ),
+                  //   const SizedBox(height: 6),
+                  //   SizedBox(
+                  //     height: 50,
+                  //     child: ListView.separated(
+                  //       shrinkWrap: true,
+                  //       scrollDirection: Axis.horizontal,
+                  //       itemCount: event.joiners.length,
+                  //       separatorBuilder:
+                  //           (context, index) => const SizedBox(width: 8),
+                  //       itemBuilder: (context, index) {
+                  //         final joiner = event.joiners[index];
+                  //         return Column(
+                  //           children: [
+                  //             CircleAvatar(
+                  //               radius: 18,
+                  //               backgroundImage: NetworkImage(joiner.picture),
+                  //             ),
+                  //             const SizedBox(height: 2),
+                  //             Flexible(
+                  //               child: Text(
+                  //                 joiner.name,
+                  //                 style: const TextStyle(fontSize: 10),
+                  //                 overflow: TextOverflow.ellipsis,
+                  //                 maxLines: 1,
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         );
+                  //       },
+                  //     ),
+                  //   ),
+                  // ],
                 ],
               ),
             ),
