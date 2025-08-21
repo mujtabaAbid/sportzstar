@@ -50,6 +50,9 @@ dependencies:
   http_parser: ^4.1.2
   cached_network_image: ^3.4.1
   carousel_slider: ^5.1.1
+  webview_flutter: ^4.13.0
+  webview_flutter_wkwebview: ^3.23.0
+  webview_flutter_android: ^4.10.0
   # image_gallery_saver: ^1.7.1
 
 
