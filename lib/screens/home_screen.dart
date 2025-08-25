@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
@@ -155,6 +156,20 @@ class _HomeScreenState extends State<HomeScreen> {
       final response =
           await Provider.of<HomeProvider>(context, listen: false).getAllPosts();
 
+      print('type=====>>> ${response.runtimeType}');
+
+      if (response is Map<String, dynamic>) {
+        if (response['detail'] ==
+            'Authentication credentials were not provided or are invalid.') {
+          logoutFunction();
+        }
+        alertNotification(
+          context: context,
+          message: response['detail'],
+          messageType: AlertMessageType.error,
+        );
+      }
+
       final postsList = List<Map<String, dynamic>>.from(response);
 
       setState(() {
@@ -164,6 +179,29 @@ class _HomeScreenState extends State<HomeScreen> {
       print('✅ All posts:-------------------> $posts');
     } catch (e) {
       print('❌ Error parsing posts:-----------------> $e');
+    }
+  }
+
+  void logoutFunction() async {
+    try {
+      final preference = await SharedPreferences.getInstance();
+      await preference.clear();
+      pushNamedAndRemoveUntilNavigate(
+        pageName: loginScreenRoute,
+        context: context,
+      );
+      // alertNotification(
+      //   context: context,
+      //   message: 'User Logout, Please login Again.',
+      //   messageType: AlertMessageType.success,
+      // );
+    } catch (e) {
+      print('error in logut function ---->>>$e');
+      alertNotification(
+        context: context,
+        message: 'User Not logout, Try again Later',
+        messageType: AlertMessageType.error,
+      );
     }
   }
 
@@ -547,7 +585,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: sportsCategories.length,
                 itemBuilder: (BuildContext context, int index) {
                   String category = sportsCategories[index];
-                  bool isSelected = selectedCategory == category;
+                  // bool isSelected = selectedCategory == category;
 
                   return Container(
                     padding: EdgeInsets.symmetric(

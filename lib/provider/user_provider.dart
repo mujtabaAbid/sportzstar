@@ -8,6 +8,10 @@ import 'package:sportzstar/helper/http_exception.dart';
 import 'package:mime/mime.dart';
 import '../helper/api.dart';
 
+
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+
 class UserProvider with ChangeNotifier {
   String refresh = '';
   String access = '';
@@ -86,6 +90,76 @@ class UserProvider with ChangeNotifier {
       print('error in login function-------------->  $e');
     }
   }
+
+
+// Future<dynamic> loginFunction({required Map<String, String> formData}) async {
+//   print('loginfunction ---->> $formData');
+//   try {
+//     final response = await http.post(
+//       Uri.parse(loginUserApi),
+//       headers: {'Accept': 'application/json'},
+//       body: formData,
+//     );
+
+//     if (response.statusCode == 200) {
+//       final responseData = json.decode(response.body);
+//       final SharedPreferences provider =
+//           await SharedPreferences.getInstance();
+//       await provider.clear();
+//       provider.setString('userData', json.encode(responseData['user']));
+//       await provider.setString('refresh', responseData['refresh']);
+//       await provider.setString('access', responseData['access']);
+
+//       refresh = responseData['refresh'];
+//       access = responseData['access'];
+
+//       print('------------------login Successfully------------------> $responseData');
+
+//       // ==== FIREBASE AUTH ====
+//       final firebaseAuth = FirebaseAuth.instance;
+//       final firestore = FirebaseFirestore.instance;
+
+//       try {
+//         // pehle login karne ki koshish karo
+//         UserCredential userCred = await firebaseAuth.signInWithEmailAndPassword(
+//           email: formData['email']!,
+//           password: formData['password']!,
+//         );
+//         print("Firebase login success: ${userCred.user!.uid}");
+//       } on FirebaseAuthException catch (e) {
+//         if (e.code == 'user-not-found') {
+//           // user exist nahi karta -> create account
+//           UserCredential newUser =
+//               await firebaseAuth.createUserWithEmailAndPassword(
+//             email: formData['email']!,
+//             password: formData['password']!,
+//           );
+
+//           print("Firebase signup success: ${newUser.user!.uid}");
+
+//           // Firestore me user ka profile add karo
+//           await firestore.collection("users").doc(newUser.user!.uid).set({
+//             "id": newUser.user!.uid,
+//             "email": formData['email'],
+//             "first_name": responseData['user']['first_name'],
+//             "last_name": responseData['user']['last_name'],
+//             "createdAt": DateTime.now().toIso8601String(),
+//           });
+//         } else {
+//           print("Firebase auth error: ${e.message}");
+//         }
+//       }
+
+//       return response;
+//     } else {
+//       print('------------------login error------------------> ${response.body}');
+//       return response;
+//     }
+//   } catch (e) {
+//     print('error in login function-------------->  $e');
+//   }
+// }
+
 
   Future<dynamic> getCode({required Map<String, String> formData}) async {
     print('getCode ---->> $formData');

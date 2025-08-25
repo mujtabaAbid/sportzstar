@@ -239,6 +239,10 @@ class _PostCardState extends State<PostCard> {
         isImagePost = true;
       }
     }
+    if (post['image_url'] != null) {
+      isImagePost = true;
+      isVideoPost = false;
+    }
 
     return GestureDetector(
       onTap: () {
@@ -337,7 +341,7 @@ class _PostCardState extends State<PostCard> {
 
             const SizedBox(height: 8),
             // Post Image
-            if (isImagePost && videoUrl != null)
+            if (isImagePost && videoUrl != null || post['image_url'] != null)
               // if (post['image_url'] != null &&
               //     post['image_url'].toString().isNotEmpty)
               Padding(
@@ -345,7 +349,7 @@ class _PostCardState extends State<PostCard> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    videoUrl,
+                    videoUrl ?? post['image_url'],
                     // post['image_url'],
                     fit: BoxFit.cover,
                     width: double.infinity,
@@ -690,9 +694,10 @@ class _PostCardState extends State<PostCard> {
               ),
             ),
             // description with user name portion
-            if (description != null &&
-                description.isNotEmpty &&
-                post['post_type'] != 'text')
+            if (description != null && description.isNotEmpty
+            //  &&
+            // post['post_type'] != 'text'
+            )
               Padding(
                 padding: const EdgeInsets.only(
                   left: 20,

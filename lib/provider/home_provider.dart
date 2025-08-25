@@ -76,17 +76,41 @@ class HomeProvider with ChangeNotifier {
         },
       );
 
+      final responseData = json.decode(response.body);
       if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
         print('all users lists --1-->>>> $responseData');
         return responseData;
       } else {
         print('all users lists --2-error->>>> ${response.body}');
+        return responseData;
       }
     } catch (e) {
       print('all users lists  error --e-->>>> $e');
     }
   }
+
+  //   void logoutFunction() async {
+  //   try {
+  //     final preference = await SharedPreferences.getInstance();
+  //     await preference.clear();
+  //     pushNamedAndRemoveUntilNavigate(
+  //       pageName: loginScreenRoute,
+  //       context: context,
+  //     );
+  //     alertNotification(
+  //       context: context,
+  //       message: 'User Logout Successfully',
+  //       messageType: AlertMessageType.success,
+  //     );
+  //   } catch (e) {
+  //     print('error in logut function ---->>>$e');
+  //     alertNotification(
+  //       context: context,
+  //       message: 'User Not logout, Try again Later',
+  //       messageType: AlertMessageType.error,
+  //     );
+  //   }
+  // }
 
   Future<dynamic> getAllPosts() async {
     try {
@@ -98,9 +122,10 @@ class HomeProvider with ChangeNotifier {
           'Authorization': 'Bearer $authToken',
         },
       );
+      print('initial print =11111=====token=====dd=>>>>$authToken');
 
+      final responseData = json.decode(response.body);
       if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
         print('getAllPosts --1-->>>> $responseData');
 
         List<dynamic> posts = responseData;
@@ -137,6 +162,8 @@ class HomeProvider with ChangeNotifier {
         return posts;
       } else {
         print('getAllPosts --2-error->>>> ${response.body}');
+
+        return responseData;
       }
     } catch (e) {
       print('getAllPosts error --e-->>>> $e');

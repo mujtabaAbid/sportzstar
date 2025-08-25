@@ -134,7 +134,9 @@ class PostDetailScreen extends StatelessWidget {
                             child: RichText(
                               textAlign: TextAlign.center,
                               text: TextSpan(
-                                style: const TextStyle(color: Colors.white),
+                                style: const TextStyle(
+                                  color: Color.fromARGB(255, 58, 58, 58),
+                                ),
                                 children: [
                                   TextSpan(
                                     text: '${post['user_name']} : ',

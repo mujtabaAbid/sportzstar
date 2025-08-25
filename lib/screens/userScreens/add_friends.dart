@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/provider/friends_provider.dart';
@@ -45,6 +46,10 @@ class _AddFriendsListState extends State<AddFriendsList>
           await Provider.of<HomeProvider>(context, listen: false).usersList();
 
       print('get all users data:----------------------->> $usersData');
+      if (usersData['detail'] ==
+          'Authentication credentials were not provided or are invalid.') {
+        logoutFunction();
+      }
 
       // Clear previous data
       friends.clear();
@@ -74,6 +79,29 @@ class _AddFriendsListState extends State<AddFriendsList>
     setState(() {
       _isLoading = false;
     });
+  }
+
+  void logoutFunction() async {
+    try {
+      final preference = await SharedPreferences.getInstance();
+      await preference.clear();
+      pushNamedAndRemoveUntilNavigate(
+        pageName: loginScreenRoute,
+        context: context,
+      );
+      alertNotification(
+        context: context,
+        message: 'User Logout, Please login Again.',
+        messageType: AlertMessageType.success,
+      );
+    } catch (e) {
+      print('error in logut function ---->>>$e');
+      alertNotification(
+        context: context,
+        message: 'User Not logout, Try again Later',
+        messageType: AlertMessageType.error,
+      );
+    }
   }
 
   void _filterSearchResults(String query) {
