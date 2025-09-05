@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -9,21 +13,32 @@ import 'package:sportzstar/provider/post_provider.dart';
 import 'package:sportzstar/provider/stories_provider.dart';
 import 'package:sportzstar/provider/user_provider.dart';
 import 'package:sportzstar/started_screen.dart';
-
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import '../config/palette.dart';
 import '../provider/main_provider.dart';
 
+import 'firebase_options.dart';
 import 'helper/form_field_border_style.dart';
 import 'routing/router.dart' as router;
 import 'screens/home_screen.dart';
 
 void main() async {
-  // SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.portraitUp,
-  //   DeviceOrientation.portraitDown,
-  // ]).then((_) {
-  //   runApp(const MyApp());
-  // });
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options:
+        DefaultFirebaseOptions.currentPlatform, // yeh auto generate hota hai
+  );
+  await FirebaseAppCheck.instance.activate(
+    androidProvider:
+        kDebugMode
+            ? AndroidProvider
+                .debug // Debug/Test mode
+            : AndroidProvider.playIntegrity, // Release/Production mode
+    // appleProvider:
+    //     AppleProvider.deviceCheck, // iOS ke liye agar baad me zarurat ho
+  );
+
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   SystemChrome.setSystemUIOverlayStyle(

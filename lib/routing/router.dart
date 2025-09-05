@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sportzstar/chats/chat_list_screen.dart';
+import 'package:sportzstar/screens/chats/chat_list_screen.dart';
 // import 'package:sportzstar/screens/eventScreens/add_event_screen.dart' show AddEventScreen;
 import 'package:sportzstar/screens/eventScreens/tabbar_screen.dart';
 import 'package:sportzstar/screens/authScreens/otp_verify_screen.dart';

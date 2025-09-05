@@ -6,7 +6,6 @@ import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/testing.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 
-import 'package:flutter/material.dart';
 
 class StartedScreen extends StatefulWidget {
   const StartedScreen({super.key});

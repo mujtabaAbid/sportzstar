@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "143379946503",
+    "project_id": "sportzstar-92998",
+    "storage_bucket": "sportzstar-92998.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:143379946503:android:5343d749aee606272d9ea2",
+        "android_client_info": {
+          "package_name": "com.example.sportzstar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClPqCOUH73VK4jWiWL8anHAoQpEBTAzzE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
