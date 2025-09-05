@@ -35,8 +35,8 @@ void main() async {
             ? AndroidProvider
                 .debug // Debug/Test mode
             : AndroidProvider.playIntegrity, // Release/Production mode
-    // appleProvider:
-    //     AppleProvider.deviceCheck, // iOS ke liye agar baad me zarurat ho
+    appleProvider:
+        AppleProvider.deviceCheck, // iOS ke liye agar baad me zarurat ho
   );
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
