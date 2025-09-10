@@ -65,8 +65,12 @@ const getAllStoriesApi = '${apiUrl}stories/'; //get
 
 //friends
 const addFriendApi = '${apiUrl}add-friend/';
-const getFriendApi =
-    '${apiUrl}get-friends/1/'; //get ---------------i can not understand its purpose
+// const getFriendApi =
+//     '${apiUrl}get-friends/1/';
+String getFriendApi({required int userId}) {
+  return '${apiUrl}get-friends/$userId/';
+}
+
 const unfriendApi = '${apiUrl}unfriend/';
 const acceptFriendApi = '${apiUrl}accept-friend/';
 const rejectFriendApi = '${apiUrl}reject-friend/';

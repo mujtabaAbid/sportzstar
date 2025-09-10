@@ -178,7 +178,10 @@ class _AddFriendsListState extends State<AddFriendsList>
       } else {
         alertNotification(
           context: context,
-          message: responseData['detail'].toString(),
+          message:
+              responseData['detail'] != null
+                  ? responseData['detail'].toString()
+                  : responseData['message'].toString(),
           messageType: AlertMessageType.error,
         );
         print('error in add friend function---->>>${response.body}');
@@ -204,20 +207,26 @@ class _AddFriendsListState extends State<AddFriendsList>
       if (response.statusCode == 200) {
         alertNotification(
           context: context,
-          message: responseData['message'].toString(),
+          message:
+              responseData['detail'] != null
+                  ? responseData['detail'].toString()
+                  : responseData['message'].toString(),
           messageType: AlertMessageType.success,
         );
         await allUsers();
       } else {
         alertNotification(
           context: context,
-          message: responseData['detail'].toString(),
+          message:
+              responseData['detail'] != null
+                  ? responseData['detail'].toString()
+                  : responseData['message'].toString(),
           messageType: AlertMessageType.error,
         );
-        print('error in add friend function---->>>${response.body}');
+        print('error in unfriend function--add-->>>${response.body}');
       }
     } catch (e) {
-      print('error in add friend function---->>>$e');
+      print('error in unfriend function--add e-->>>$e');
     }
     setState(() {
       _isLoading = false;
@@ -244,13 +253,16 @@ class _AddFriendsListState extends State<AddFriendsList>
       } else {
         alertNotification(
           context: context,
-          message: responseData['detail'].toString(),
+          message:
+              responseData['detail'] != null
+                  ? responseData['detail'].toString()
+                  : responseData['message'].toString(),
           messageType: AlertMessageType.error,
         );
-        print('error in add friend function---->>>${response.body}');
+        print('error in acceptFriend function---->>>${response.body}');
       }
     } catch (e) {
-      print('error in add friend function---->>>$e');
+      print('error in acceptFriend function---->>>$e');
     }
     setState(() {
       _isLoading = false;
@@ -277,13 +289,16 @@ class _AddFriendsListState extends State<AddFriendsList>
       } else {
         alertNotification(
           context: context,
-          message: responseData['detail'].toString(),
+          message:
+              responseData['detail'] != null
+                  ? responseData['detail'].toString()
+                  : responseData['message'].toString(),
           messageType: AlertMessageType.error,
         );
-        print('error in add friend function---->>>${response.body}');
+        print('error in rejectFriend function---->>>${response.body}');
       }
     } catch (e) {
-      print('error in add friend function---->>>$e');
+      print('error in rejectFriend function---->>>$e');
     }
     setState(() {
       _isLoading = false;

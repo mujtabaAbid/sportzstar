@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sportzstar/provider/friends_provider.dart';
 import 'package:sportzstar/screens/chats/chat_details_screen.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 
@@ -14,6 +16,7 @@ class ChatListScreen extends StatefulWidget {
 class _ChatListScreenState extends State<ChatListScreen> {
   bool _isLoading = false;
   final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  List<int> allowedFriendIds = [];
 
   // ChatId generator
   String getChatId(String uid1, String uid2) {
@@ -31,6 +34,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
       _isLoading = true;
     });
     setUserStatus(true); // online kar do
+    fetchFriendIds();
     setState(() {
       _isLoading = false;
     });
@@ -48,6 +52,26 @@ class _ChatListScreenState extends State<ChatListScreen> {
       "isOnline": isOnline,
       "lastSeen": DateTime.now(),
     });
+  }
+
+  Future<void> fetchFriendIds() async {
+    try {
+      final data =
+          await Provider.of<FriendsProvider>(
+            context,
+            listen: false,
+          ).getFriendsIds();
+
+      List<dynamic> ids = data['friends_list'];
+
+      setState(() {
+        allowedFriendIds = ids.map((e) => int.parse(e.toString())).toList();
+      });
+
+      print("✅ Allowed friends list: $allowedFriendIds");
+    } catch (e) {
+      print("get friend data ids error--------->>> $e");
+    }
   }
 
   @override
@@ -70,11 +94,19 @@ class _ChatListScreenState extends State<ChatListScreen> {
           }
 
           final users = snapshot.data!.docs;
+          final filteredUsers =
+              users.where((user) {
+                final backendId =
+                    user['userId']; // Firebase doc me stored backend userId
+                return backendId != null &&
+                    allowedFriendIds.contains(backendId);
+              }).toList();
 
           return ListView.builder(
-            itemCount: users.length,
+            itemCount: filteredUsers.length,
             itemBuilder: (context, index) {
-              final user = users[index];
+              // final user = users[index];
+              final user = filteredUsers[index];
               final userId = user.id;
 
               // apna khud ka account skip karo
@@ -172,9 +204,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         MaterialPageRoute(
                           builder:
                               (_) => ChatDetailScreen(
-                                name: user['fullName'],
+                                // name: user['fullName'],
                                 receiverId: userId,
-                                image: user['profileImage'],
+                                // image: user['profileImage'],
                               ),
                         ),
                       );

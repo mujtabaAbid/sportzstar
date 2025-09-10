@@ -6,16 +6,9 @@ import 'package:sportzstar/widgets/input_widget.dart';
 import 'package:intl/intl.dart';
 
 class ChatDetailScreen extends StatefulWidget {
-  final String name;
-  final String receiverId; // 👈 jis user ko message bhejna hai
-  final String? image;
+  final String receiverId; // 👈 sirf ye pass karna hai
 
-  const ChatDetailScreen({
-    super.key,
-    required this.name,
-    required this.receiverId,
-    this.image,
-  });
+  const ChatDetailScreen({super.key, required this.receiverId});
 
   @override
   State<ChatDetailScreen> createState() => _ChatDetailScreenState();
@@ -25,7 +18,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   final TextEditingController _messageController = TextEditingController();
   final String senderId = FirebaseAuth.instance.currentUser!.uid;
 
-  // 👇 Unique chatId generator
   String get chatId {
     if (senderId.hashCode <= widget.receiverId.hashCode) {
       return "${senderId}_${widget.receiverId}";
@@ -52,40 +44,28 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       'type': 'text',
       'createdAt': FieldValue.serverTimestamp(),
       'status': 'sent',
-      'isRead': false, // 👈 default unread
+      'isRead': false,
     });
 
     final chatDoc = FirebaseFirestore.instance.collection('chats').doc(chatId);
 
-    // increment unreadCount for RECEIVER
     await chatDoc.set({
       'participants': [senderId, widget.receiverId],
       'lastMessage': text,
       'updatedAt': FieldValue.serverTimestamp(),
-      'unreadCount_${widget.receiverId}': FieldValue.increment(
-        1,
-      ), // ✅ sirf receiver
+      'unreadCount_${widget.receiverId}': FieldValue.increment(1),
     }, SetOptions(merge: true));
 
     _messageController.clear();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _markMessagesAsRead();
-  }
-
   Future<void> _markMessagesAsRead() async {
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
-    // final chatId = chatId;
 
-    // Reset unread counter for current user
     await FirebaseFirestore.instance.collection('chats').doc(chatId).update({
       "unreadCount_$currentUserId": 0,
     });
 
-    // Mark messages as read
     final messages =
         await FirebaseFirestore.instance
             .collection('chats')
@@ -117,8 +97,14 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _markMessagesAsRead();
+  }
+
+  @override
   void dispose() {
-    _markMessagesAsRead(); // 👈 ensure reset when leaving chat
+    _markMessagesAsRead();
     _messageController.dispose();
     super.dispose();
   }
@@ -127,37 +113,45 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   Widget build(BuildContext context) {
     return MainLayoutWidget(
       isLoading: false,
-      // backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: Colors.white,
-        title: Row(
-          children: [
-            StreamBuilder<DocumentSnapshot>(
-              stream:
-                  FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(widget.receiverId)
-                      .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const CircleAvatar(
+        title: StreamBuilder<DocumentSnapshot>(
+          stream:
+              FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(widget.receiverId)
+                  .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData || !snapshot.data!.exists) {
+              return Row(
+                children: const [
+                  CircleAvatar(
                     radius: 20,
                     backgroundImage: AssetImage('assets/images/profile.jpeg'),
-                  );
-                }
+                  ),
+                  SizedBox(width: 10),
+                  Text("Loading...", style: TextStyle(color: Colors.white)),
+                ],
+              );
+            }
 
-                final userData = snapshot.data!.data() as Map<String, dynamic>;
-                final isOnline = userData['isOnline'] ?? false;
+            final userData = snapshot.data!.data() as Map<String, dynamic>;
+            final isOnline = userData['isOnline'] ?? false;
+            final lastSeen = userData['lastSeen'];
+            final userName = "${userData['fullName'] ?? ''}".trim();
+            final image = userData['profileImage'] ?? "";
 
-                return Stack(
+            return Row(
+              children: [
+                Stack(
                   children: [
                     CircleAvatar(
                       radius: 20,
                       backgroundImage:
-                          (widget.image != null && widget.image!.isNotEmpty)
-                              ? NetworkImage(widget.image!)
+                          (image.isNotEmpty)
+                              ? NetworkImage(image)
                               : const AssetImage('assets/images/profile.jpeg')
                                   as ImageProvider,
                     ),
@@ -175,31 +169,16 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       ),
                     ),
                   ],
-                );
-              },
-            ),
-            const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.name,
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
-                StreamBuilder<DocumentSnapshot>(
-                  stream:
-                      FirebaseFirestore.instance
-                          .collection("users")
-                          .doc(widget.receiverId)
-                          .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) return const SizedBox();
-                    final userData =
-                        snapshot.data!.data() as Map<String, dynamic>;
-                    final isOnline = userData['isOnline'] ?? false;
-                    final lastSeen = userData['lastSeen'];
-
-                    return Text(
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      userName.isNotEmpty ? userName : "Unknown",
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                    Text(
                       isOnline
                           ? "Online"
                           : lastSeen != null
@@ -210,18 +189,18 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         fontSize: 12,
                         fontStyle: FontStyle.italic,
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
               ],
-            ),
-          ],
+            );
+          },
         ),
       ),
 
+      // 👇 Messages + Input
       body: Column(
         children: [
-          // 👇 Firestore stream for messages
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream:
@@ -265,7 +244,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                         ),
                         child: Text(
                           message['text'] ?? '',
-                          style: TextStyle(color: Colors.white, fontSize: 15),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                          ),
                         ),
                       ),
                     );
@@ -289,8 +271,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   ),
                 ),
                 Container(
-                  // color: Colors.amber,
-                  padding: EdgeInsets.only(top: 16),
+                  padding: const EdgeInsets.only(top: 16),
                   child: IconButton(
                     icon: const Icon(Icons.send, color: Colors.white),
                     onPressed: _sendMessage,
