@@ -67,7 +67,6 @@ class _StoryScreenState extends State<StoryScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
       closeKeyboard(context: context);
-
       try {
         final response = await Provider.of<StoriesProvider>(
           context,
@@ -83,7 +82,9 @@ class _StoryScreenState extends State<StoryScreen> {
         );
 
         debugPrint('Story added: $response');
-
+        if (_mediaFile != null) {
+          _mediaFile = null;
+        }
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (_) => BottomNavigationBarScreen(pageIndex: 1),
@@ -262,7 +263,15 @@ class _StoryScreenState extends State<StoryScreen> {
                           child: const Text('Cancel'),
                         ),
                         ElevatedButton(
-                          onPressed: () => handleSubmit(setModalState),
+                          onPressed:
+                              () =>
+                                  _mediaFile != null
+                                      ? handleSubmit(setModalState)
+                                      : alertNotification(
+                                        context: context,
+                                        message: 'Please Upload Image or Video',
+                                        messageType: AlertMessageType.warning,
+                                      ),
                           child: const Text('Add'),
                         ),
                       ],
