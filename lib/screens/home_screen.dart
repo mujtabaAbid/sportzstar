@@ -366,11 +366,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // SizedBox(width: 20),
-                  Text(
-                    'SportzStar',
-                    style: TextStyle(color: Colors.white, fontSize: 30),
+                  // Text(
+                  //   'SportzStar',
+                  //   style: TextStyle(color: Colors.white, fontSize: 30),
+                  // ),
+                  Image.asset(
+                    'assets/images/start.png',
+                    height: 100,
+                    width: 100,
                   ),
-                  SizedBox(width: 6,),
+                  SizedBox(width: 6),
                   Expanded(
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -381,7 +386,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               Container(
                                 decoration: BoxDecoration(
                                   color: const Color.fromARGB(115, 53, 53, 53),
-                                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(30),
+                                  ),
                                 ),
                                 child: IconButton(
                                   onPressed: () {
@@ -420,14 +427,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ],
                           ),
-                      
+
                           // Stack(
                           SizedBox(width: 8),
                           //   children: [
                           Container(
                             decoration: BoxDecoration(
                               color: const Color.fromARGB(115, 53, 53, 53),
-                              borderRadius: BorderRadius.all(Radius.circular(30)),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(30),
+                              ),
                             ),
                             child: IconButton(
                               onPressed: () {
@@ -453,7 +462,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           Container(
                             decoration: BoxDecoration(
                               color: const Color.fromARGB(115, 53, 53, 53),
-                              borderRadius: BorderRadius.all(Radius.circular(30)),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(30),
+                              ),
                             ),
                             child: IconButton(
                               onPressed: () {
@@ -462,7 +473,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   pageName: addFriendListScreenRoute,
                                 );
                               },
-                              icon: Icon(Icons.add, color: Colors.white, size: 28),
+                              icon: Icon(
+                                Icons.add,
+                                color: Colors.white,
+                                size: 28,
+                              ),
                             ),
                           ),
                           SizedBox(width: 8),
@@ -470,7 +485,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           Container(
                             decoration: BoxDecoration(
                               color: const Color.fromARGB(115, 53, 53, 53),
-                              borderRadius: BorderRadius.all(Radius.circular(30)),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(30),
+                              ),
                             ),
                             child: IconButton(
                               onPressed: () {
@@ -486,7 +503,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                           ),
-                      
                         ],
                       ),
                     ),
