@@ -360,134 +360,139 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             padding: EdgeInsets.only(bottom: 20, top: 60),
             color: Colors.transparent,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // SizedBox(width: 20),
-                Container(
-                  margin: EdgeInsets.only(left: 20),
-                  child: Text(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 12, right: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // SizedBox(width: 20),
+                  Text(
                     'SportzStar',
-                    style: TextStyle(color: Colors.white, fontSize: 36),
+                    style: TextStyle(color: Colors.white, fontSize: 30),
                   ),
-                ),
-                Row(
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(115, 53, 53, 53),
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                  SizedBox(width: 6,),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(115, 53, 53, 53),
+                                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                                ),
+                                child: IconButton(
+                                  onPressed: () {
+                                    pushNamedNavigate(
+                                      context: context,
+                                      pageName: notificationScreenRoute,
+                                    );
+                                  },
+                                  icon: Icon(
+                                    Icons.notifications_none,
+                                    color: Colors.white,
+                                    size: 28,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                top: 12,
+                                right: 10,
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 2,
+                                    horizontal: 3,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    notificationCount.toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 8,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          child: IconButton(
-                            onPressed: () {
-                              pushNamedNavigate(
-                                context: context,
-                                pageName: notificationScreenRoute,
-                              );
-                            },
-                            icon: Icon(
-                              Icons.notifications_none,
-                              color: Colors.white,
-                              size: 28,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          top: 12,
-                          right: 10,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 2,
-                              horizontal: 3,
-                            ),
+                      
+                          // Stack(
+                          SizedBox(width: 8),
+                          //   children: [
+                          Container(
                             decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(20),
+                              color: const Color.fromARGB(115, 53, 53, 53),
+                              borderRadius: BorderRadius.all(Radius.circular(30)),
                             ),
-                            child: Text(
-                              notificationCount.toString(),
-                              style: TextStyle(
+                            child: IconButton(
+                              onPressed: () {
+                                // pushNamedNavigate(
+                                //   context: context,
+                                //   pageName: addFriendListScreenRoute,
+                                // );
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => SportsList(),
+                                    //  BaseballGamesScreen(),
+                                  ),
+                                );
+                              },
+                              icon: Icon(
+                                Icons.games_outlined,
                                 color: Colors.white,
-                                fontSize: 8,
+                                size: 28,
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-
-                    // Stack(
-                    SizedBox(width: 8),
-                    //   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(115, 53, 53, 53),
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          // pushNamedNavigate(
-                          //   context: context,
-                          //   pageName: addFriendListScreenRoute,
-                          // );
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => SportsList(),
-                              //  BaseballGamesScreen(),
+                          SizedBox(width: 8),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(115, 53, 53, 53),
+                              borderRadius: BorderRadius.all(Radius.circular(30)),
                             ),
-                          );
-                        },
-                        icon: Icon(
-                          Icons.games_outlined,
-                          color: Colors.white,
-                          size: 28,
-                        ),
+                            child: IconButton(
+                              onPressed: () {
+                                pushNamedNavigate(
+                                  context: context,
+                                  pageName: addFriendListScreenRoute,
+                                );
+                              },
+                              icon: Icon(Icons.add, color: Colors.white, size: 28),
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          //   children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(115, 53, 53, 53),
+                              borderRadius: BorderRadius.all(Radius.circular(30)),
+                            ),
+                            child: IconButton(
+                              onPressed: () {
+                                pushNamedNavigate(
+                                  context: context,
+                                  pageName: createPostScreenRoute,
+                                );
+                              },
+                              icon: Icon(
+                                Icons.add_a_photo_outlined,
+                                color: Colors.white,
+                                size: 28,
+                              ),
+                            ),
+                          ),
+                      
+                        ],
                       ),
                     ),
-                    SizedBox(width: 8),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(115, 53, 53, 53),
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          pushNamedNavigate(
-                            context: context,
-                            pageName: addFriendListScreenRoute,
-                          );
-                        },
-                        icon: Icon(Icons.add, color: Colors.white, size: 28),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    //   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(115, 53, 53, 53),
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          pushNamedNavigate(
-                            context: context,
-                            pageName: createPostScreenRoute,
-                          );
-                        },
-                        icon: Icon(
-                          Icons.add_a_photo_outlined,
-                          color: Colors.white,
-                          size: 28,
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(width: 20),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
           SizedBox(height: 10),
