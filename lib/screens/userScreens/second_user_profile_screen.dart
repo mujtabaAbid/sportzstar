@@ -120,13 +120,20 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
           message:
               responseData['detail'] != null
                   ? responseData['detail'].toString()
-                  : responseData['message'].toString(),
+                  : responseData['message'] != null
+                  ? responseData['message'].toString()
+                  : responseData,
           messageType: AlertMessageType.error,
         );
         print('error in acceptFriend function-- sec -->>>${response.body}');
       }
     } catch (e) {
       print('error in acceptFriend function--sec e-->>>$e');
+      alertNotification(
+        context: context,
+        message: e.toString(),
+        messageType: AlertMessageType.error,
+      );
     }
     setState(() {
       _isLoading = false;

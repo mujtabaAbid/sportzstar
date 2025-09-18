@@ -54,19 +54,19 @@ class _StartedScreenState extends State<StartedScreen>
         children: [
           // Background
           Positioned.fill(child: Testing()),
-      
+
           // Animated Image
           AnimatedPositioned(
             duration: const Duration(milliseconds: 800),
-            top: _moveUp ? height * 0.08 : height * 0.38,
-            left: (width - height * 0.32) / 2,
+            top: _moveUp ? height * 0.14 : height * 0.38,
+            left: (width - height * 0.35) / 2,
             child: Image.asset(
-              'assets/images/startImage.png',
-              height: height * 0.34,
+              'assets/images/zardari.png',
+              height: height * 0.4,
               fit: BoxFit.contain,
             ),
           ),
-      
+
           // Animated Content
           AnimatedOpacity(
             opacity: _showContent ? 1 : 0,
@@ -96,7 +96,7 @@ class _StartedScreenState extends State<StartedScreen>
                     ),
                   ),
                   SizedBox(height: height * 0.05),
-              
+
                   // Get Started Button
                   SizedBox(
                     width: double.infinity,
@@ -119,7 +119,7 @@ class _StartedScreenState extends State<StartedScreen>
                     ),
                   ),
                   SizedBox(height: height * 0.02),
-              
+
                   // Login Button
                   SizedBox(
                     width: double.infinity,

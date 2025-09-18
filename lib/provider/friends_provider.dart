@@ -114,9 +114,11 @@ class FriendsProvider with ChangeNotifier {
         print(
           'acceptFriendRequest success response -------->>>>>   ${response.body}',
         );
+        return response;
       }
     } catch (e) {
       print('acceptFriendRequest error response -------->>>>>   $e');
+      return e;
     }
   }
 
