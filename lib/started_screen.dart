@@ -114,7 +114,8 @@ class _StartedScreenState extends State<StartedScreen>
                       },
                       child: Text(
                         'Get Started',
-                        style: TextStyle(fontSize: height * 0.022),
+                        style: TextStyle(fontSize: height * 0.022, color: Colors.white),
+                    
                       ),
                     ),
                   ),
