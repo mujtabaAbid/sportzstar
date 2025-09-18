@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sportzstar/config/palette.dart';
@@ -8,6 +9,8 @@ import 'package:sportzstar/helper/captaliza.dart';
 import 'package:sportzstar/provider/friends_provider.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
+
+import '../chats/chat_details_screen.dart';
 
 class SecondUserProfileScreen extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -44,13 +47,16 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
       } else {
         alertNotification(
           context: context,
-          message: responseData['detail'].toString(),
+          message:
+              responseData['detail'] != null
+                  ? responseData['detail'].toString()
+                  : responseData['message'].toString(),
           messageType: AlertMessageType.error,
         );
-        print('error in add friend function---->>>${response.body}');
+        print('error in add friend function--sec-->>>${response.body}');
       }
     } catch (e) {
-      print('error in add friend function---->>>$e');
+      print('error in add friend function--sec e-->>>$e');
     }
     setState(() {
       _isLoading = false;
@@ -76,13 +82,16 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
       } else {
         alertNotification(
           context: context,
-          message: responseData['detail'].toString(),
+          message:
+              responseData['detail'] != null
+                  ? responseData['detail'].toString()
+                  : responseData['message'].toString(),
           messageType: AlertMessageType.error,
         );
-        print('error in add friend function---->>>${response.body}');
+        print('error in unfriend function--sec-->>>${response.body}');
       }
     } catch (e) {
-      print('error in add friend function---->>>$e');
+      print('error in unfriend function--sec e-->>>$e');
     }
     setState(() {
       _isLoading = false;
@@ -108,13 +117,23 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
       } else {
         alertNotification(
           context: context,
-          message: responseData['detail'].toString(),
+          message:
+              responseData['detail'] != null
+                  ? responseData['detail'].toString()
+                  : responseData['message'] != null
+                  ? responseData['message'].toString()
+                  : responseData,
           messageType: AlertMessageType.error,
         );
-        print('error in add friend function---->>>${response.body}');
+        print('error in acceptFriend function-- sec -->>>${response.body}');
       }
     } catch (e) {
-      print('error in add friend function---->>>$e');
+      print('error in acceptFriend function--sec e-->>>$e');
+      alertNotification(
+        context: context,
+        message: e.toString(),
+        messageType: AlertMessageType.error,
+      );
     }
     setState(() {
       _isLoading = false;
@@ -140,18 +159,42 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
       } else {
         alertNotification(
           context: context,
-          message: responseData['detail'].toString(),
+          message:
+              responseData['detail'] != null
+                  ? responseData['detail'].toString()
+                  : responseData['message'].toString(),
           messageType: AlertMessageType.error,
         );
-        print('error in add friend function---->>>${response.body}');
+        print('error in rejectFriend function--sec-->>>${response.body}');
       }
     } catch (e) {
-      print('error in add friend function---->>>$e');
+      print('error in rejectFriend function--sec e-->>>$e');
     }
     setState(() {
       _isLoading = false;
     });
   }
+
+  Future<String?> getFirebaseUidByEmail(String email) async {
+    final query =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .where('email', isEqualTo: email)
+            .limit(1)
+            .get();
+
+    if (query.docs.isNotEmpty) {
+      return query.docs.first.id; // 👈 ye Firebase UID hai
+    }
+    return null;
+  }
+  //  String getChatId(String uid1, String uid2) {
+  //   if (uid1.hashCode <= uid2.hashCode) {
+  //     return "${uid1}_$uid2";
+  //   } else {
+  //     return "${uid2}_$uid1";
+  //   }
+  // }
 
   // Map<String, dynamic> userData = {};
   @override
@@ -217,13 +260,73 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.email_outlined,
-                                    color: Colors.white,
+                                // IconButton(
+                                //   icon: const Icon(
+                                //     Icons.email_outlined,
+                                //     color: Colors.white,
+                                //   ),
+                                //   onPressed: () {},
+                                // ),
+                                FutureBuilder<String?>(
+                                  future: getFirebaseUidByEmail(
+                                    widget.userData['email'],
                                   ),
-                                  onPressed: () {},
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const SizedBox.shrink(); // loading me kuch mat dikhao
+                                    }
+
+                                    if (!snapshot.hasData ||
+                                        snapshot.data == null) {
+                                      return const SizedBox.shrink(); // user Firebase me nahi hai
+                                    }
+
+                                    // agar user Firebase me hai, to button dikhao
+                                    return Container(
+                                      width: 40,
+                                      height: 40,
+                                      // margin: EdgeInsets.all(20),
+                                      decoration: BoxDecoration(
+                                        color: Palette.facebookColor,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Icons.email_outlined,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _isLoading = true;
+                                          });
+                                          print(
+                                            "Firebase UID of ${widget.userData['email']} => ${snapshot.data}",
+                                          );
+
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (_) => ChatDetailScreen(
+                                                    // name: user['fullName'],
+                                                    receiverId:
+                                                        snapshot.data
+                                                            .toString(),
+                                                    // image: user['profileImage'],
+                                                  ),
+                                            ),
+                                          );
+
+                                          setState(() {
+                                            _isLoading = false;
+                                          });
+                                        },
+                                      ),
+                                    );
+                                  },
                                 ),
+
                                 const SizedBox(width: 10),
                                 if (widget.userType == 'User')
                                   ElevatedButton(

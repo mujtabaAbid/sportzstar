@@ -17,7 +17,7 @@ val keystoreProperties = Properties().apply {
 }
 
 android {
-    namespace = "com.example.sportzstar"
+    namespace = "com.sportzstar.apps"
     compileSdk = 35
     ndkVersion = "27.0.12077973"
 
@@ -31,8 +31,8 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.sportzstar"
-        minSdk = 23
+        applicationId = "com.sportzstar.apps"
+        minSdk = 24
         targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName

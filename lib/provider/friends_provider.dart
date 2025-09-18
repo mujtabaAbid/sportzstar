@@ -18,11 +18,15 @@ class FriendsProvider with ChangeNotifier {
     try {
       final response = await http.post(
         Uri.parse(addFriendApi),
-        headers: {'Accept': 'application/json'},
-        body: {
-          'user_id': user['id'].toString(),
-          'friend_user': friendId.toString(),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
+        body: json.encode({"user_id": user['id'], "friend_user": friendId}),
+        //  {
+        //   'user_id': user['id'].toString(),
+        //   'friend_user': friendId.toString(),
+        // },
       );
 
       if (response.statusCode == 200) {
@@ -43,18 +47,28 @@ class FriendsProvider with ChangeNotifier {
   Future<dynamic> unFriendFunction({required int friendId}) async {
     final user = await userData();
     final authToken = await getDataFromLocalStorage(name: 'access');
-
+    print(
+      'object--------------------user-id>> ${user["id"]} and friend == ${friendId.toString()}',
+    );
     try {
+      // final response = await http.post(
+      //   Uri.parse(unfriendApi),
+      //   headers: {
+      //     'Accept': 'application/json',
+      //     'Authorization': 'Bearer $authToken',
+      //   },
+      //   body: {
+      //     'user_id': user['id'].toString(),
+      //     'friend_user': friendId.toString(),
+      //   },
+      // );
       final response = await http.post(
         Uri.parse(unfriendApi),
         headers: {
-          'Accept': 'application/json',
+          'Content-Type': 'application/json',
           'Authorization': 'Bearer $authToken',
         },
-        body: {
-          'user_id': user['id'].toString(),
-          'friend_user': friendId.toString(),
-        },
+        body: jsonEncode({'user_id': user['id'], 'friend_user': friendId}),
       );
 
       if (response.statusCode == 200) {
@@ -66,8 +80,9 @@ class FriendsProvider with ChangeNotifier {
         return response;
       } else {
         print(
-          'unFriendFunction success response -------->>>>>   ${response.body}',
+          'unFriendFunction error response -------->>>>>   ${response.body}',
         );
+        return response;
       }
     } catch (e) {
       print('unFriendFunction error response -------->>>>>   $e');
@@ -99,9 +114,11 @@ class FriendsProvider with ChangeNotifier {
         print(
           'acceptFriendRequest success response -------->>>>>   ${response.body}',
         );
+        return response;
       }
     } catch (e) {
       print('acceptFriendRequest error response -------->>>>>   $e');
+      return e;
     }
   }
 
@@ -131,6 +148,34 @@ class FriendsProvider with ChangeNotifier {
       }
     } catch (e) {
       print('rejectFriendRequest error response -------->>>>>   $e');
+    }
+  }
+
+  Future<dynamic> getFriendsIds() async {
+    final authToken = await getDataFromLocalStorage(name: 'access');
+    final user = await userData();
+
+    try {
+      final response = await http.get(
+        Uri.parse(getFriendApi(userId: user['id'])),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        print('getFriendsIds success response -------->>>>>   $responseData');
+        return responseData;
+      } else {
+        print(
+          'getFriendsIds success response -------->>>>>   ${response.body}',
+        );
+      }
+    } catch (e) {
+      print('getFriendsIds error response -------->>>>>   $e');
     }
   }
 }

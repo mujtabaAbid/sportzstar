@@ -179,16 +179,17 @@ class UserProvider with ChangeNotifier {
         } catch (e) {
           print("General error: $e");
         }
-
         return response;
       } else {
         print(
           '------------------login error------------------> ${response.body}',
         );
+
         return response;
       }
     } catch (e) {
       print('error in login function-------------->  $e');
+      print("❌ FirebaseAuth error: $e - $e");
     }
   }
 

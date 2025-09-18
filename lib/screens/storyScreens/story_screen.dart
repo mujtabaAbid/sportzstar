@@ -67,33 +67,43 @@ class _StoryScreenState extends State<StoryScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
       closeKeyboard(context: context);
+      if (_mediaFile != null) {
+        try {
+          final response = await Provider.of<StoriesProvider>(
+            context,
+            listen: false,
+          ).addStory(
+            formData:
+                _formData..addAll({
+                  // 'post_type': _postType,
+                  'post_type': 'video',
+                  'created_at': DateTime.now().toString(),
+                }),
+            file: _mediaFile,
+            postType: _postType,
+          );
 
-      try {
-        final response = await Provider.of<StoriesProvider>(
-          context,
-          listen: false,
-        ).addStory(
-          formData:
-              _formData..addAll({
-                'post_type': _postType,
-                'created_at': DateTime.now().toString(),
-              }),
-          file: _mediaFile,
-          postType: _postType,
-        );
-
-        debugPrint('Story added: $response');
-
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => BottomNavigationBarScreen(pageIndex: 1),
-          ),
-        );
-      } catch (e) {
+          debugPrint('Story added: $response');
+          if (_mediaFile != null) {
+            _mediaFile = null;
+          }
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => BottomNavigationBarScreen(pageIndex: 1),
+            ),
+          );
+        } catch (e) {
+          alertNotification(
+            context: context,
+            message: 'Something went wrong, try again later.',
+            messageType: AlertMessageType.error,
+          );
+        }
+      } else {
         alertNotification(
           context: context,
-          message: 'Something went wrong, try again later.',
-          messageType: AlertMessageType.error,
+          message: 'Please Upload Image or Video',
+          messageType: AlertMessageType.warning,
         );
       }
     } else {
@@ -262,7 +272,16 @@ class _StoryScreenState extends State<StoryScreen> {
                           child: const Text('Cancel'),
                         ),
                         ElevatedButton(
-                          onPressed: () => handleSubmit(setModalState),
+                          onPressed:
+                              () =>
+                              // _mediaFile != null
+                              // ?
+                              handleSubmit(setModalState),
+                          // : alertNotification(
+                          //   context: context,
+                          //   message: 'Please Upload Image or Video',
+                          //   messageType: AlertMessageType.warning,
+                          // ),
                           child: const Text('Add'),
                         ),
                       ],
