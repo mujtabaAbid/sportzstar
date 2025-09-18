@@ -5,6 +5,7 @@ import 'package:sportzstar/screens/eventScreens/tabbar_screen.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/home_screen.dart';
 import 'package:sportzstar/screens/testing.dart';
+import 'sportsReports/sports_list.dart';
 import 'storyScreens/story_screen.dart';
 import 'userScreens/user_profile_screen.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
@@ -40,7 +41,9 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     EventScreen(eventIndex: widget.eventIndex),
     ChatListScreen(),
     UserProfileScreen(),
-    Center(child: Text('jhyfgudsyfgk')),
+    SportsList(),
+
+    // Center(child: Text('jhyfgudsyfgk')),
   ];
 
   @override
