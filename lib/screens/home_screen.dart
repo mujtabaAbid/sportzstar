@@ -366,15 +366,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 // SizedBox(width: 20),
                 Container(
                   margin: EdgeInsets.only(left: 20),
-                  child: Image.asset(
-                    'assets/images/start.png',
-                    height: 100,
-                    width: 100,
+                  child:
+                   Text(
+                    'SportzStar',
+                    style: TextStyle(color: Colors.white, fontSize: 36),
                   ),
-                  //  Text(
-                  //   'SportzStar',
-                  //   style: TextStyle(color: Colors.white, fontSize: 36),
-                  // ),
                 ),
                 Row(
                   children: [
@@ -464,7 +460,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             pageName: addFriendListScreenRoute,
                           );
                         },
-                        icon: Icon(Icons.add, color: Colors.white, size: 28),
+                        icon: Icon(Icons.person_add_alt_1_outlined, color: Colors.white, size: 28),
                       ),
                     ),
                     SizedBox(width: 8),
@@ -478,11 +474,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () {
                           pushNamedNavigate(
                             context: context,
-                            pageName: createPostScreenRoute,
+                            pageName: chatListScreenRoute
+                            // pageName: createPostScreenRoute,
                           );
                         },
                         icon: Icon(
-                          Icons.add_a_photo_outlined,
+                          Icons.chat_bubble_outline,
+                          // Icons.add_a_photo_outlined,
                           color: Colors.white,
                           size: 28,
                         ),

@@ -36,7 +36,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   String? selectedGender;
 
-  final List<String> genders = ['male', 'female', 'other'];
+  final List<String> genders = ['male', 'female'];
   List<Map<String, dynamic>> sportsCategories = [];
   // Future<void> _selectDate(BuildContext context) async {
   //   final DateTime? picked = await showDatePicker(
@@ -50,34 +50,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
   //     dobController.text = "${picked.day}/${picked.month}/${picked.year}";
   //   }
   // }
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime(2000),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
+Future<void> _selectDate(BuildContext context) async {
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: DateTime(2000),
+    firstDate: DateTime(1900),
+    lastDate: DateTime.now(),
+  );
 
-    if (picked != null) {
-      // Set DOB text
-      dobController.text = "${picked.day}/${picked.month}/${picked.year}";
+  if (picked != null) {
+    // Set DOB text in MM/DD/YYYY format
+    dobController.text =
+        "${picked.month.toString().padLeft(2, '0')}/${picked.day.toString().padLeft(2, '0')}/${picked.year}";
 
-      // Calculate age
-      DateTime today = DateTime.now();
-      int age = today.year - picked.year;
+    // Calculate age
+    DateTime today = DateTime.now();
+    int age = today.year - picked.year;
 
-      // Adjust if birthday has not occurred yet this year
-      if (today.month < picked.month ||
-          (today.month == picked.month && today.day < picked.day)) {
-        age--;
-      }
-
-      // Example: Print age or assign it to a variable
-      print("Age is $age");
-      handleSave('age', age.toString());
-      // You can also set it to a controller if you have one like ageController.text = age.toString();
+    // Adjust if birthday has not occurred yet this year
+    if (today.month < picked.month ||
+        (today.month == picked.month && today.day < picked.day)) {
+      age--;
     }
+
+    // Example: Print age or assign it to a variable
+    print("Age is $age");
+    handleSave('age', age.toString());
+    // You can also set it to a controller if you have one like ageController.text = age.toString();
   }
+}
+
 
   Future<void> getSports() async {
     setState(() {
@@ -339,7 +341,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Color.fromARGB(51, 224, 224, 224),
-                  hintText: "DD/MM/YYYY",
+                  hintText: "MM/DD/YYYY",
                   labelStyle: TextStyle(color: Colors.white),
                   hintStyle: TextStyle(color: Colors.white),
                   border: OutlineInputBorder(

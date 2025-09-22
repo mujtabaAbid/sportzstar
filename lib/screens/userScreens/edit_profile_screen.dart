@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -56,14 +57,65 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // String _selectCateory = 'Professional';
   // String _selectedGender = 'male';
   final TextEditingController _linkController = TextEditingController();
-  Future<void> _pickImage() async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      setState(() {
-        _image = File(picked.path);
-      });
+  
+Future<void> _pickImage() async {
+  try {
+    final XFile? picked = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 90,
+    );
+    if (picked == null) return; // user cancelled
+
+    // CroppedFile (plugin returns CroppedFile). Use uiSettings as needed.
+    final CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: picked.path,
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 90,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Image',
+          toolbarColor: Palette.basicColor,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.square,
+          lockAspectRatio: false,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9,
+          ],
+        ),
+        IOSUiSettings(
+          title: 'Crop Image',
+          aspectRatioLockEnabled: false,
+        ),
+      ],
+    );
+
+    if (croppedFile == null) return; // user cancelled crop
+
+    final File resultFile = File(croppedFile.path);
+
+    if (!mounted) return;
+    setState(() => _image = resultFile);
+  } catch (e, st) {
+    // log & show a friendly error instead of letting the app silently close
+    debugPrint('pickImage/crop error: $e\n$st');
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not pick/crop image: $e')),
+      );
     }
   }
+}
+  // Future<void> _pickImage() async {
+  //   final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+  //   if (picked != null) {
+  //     setState(() {
+  //       _image = File(picked.path);
+  //     });
+  //   }
+  // }
 
   @override
   void dispose() {

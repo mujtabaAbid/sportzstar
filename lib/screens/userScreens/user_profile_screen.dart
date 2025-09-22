@@ -445,29 +445,30 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       ),
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            'Name: ${userData['full_name'] ?? 'N/A'}',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Username: @${userData['username'] ?? 'N/A'}',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Email: ${userData['email'] ?? 'N/A'}',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                            ),
-                                          ),
+                                          // Text(
+                                          //   'Name: ${userData['full_name'] ?? 'N/A'}',
+                                          //   style: TextStyle(
+                                          //     color: Colors.white,
+                                          //     fontSize: 14,
+                                          //   ),
+                                          // ),
+                                          // Text(
+                                          //   'Username: @${userData['username'] ?? 'N/A'}',
+                                          //   style: TextStyle(
+                                          //     color: Colors.white,
+                                          //     fontSize: 14,
+                                          //   ),
+                                          // ),
+                                          // Text(
+                                          //   'Email: ${userData['email'] ?? 'N/A'}',
+                                          //   style: TextStyle(
+                                          //     color: Colors.white,
+                                          //     fontSize: 14,
+                                          //   ),
+                                          // ),
                                           if (userData['age'] != null)
                                             Text(
                                               'Age: ${userData['age']}',
@@ -476,16 +477,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                 fontSize: 14,
                                               ),
                                             ),
-                                          if ((userData['gender'] ?? '')
-                                              .toString()
-                                              .isNotEmpty)
-                                            Text(
-                                              'Gender: ${userData['gender']}',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14,
-                                              ),
-                                            ),
+                                          // if ((userData['gender'] ?? '')
+                                          //     .toString()
+                                          //     .isNotEmpty)
+                                          //   Text(
+                                          //     'Gender: ${userData['gender']}',
+                                          //     style: TextStyle(
+                                          //       color: Colors.white,
+                                          //       fontSize: 14,
+                                          //     ),
+                                          //   ),
 
                                           if ((userData['player_category'] ??
                                                   '')

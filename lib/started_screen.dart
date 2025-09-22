@@ -78,7 +78,7 @@ class _StartedScreenState extends State<StartedScreen>
                 children: [
                   SizedBox(height: height * 0.45), // Push content down
                   Text(
-                    'Join the conversation and Connect',
+                    'Welcome to SportsStar',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: height * 0.03,
@@ -88,7 +88,7 @@ class _StartedScreenState extends State<StartedScreen>
                   ),
                   SizedBox(height: height * 0.02),
                   Text(
-                    'Become part of a community of individuals who are engaged in conversations and connections',
+                    'Join the ultimate social network for sports enthusiasts.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: height * 0.018,

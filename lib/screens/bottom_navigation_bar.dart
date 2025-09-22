@@ -4,6 +4,7 @@ import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/screens/eventScreens/tabbar_screen.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/home_screen.dart';
+import 'package:sportzstar/screens/postScreens/create_post.dart';
 import 'package:sportzstar/screens/testing.dart';
 import 'sportsReports/sports_list.dart';
 import 'storyScreens/story_screen.dart';
@@ -39,8 +40,9 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     HomeScreen(selectCat: widget.selectCat),
     StoryScreen(),
     EventScreen(eventIndex: widget.eventIndex),
-    ChatListScreen(),
-    SportsList(),
+    CreatePostScreen(),
+    // ChatListScreen(),
+    // SportsList(),
     UserProfileScreen(),
 
     // Center(child: Text('jhyfgudsyfgk')),
@@ -52,50 +54,9 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
       children: [
         Testing(),
         Scaffold(
-          extendBody: true, // So the nav bar floats above the body
+          extendBody: true, 
           body: pages[selectedIndex],
-          // floatingActionButton: Transform.translate(
-          //   offset: const Offset(-30, 20), // thoda left aur neeche shift
-          //   child: FloatingActionButton(
-          //     onPressed: () {
-          //       setState(() {
-          //         selectedIndex = 2;
-          //       });
-          //     },
-          //     backgroundColor: Palette.facebookColor,
-          //     elevation: 4,
-          //     shape: const CircleBorder(),
-          //     child: Icon(
-          //       Icons.emoji_events_outlined,
-          //       size: 28,
-          //       color: selectedIndex == 2 ? Colors.white : Colors.grey,
-          //     ),
-          //   ),
-          // ),
-          // floatingActionButtonLocation:
-          //     FloatingActionButtonLocation.centerDocked,
-
-          // floatingActionButton: Transform.translate(
-          //   offset: const Offset(0, 20),
-          //   child:
-          //   FloatingActionButton(
-          //     onPressed: () {
-          //       setState(() {
-          //         selectedIndex = 2;
-          //       });
-          //     },
-          //     backgroundColor: Palette.facebookColor,
-          //     elevation: 4,
-          //     shape: const CircleBorder(),
-          //     child: Icon(
-          //       Icons.emoji_events_outlined,
-          //       size: 28,
-          //       color: selectedIndex == 2 ? Colors.white : Colors.grey,
-          //     ),
-          //   ),
-          // ),
-          // floatingActionButtonLocation:
-          //     FloatingActionButtonLocation.centerDocked,
+         
           bottomNavigationBar: BottomAppBar(
             shape: const CircularNotchedRectangle(),
             notchMargin: 0,
@@ -112,81 +73,49 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   // Left icons
-                  _buildNavIcon(Icons.home_outlined, 0),
-                  _buildNavIcon(Icons.star_border, 1),
-                  _buildNavIcon(Icons.emoji_events_outlined, 2),
-
-                  // Spacer for FAB (center wali jagah)
-                  // const SizedBox(
-                  //   width: 40,
-                  // ), // yeh FAB ka notch ke liye empty jagah banayega
-                  // Right icons
-                  _buildNavIcon(Icons.chat_bubble_outline, 3),
-                  _buildNavIcon(Icons.gamepad_outlined, 4),
-                  _buildNavIcon(Icons.person_outline, 5),
+                  _buildNavIcon(Icons.home_outlined, 0, 'Home'),
+                  _buildNavIcon(Icons.star_border, 1, 'Stories'),
+                  _buildNavIcon(Icons.emoji_events_outlined, 2, 'Events'),
+                  _buildNavIcon(Icons.add_a_photo_outlined, 3, 'Posts'),
+                  // _buildNavIcon(Icons.gamepad_outlined, 4, ''),
+                  _buildNavIcon(Icons.person_outline, 4, 'Profile'),
                 ],
               ),
             ),
           ),
-
-          // bottomNavigationBar: BottomAppBar(
-          //   shape: const CircularNotchedRectangle(),
-          //   notchMargin: 0,
-          //   elevation: 10,
-          //   color: Colors.transparent,
-          //   child: Container(
-          //     height: 150,
-          //     padding: const EdgeInsets.symmetric(horizontal: 20),
-          //     decoration: BoxDecoration(
-          //       color: Palette.basicDark,
-          //       borderRadius: BorderRadius.circular(30),
-          //       // borderRadius: const BorderRadius.only(
-          //       //   topLeft: Radius.circular(35),
-          //       //   topRight: Radius.circular(35),
-          //       // ),
-          //     ),
-          //     child: Row(
-          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //       children: [
-          //         // Left side icons
-          //         Row(
-          //           children: [
-          //             _buildNavIcon(Icons.home_outlined, 0),
-          //             const SizedBox(width: 30),
-          //             _buildNavIcon(Icons.star_border, 1),
-          //           ],
-          //         ),
-          //         // Right side icons
-          //         Row(
-          //           children: [
-          //             _buildNavIcon(Icons.chat_bubble_outline, 3),
-          //             const SizedBox(width: 30),
-          //             _buildNavIcon(Icons.gamepad_outlined, 3),
-          //             const SizedBox(width: 30),
-          //             _buildNavIcon(Icons.person_outline, 4),
-          //           ],
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
         ),
       ],
     );
   }
 
-  Widget _buildNavIcon(IconData icon, int index) {
+  Widget _buildNavIcon(IconData icon, int index,String label ) {
+     final bool isSelected = selectedIndex == index;
     return GestureDetector(
       onTap: () {
         setState(() {
           selectedIndex = index;
         });
       },
-      child: Icon(
-        icon,
-        color: selectedIndex == index ? Colors.white : Colors.white54,
-        size: 28,
-      ),
+      child:  Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          icon,
+          color: isSelected ? Colors.white : Colors.white54,
+          size: 28,
+        ),
+        const SizedBox(height: 4), // spacing between icon and label
+        if (isSelected) // show label only when selected
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+      ],
+    ),
     );
   }
 }
