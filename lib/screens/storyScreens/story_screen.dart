@@ -185,7 +185,9 @@ class _StoryScreenState extends State<StoryScreen> {
         centerTitle: true,
       ),
       floatingActionButton: Container(
-        margin: const EdgeInsets.only(bottom: 60),
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).size.height * 0.08,
+        ),
         decoration: BoxDecoration(
           gradient: Palette.lightGreenGradient,
           borderRadius: BorderRadius.circular(20),

@@ -426,31 +426,31 @@ class _HomeScreenState extends State<HomeScreen> {
                     // Stack(
                     SizedBox(width: 8),
                     //   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(115, 53, 53, 53),
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          // pushNamedNavigate(
-                          //   context: context,
-                          //   pageName: addFriendListScreenRoute,
-                          // );
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => SportsList(),
-                              //  BaseballGamesScreen(),
-                            ),
-                          );
-                        },
-                        icon: Icon(
-                          Icons.games_outlined,
-                          color: Colors.white,
-                          size: 28,
-                        ),
-                      ),
-                    ),
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //     color: const Color.fromARGB(115, 53, 53, 53),
+                    //     borderRadius: BorderRadius.all(Radius.circular(30)),
+                    //   ),
+                    //   child: IconButton(
+                    //     onPressed: () {
+                    //       // pushNamedNavigate(
+                    //       //   context: context,
+                    //       //   pageName: addFriendListScreenRoute,
+                    //       // );
+                    //       Navigator.of(context).push(
+                    //         MaterialPageRoute(
+                    //           builder: (context) => SportsList(),
+                    //           //  BaseballGamesScreen(),
+                    //         ),
+                    //       );
+                    //     },
+                    //     icon: Icon(
+                    //       Icons.games_outlined,
+                    //       color: Colors.white,
+                    //       size: 28,
+                    //     ),
+                    //   ),
+                    // ),
                     SizedBox(width: 8),
                     Container(
                       decoration: BoxDecoration(

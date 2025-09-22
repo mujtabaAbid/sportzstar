@@ -219,21 +219,45 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-        child: ElevatedButton.icon(
-          onPressed: handleSubmit,
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.all(12),
-            backgroundColor: Palette.facebookColor,
-          ),
-          icon: const Icon(Icons.publish, color: Colors.white),
-          label: const Text(
-            "Post",
-            style: TextStyle(color: Colors.white, fontSize: 18),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: SizedBox(
+            width: double.infinity, // Full width
+            height: 50, // Fixed height for responsiveness
+            child: ElevatedButton.icon(
+              onPressed: handleSubmit,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Palette.facebookColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40), // Rounded corners
+                ),
+              ),
+              icon: const Icon(Icons.publish, color: Colors.white),
+              label: const Text(
+                "Post",
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            ),
           ),
         ),
       ),
+
+      // bottomNavigationBar: Container(
+      //   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+      //   child: ElevatedButton.icon(
+      //     onPressed: handleSubmit,
+      //     style: ElevatedButton.styleFrom(
+      //       padding: const EdgeInsets.all(12),
+      //       backgroundColor: Palette.facebookColor,
+      //     ),
+      //     icon: const Icon(Icons.publish, color: Colors.white),
+      //     label: const Text(
+      //       "Post",
+      //       style: TextStyle(color: Colors.white, fontSize: 18),
+      //     ),
+      //   ),
+      // ),
     );
   }
 }

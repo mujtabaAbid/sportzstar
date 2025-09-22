@@ -180,6 +180,8 @@ class HomeProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         print('getAllSports ---->>>> $responseData');
+        // Filter cricket ko remove karne ke liye
+        responseData.removeWhere((sport) => sport['game_name'] == 'Cricket');
         return responseData;
       } else {
         print('getAllSports ---error->>>> ${response.body}');

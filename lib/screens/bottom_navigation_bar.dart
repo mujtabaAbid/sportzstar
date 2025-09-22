@@ -40,8 +40,8 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     StoryScreen(),
     EventScreen(eventIndex: widget.eventIndex),
     ChatListScreen(),
-    UserProfileScreen(),
     SportsList(),
+    UserProfileScreen(),
 
     // Center(child: Text('jhyfgudsyfgk')),
   ];
@@ -54,26 +54,26 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
         Scaffold(
           extendBody: true, // So the nav bar floats above the body
           body: pages[selectedIndex],
-          floatingActionButton: Transform.translate(
-            offset: const Offset(-30, 20), // thoda left aur neeche shift
-            child: FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  selectedIndex = 2;
-                });
-              },
-              backgroundColor: Palette.facebookColor,
-              elevation: 4,
-              shape: const CircleBorder(),
-              child: Icon(
-                Icons.emoji_events_outlined,
-                size: 28,
-                color: selectedIndex == 2 ? Colors.white : Colors.grey,
-              ),
-            ),
-          ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
+          // floatingActionButton: Transform.translate(
+          //   offset: const Offset(-30, 20), // thoda left aur neeche shift
+          //   child: FloatingActionButton(
+          //     onPressed: () {
+          //       setState(() {
+          //         selectedIndex = 2;
+          //       });
+          //     },
+          //     backgroundColor: Palette.facebookColor,
+          //     elevation: 4,
+          //     shape: const CircleBorder(),
+          //     child: Icon(
+          //       Icons.emoji_events_outlined,
+          //       size: 28,
+          //       color: selectedIndex == 2 ? Colors.white : Colors.grey,
+          //     ),
+          //   ),
+          // ),
+          // floatingActionButtonLocation:
+          //     FloatingActionButtonLocation.centerDocked,
 
           // floatingActionButton: Transform.translate(
           //   offset: const Offset(0, 20),
@@ -114,15 +114,16 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                   // Left icons
                   _buildNavIcon(Icons.home_outlined, 0),
                   _buildNavIcon(Icons.star_border, 1),
+                  _buildNavIcon(Icons.emoji_events_outlined, 2),
 
                   // Spacer for FAB (center wali jagah)
-                  const SizedBox(
-                    width: 40,
-                  ), // yeh FAB ka notch ke liye empty jagah banayega
+                  // const SizedBox(
+                  //   width: 40,
+                  // ), // yeh FAB ka notch ke liye empty jagah banayega
                   // Right icons
                   _buildNavIcon(Icons.chat_bubble_outline, 3),
-                  _buildNavIcon(Icons.gamepad_outlined, 3),
-                  _buildNavIcon(Icons.person_outline, 4),
+                  _buildNavIcon(Icons.gamepad_outlined, 4),
+                  _buildNavIcon(Icons.person_outline, 5),
                 ],
               ),
             ),
