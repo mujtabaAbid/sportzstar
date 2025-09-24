@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:sportzstar/helper/local_storage.dart';
 import 'package:sportzstar/screens/chats/chat_list_screen.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/screens/eventScreens/tabbar_screen.dart';
@@ -29,11 +32,23 @@ class BottomNavigationBarScreen extends StatefulWidget {
 
 class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
   late int selectedIndex;
+  Map<String, dynamic> userData = {};
 
   @override
   void initState() {
     super.initState();
-    selectedIndex = widget.pageIndex ?? 0;
+    _loadUserData(); // Call async method separately
+  }
+
+  Future<void> _loadUserData() async {
+    final data = await getDataFromLocalStorage(name: 'userData');
+    if (data != null) {
+      setState(() {
+        userData = jsonDecode(data);
+        print('iwehdfjoejoejakhd=====>>>$userData');
+        selectedIndex = widget.pageIndex ?? 0;
+      });
+    }
   }
 
   List<Widget> get pages => [
@@ -54,9 +69,9 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
       children: [
         Testing(),
         Scaffold(
-          extendBody: true, 
+          extendBody: true,
           body: pages[selectedIndex],
-         
+
           bottomNavigationBar: BottomAppBar(
             shape: const CircularNotchedRectangle(),
             notchMargin: 0,
@@ -78,7 +93,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                   _buildNavIcon(Icons.emoji_events_outlined, 2, 'Events'),
                   _buildNavIcon(Icons.add_a_photo_outlined, 3, 'Posts'),
                   // _buildNavIcon(Icons.gamepad_outlined, 4, ''),
-                  _buildNavIcon(Icons.person_outline, 4, 'Profile'),
+                  _buildNavIcon(Icons.person_outline, 4, userData['full_name']),
                 ],
               ),
             ),
@@ -88,34 +103,34 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     );
   }
 
-  Widget _buildNavIcon(IconData icon, int index,String label ) {
-     final bool isSelected = selectedIndex == index;
+  Widget _buildNavIcon(IconData icon, int index, String label) {
+    final bool isSelected = selectedIndex == index;
     return GestureDetector(
       onTap: () {
         setState(() {
           selectedIndex = index;
         });
       },
-      child:  Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          icon,
-          color: isSelected ? Colors.white : Colors.white54,
-          size: 28,
-        ),
-        const SizedBox(height: 4), // spacing between icon and label
-        if (isSelected) // show label only when selected
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            color: isSelected ? Colors.white : Colors.white54,
+            size: 28,
           ),
-      ],
-    ),
+          const SizedBox(height: 4), // spacing between icon and label
+          if (isSelected) // show label only when selected
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
