@@ -95,8 +95,8 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                   // _buildNavIcon(Icons.gamepad_outlined, 4, ''),
                   _buildNavIcon(
                     Icons.person_outline,
-                    4,
-                    userData['full_name'],
+                    4, 'Profile',
+                    // userData['full_name'],
                     profilePicture: userData['profile_picture'] as String?,
                   ),
                 ],

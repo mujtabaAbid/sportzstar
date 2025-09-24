@@ -176,55 +176,72 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 offset: const Offset(0, 50), // pushes down half image
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (_) => FullScreenImageViewer(
-                                imageUrl: userData['profile_picture'],
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (_) => FullScreenImageViewer(
+                                    imageUrl: userData['profile_picture'],
+                                  ),
+                            ),
+                          );
+                            },
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundColor: Colors.white,
+                              child: CircleAvatar(
+                                radius: 47,
+                                backgroundImage:
+                                    userData['profile_picture'] != null &&
+                                            userData['profile_picture'] != ''
+                                        ? NetworkImage(
+                                          userData['profile_picture'],
+                                        )
+                                        : AssetImage(
+                                          'assets/profile/dummy.png',
+                                        ),
                               ),
-                        ),
-                      );
-                    },
-                    child: Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (_) => FullScreenImageViewer(
-                                      imageUrl: userData['profile_picture'],
-                                    ),
+                            ),
+                          ),
+
+                          Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              pushNamedNavigate(
+                                context: context,
+                                pageName: chatListScreenRoute,
+                              );
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 8,
                               ),
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 50,
-                                backgroundColor: Colors.white,
-                                child: CircleAvatar(
-                                  radius: 47,
-                                  backgroundImage:
-                                      userData['profile_picture'] != null &&
-                                              userData['profile_picture'] != ''
-                                          ? NetworkImage(
-                                            userData['profile_picture'],
-                                          )
-                                          : AssetImage(
-                                            'assets/profile/dummy.png',
-                                          ),
+                              decoration: BoxDecoration(
+                                color: Palette.basicColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Center(
+                                child: Text(
+                                   'Message',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),

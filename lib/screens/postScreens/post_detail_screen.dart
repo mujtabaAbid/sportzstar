@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sportzstar/config/palette.dart';
+import 'package:sportzstar/screens/userScreens/full_image_view_screen.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/video_player_widget.dart';
 
@@ -99,13 +100,27 @@ class PostDetailScreen extends StatelessWidget {
               // === IMAGE ===
               if (post['image_url'] != null &&
                   post['image_url'].toString().isNotEmpty)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    post['image_url'],
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: 450,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => FullScreenImageViewer(
+                              imageUrl:
+                                  post['image_url'], // yahan tumhara URL pass hoga
+                            ),
+                      ),
+                    );
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      post['image_url'],
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: 450,
+                    ),
                   ),
                 ),
 

@@ -586,7 +586,7 @@ final response = await Provider.of<UserProvider>(
                     ),
                   ),
                   items:
-                      ['Male', 'Female', 'Other']
+                      ['Male', 'Female']
                           .map(
                             (gender) => DropdownMenuItem(
                               value: gender,
