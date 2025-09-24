@@ -20,14 +20,18 @@ class FullScreenImageViewer extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
       ),
-      body: Center(
-        child: InteractiveViewer(
+      body: InteractiveViewer(
+        panEnabled: true, // drag karne ke liye
+        minScale: 1.0,
+        maxScale: 5.0, // zyada zoom ke liye adjust kar sakte ho
+        child: SizedBox.expand(
           child: Image(
             image: imageProvider,
-            fit: BoxFit.contain,
+            fit: BoxFit.contain, // ya BoxFit.cover use karo agar full fill chahiye
           ),
         ),
       ),
     );
   }
 }
+
