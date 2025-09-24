@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sportzstar/config/palette.dart';
@@ -339,24 +340,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: const Color.fromARGB(255, 28, 26, 49),
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
     return MainLayoutWidget(
       isLoading: _isLoading,
       noDefaultBackground: true,
+
       body: Column(
         children: [
-          // TextButton(
-          //   onPressed: () {
-          //     pushNamedNavigate(
-          //       context: context,
-          //       pageName: basicProfileScreenRoute,
-          //     );
-          //   },
-          //   child: Text(
-          //     'data',
-          //     style: TextStyle(color: Colors.amber, fontSize: 36),
-          //   ),
-          // ),
-          //app name and notifications section
           Container(
             padding: EdgeInsets.only(bottom: 20, top: 60),
             color: Colors.transparent,
@@ -366,9 +364,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 // SizedBox(width: 20),
                 Container(
                   margin: EdgeInsets.only(left: 20),
-                  child:
-                   Text(
-                    'SportzStar',
+                  child: Text(
+                    '',
+                    // 'SportzStar',
                     style: TextStyle(color: Colors.white, fontSize: 36),
                   ),
                 ),
@@ -460,7 +458,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             pageName: addFriendListScreenRoute,
                           );
                         },
-                        icon: Icon(Icons.person_add_alt_1_outlined, color: Colors.white, size: 28),
+                        icon: Icon(
+                          Icons.person_add_alt_1_outlined,
+                          color: Colors.white,
+                          size: 28,
+                        ),
                       ),
                     ),
                     SizedBox(width: 8),
@@ -474,7 +476,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () {
                           pushNamedNavigate(
                             context: context,
-                            pageName: chatListScreenRoute
+                            pageName: chatListScreenRoute,
                             // pageName: createPostScreenRoute,
                           );
                         },
@@ -599,7 +601,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         setState(() {
                           selectedCategory = category;
-                          print('kjfskdjfhsdjf---->>>>$selectedCategory');
+                          print('selectedCategory ------>>>>$selectedCategory');
                         });
                       },
                       style: ElevatedButton.styleFrom(

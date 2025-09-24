@@ -54,8 +54,8 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
   List<Widget> get pages => [
     HomeScreen(selectCat: widget.selectCat),
     StoryScreen(),
-    EventScreen(eventIndex: widget.eventIndex),
     CreatePostScreen(),
+    EventScreen(eventIndex: widget.eventIndex),
     // ChatListScreen(),
     // SportsList(),
     UserProfileScreen(),
@@ -90,8 +90,8 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                   // Left icons
                   _buildNavIcon(Icons.home_outlined, 0, 'Home'),
                   _buildNavIcon(Icons.star_border, 1, 'Stories'),
-                  _buildNavIcon(Icons.emoji_events_outlined, 2, 'Events'),
-                  _buildNavIcon(Icons.add_a_photo_outlined, 3, 'Posts'),
+                  _buildNavIcon(Icons.add_a_photo_outlined, 2, 'Posts'),
+                  _buildNavIcon(Icons.emoji_events_outlined, 3, 'Events'),
                   // _buildNavIcon(Icons.gamepad_outlined, 4, ''),
                   _buildNavIcon(
                     Icons.person_outline,

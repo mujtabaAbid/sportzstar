@@ -28,7 +28,6 @@ class FriendsProvider with ChangeNotifier {
         //   'friend_user': friendId.toString(),
         // },
       );
-
       if (response.statusCode == 200) {
         print(
           'addFriendFunction success response -------->>>>>   ${response.body}',
@@ -51,17 +50,6 @@ class FriendsProvider with ChangeNotifier {
       'object--------------------user-id>> ${user["id"]} and friend == ${friendId.toString()}',
     );
     try {
-      // final response = await http.post(
-      //   Uri.parse(unfriendApi),
-      //   headers: {
-      //     'Accept': 'application/json',
-      //     'Authorization': 'Bearer $authToken',
-      //   },
-      //   body: {
-      //     'user_id': user['id'].toString(),
-      //     'friend_user': friendId.toString(),
-      //   },
-      // );
       final response = await http.post(
         Uri.parse(unfriendApi),
         headers: {
@@ -70,10 +58,7 @@ class FriendsProvider with ChangeNotifier {
         },
         body: jsonEncode({'user_id': user['id'], 'friend_user': friendId}),
       );
-
       if (response.statusCode == 200) {
-        // final responseData = json.decode(response.body);
-
         print(
           'unFriendFunction success response -------->>>>>   ${response.body}',
         );
@@ -82,6 +67,22 @@ class FriendsProvider with ChangeNotifier {
         print(
           'unFriendFunction error response -------->>>>>   ${response.body}',
         );
+        final data = json.decode(response.body);
+        if (data['message'] == "User is not in the friends list.") {
+          final responseData = await http.post(
+            Uri.parse(unfriendApi),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $authToken',
+            },
+            body: jsonEncode({
+              'user_id': user['id'],
+              'friend_user': friendId.toString(),
+            }),
+          );
+          return responseData;
+        }
+
         return response;
       }
     } catch (e) {
@@ -89,36 +90,65 @@ class FriendsProvider with ChangeNotifier {
     }
   }
 
+  // Future<dynamic> acceptFriendRequest({required int friendId}) async {
+  //   final user = await userData();
+  //   print('user id --> ${user['id']} and friend id ==>${friendId.toString()}');
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse(acceptFriendApi),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Accept': 'application/json',
+  //       },
+  //       body: json.encode({"user_id": user['id'], "friend_user": friendId}),
+  //       //     {
+  //       //   'user_id': user['id'].toString(),
+  //       //   'friend_user': friendId.toString(),
+  //       // },
+  //     );
+  //     print('initial response ====>>>${response.statusCode}');
+
+  //     if (response.statusCode == 200) {
+  //       // final responseData = json.decode(response.body);
+
+  //       print(
+  //         'acceptFriendRequest success response -------->>>>>   ${response.body}',
+  //       );
+  //       return response;
+  //     } else {
+  //       print(
+  //         'acceptFriendRequest success response -------->>>>>   ${response.body}',
+  //       );
+  //       return response;
+  //     }
+  //   } catch (e) {
+  //     print('acceptFriendRequest error response -------->>>>>   $e');
+  //     return e;
+  //   }
+  // }
   Future<dynamic> acceptFriendRequest({required int friendId}) async {
     final user = await userData();
-    print('user id --> ${user['id']} and friend id ==>${friendId.toString()}');
+    print('user id --> ${user['id']} and friend id ==> ${friendId.toString()}');
     try {
       final response = await http.post(
         Uri.parse(acceptFriendApi),
-        headers: {'Accept': 'application/json'},
-        body: {
-          'user_id': user['id'].toString(),
-          'friend_user': friendId.toString(),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
+        body: json.encode({'user_id': user['id'], 'friend_user': friendId}),
       );
-      print('initial response ====>>>${response.statusCode}');
 
+      print('initial response ====>>> ${response.statusCode}');
+      print('acceptFriendRequest response body -------->>>>> ${response.body}');
       if (response.statusCode == 200) {
-        // final responseData = json.decode(response.body);
-
-        print(
-          'acceptFriendRequest success response -------->>>>>   ${response.body}',
-        );
         return response;
       } else {
-        print(
-          'acceptFriendRequest success response -------->>>>>   ${response.body}',
-        );
         return response;
       }
     } catch (e) {
-      print('acceptFriendRequest error response -------->>>>>   $e');
-      return e;
+      print('acceptFriendRequest error -------->>>>> $e');
+      return Future.error(e);
     }
   }
 
