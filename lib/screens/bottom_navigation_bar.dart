@@ -93,7 +93,12 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                   _buildNavIcon(Icons.emoji_events_outlined, 2, 'Events'),
                   _buildNavIcon(Icons.add_a_photo_outlined, 3, 'Posts'),
                   // _buildNavIcon(Icons.gamepad_outlined, 4, ''),
-                  _buildNavIcon(Icons.person_outline, 4, userData['full_name']),
+                  _buildNavIcon(
+                    Icons.person_outline,
+                    4,
+                    userData['full_name'],
+                    profilePicture: userData['profile_picture'] as String?,
+                  ),
                 ],
               ),
             ),
@@ -103,7 +108,12 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     );
   }
 
-  Widget _buildNavIcon(IconData icon, int index, String label) {
+  Widget _buildNavIcon(
+    IconData icon,
+    int index,
+    String label, {
+    String? profilePicture,
+  }) {
     final bool isSelected = selectedIndex == index;
     return GestureDetector(
       onTap: () {
@@ -114,11 +124,22 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            color: isSelected ? Colors.white : Colors.white54,
-            size: 28,
-          ),
+          profilePicture != null && profilePicture.isNotEmpty
+              ? CircleAvatar(
+                radius: 14, // same as Icon size (28 / 2)
+                backgroundImage: NetworkImage(profilePicture),
+                backgroundColor: Colors.grey.shade300,
+              )
+              : Icon(
+                icon,
+                color: isSelected ? Colors.white : Colors.white54,
+                size: 28,
+              ),
+          // Icon(
+          //   icon,
+          //   color: isSelected ? Colors.white : Colors.white54,
+          //   size: 28,
+          // ),
           const SizedBox(height: 4), // spacing between icon and label
           if (isSelected) // show label only when selected
             Text(
