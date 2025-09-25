@@ -152,32 +152,62 @@ class FriendsProvider with ChangeNotifier {
     }
   }
 
+  // Future<dynamic> rejectFriendRequest({required int friendId}) async {
+  //   final user = await userData();
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse(rejectFriendApi),
+  //       headers: {'Accept': 'application/json'},
+  //       body: {
+  //         'user_id': user['id'].toString(),
+  //         'friend_user': friendId.toString(),
+  //       },
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       // final responseData = json.decode(response.body);
+
+  //       print(
+  //         'rejectFriendRequest success response -------->>>>>   ${response.body}',
+  //       );
+  //       return response;
+  //     } else {
+  //       print(
+  //         'rejectFriendRequest success response -------->>>>>   ${response.body}',
+  //       );
+  //     }
+  //   } catch (e) {
+  //     print('rejectFriendRequest error response -------->>>>>   $e');
+  //   }
+  // }
   Future<dynamic> rejectFriendRequest({required int friendId}) async {
     final user = await userData();
+    print(
+      'rejectFriendRequest user ids -----user id = ${user['id']} and friend id = $friendId',
+    );
     try {
       final response = await http.post(
         Uri.parse(rejectFriendApi),
-        headers: {'Accept': 'application/json'},
-        body: {
-          'user_id': user['id'].toString(),
-          'friend_user': friendId.toString(),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
+        body: json.encode({'user_id': user['id'], 'friend_user': friendId}),
       );
 
       if (response.statusCode == 200) {
-        // final responseData = json.decode(response.body);
-
         print(
-          'rejectFriendRequest success response -------->>>>>   ${response.body}',
+          'rejectFriendRequest success response -------->>>>> ${response.body}',
         );
         return response;
       } else {
         print(
-          'rejectFriendRequest success response -------->>>>>   ${response.body}',
+          'rejectFriendRequest failed response -------->>>>> ${response.body}',
         );
+        return response;
       }
     } catch (e) {
-      print('rejectFriendRequest error response -------->>>>>   $e');
+      print('rejectFriendRequest error response -------->>>>> $e');
     }
   }
 
