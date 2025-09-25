@@ -114,7 +114,7 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
           message: responseData['message'].toString(),
           messageType: AlertMessageType.success,
         );
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       } else {
         alertNotification(
           context: context,

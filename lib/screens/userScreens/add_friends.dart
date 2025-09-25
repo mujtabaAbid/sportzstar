@@ -11,6 +11,7 @@ import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
 
 import '../../provider/home_provider.dart';
+import '../bottom_navigation_bar.dart';
 import 'second_user_profile_screen.dart';
 
 class AddFriendsList extends StatefulWidget {
@@ -325,7 +326,11 @@ class _AddFriendsListState extends State<AddFriendsList>
                           : 'Friends',
                 ),
           ),
-        );
+        ).then((value) {
+          if (value == true) {
+            allUsers(); // yaha apna data reload karna
+          }
+        });
         print('');
       },
       child: Container(
@@ -488,96 +493,110 @@ class _AddFriendsListState extends State<AddFriendsList>
 
   @override
   Widget build(BuildContext context) {
-    return MainLayoutWidget(
-      isLoading: _isLoading,
-      appBar: AppBar(
-        leading:
-            widget.route == 'notification'
-                ? IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () {
-                    pushNamedNavigate(
-                      pageName: notificationScreenRoute,
-                      context: context,
-                    );
-                  },
-                )
-                : null,
-        title: const Text("Friends", style: TextStyle(color: Colors.white)),
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.transparent,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(110),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 12,
-                ),
-                child: TextFormField(
-                  controller: _searchController,
-                  onChanged: _filterSearchResults,
-                  cursorColor: Colors.white,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.normal,
-                  ),
-                  decoration: InputDecoration(
-                    labelStyle: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    hintText: 'Search',
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                      borderSide: BorderSide(color: Colors.grey, width: 2.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: BorderSide(color: Colors.grey, width: 2.0),
-                    ),
-                  ),
-                ),
-              ),
-              TabBar(
-                controller: _tabController,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BottomNavigationBarScreen(pageIndex: 0),
+          ),
+          (Route<dynamic> route) =>
+              false, // purane saare routes clear ho jayenge
+        );
+        return false;
+      },
 
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.grey,
-                indicatorColor: Colors.blue,
-                tabs: const [
-                  Tab(text: 'User'),
-                  Tab(text: 'Sent'),
-                  Tab(text: 'Received'),
-                  Tab(text: 'Friends'),
-                ],
-              ),
-            ],
+      child: MainLayoutWidget(
+        isLoading: _isLoading,
+        appBar: AppBar(
+          leading:
+              widget.route == 'notification'
+                  ? IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      pushNamedNavigate(
+                        pageName: notificationScreenRoute,
+                        context: context,
+                      );
+                    },
+                  )
+                  : null,
+          title: const Text("Friends", style: TextStyle(color: Colors.white)),
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(110),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
+                  child: TextFormField(
+                    controller: _searchController,
+                    onChanged: _filterSearchResults,
+                    cursorColor: Colors.white,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    decoration: InputDecoration(
+                      labelStyle: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      hintText: 'Search',
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                        borderSide: BorderSide(color: Colors.grey, width: 2.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: BorderSide(color: Colors.grey, width: 2.0),
+                      ),
+                    ),
+                  ),
+                ),
+                TabBar(
+                  controller: _tabController,
+
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.grey,
+                  indicatorColor: Colors.blue,
+                  tabs: const [
+                    Tab(text: 'User'),
+                    Tab(text: 'Sent'),
+                    Tab(text: 'Received'),
+                    Tab(text: 'Friends'),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      body: WillPopScope(
-        onWillPop: () async {
-          if (widget.route == 'notification') {
-            pushNamedNavigate(
-              pageName: notificationScreenRoute,
-              context: context,
-            );
-            return false; // Prevent default back navigation
-          } else {
-            return true; // Allow back navigation
-          }
-        },
-        child: TabBarView(
-          controller: _tabController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            _buildTabView(filteredOtherUsers),
-            _buildTabView(filteredSendRequests),
-            _buildTabView(filteredReceivedRequests),
-            _buildTabView(filteredFriends),
-          ],
+        body: WillPopScope(
+          onWillPop: () async {
+            if (widget.route == 'notification') {
+              pushNamedNavigate(
+                pageName: notificationScreenRoute,
+                context: context,
+              );
+              return false; // Prevent default back navigation
+            } else {
+              return true; // Allow back navigation
+            }
+          },
+          child: TabBarView(
+            controller: _tabController,
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              _buildTabView(filteredOtherUsers),
+              _buildTabView(filteredSendRequests),
+              _buildTabView(filteredReceivedRequests),
+              _buildTabView(filteredFriends),
+            ],
+          ),
         ),
       ),
     );
