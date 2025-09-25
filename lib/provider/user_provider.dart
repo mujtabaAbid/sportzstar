@@ -111,11 +111,13 @@ class UserProvider with ChangeNotifier {
         print(
           '------------------login Successfully------------------> $responseData',
         );
+
         // ==== FIREBASE AUTH ====
         final firebaseAuth = FirebaseAuth.instance;
         final firestore = FirebaseFirestore.instance;
+
         try {
-          // Pehle login try karo
+          // 🔹 Pehle login try karo
           UserCredential userCred = await firebaseAuth
               .signInWithEmailAndPassword(
                 email: responseData['user']['email'],
@@ -130,52 +132,45 @@ class UserProvider with ChangeNotifier {
           print(
             "✅ Firebase login success:comp-----------> ${userCred.user!.providerData}",
           );
+
           await provider.setString('firebaseUid', userCred.user!.uid);
         } on FirebaseAuthException catch (e) {
-          UserCredential newUser = await firebaseAuth
-              .createUserWithEmailAndPassword(
-                email: responseData['user']['email'],
-                password: formData['password']!,
-              );
-          print("🆕 Firebase signup success:uid------>>${newUser.user!.uid}");
-          print("🆕 Firebase signup success:user----------->>${newUser.user!}");
-          print(
-            "🆕 Firebase signup success:new--------->> ${newUser.additionalUserInfo}",
-          );
-          print("🆕 Firebase signup success:new--------->> $newUser");
-          // Firestore me user profile save karo
-          await firestore.collection("users").doc(newUser.user!.uid).set({
-            "id": newUser.user!.uid,
-            "userId": responseData['user']['id'],
-            "email": responseData['user']['email'],
-            "fullName": responseData['user']['full_name'],
-            "userName": responseData['user']['username'],
-            "profileImage": responseData['user']['profile_picture'],
-            "dataOther": 'owjefjsoejhfods',
-            "createdAt": DateTime.now().toIso8601String(),
-            "isOnline": false, // Default offline
-            "lastSeen": DateTime.now(),
-          });
+          if (e.code == 'user-not-found') {
+            // 🔹 Sirf tab naya user create karo jab user nahi hai
+            UserCredential newUser = await firebaseAuth
+                .createUserWithEmailAndPassword(
+                  email: responseData['user']['email'],
+                  password: formData['password']!,
+                );
 
-          // DocumentSnapshot doc =
-          //     await FirebaseFirestore.instance
-          //         .collection("users")
-          //         .doc(newUser.user!.uid)
-          //         .get();
+            print("🆕 Firebase signup success:uid------>>${newUser.user!.uid}");
+            print(
+              "🆕 Firebase signup success:user----------->>${newUser.user!}",
+            );
+            print(
+              "🆕 Firebase signup success:new--------->> ${newUser.additionalUserInfo}",
+            );
+            print("🆕 Firebase signup success:new--------->> $newUser");
 
-          // if (doc.exists) {
-          //   // Map me convert karke custom data access karo
-          //   var data = doc.data() as Map<String, dynamic>;
+            // Firestore me user profile save karo
+            await firestore.collection("users").doc(newUser.user!.uid).set({
+              "id": newUser.user!.uid,
+              "userId": responseData['user']['id'],
+              "email": responseData['user']['email'],
+              "fullName": responseData['user']['full_name'],
+              "userName": responseData['user']['username'],
+              "profileImage": responseData['user']['profile_picture'],
+              "dataOther": 'owjefjsoejhfods',
+              "createdAt": DateTime.now().toIso8601String(),
+              "isOnline": false, // Default offline
+              "lastSeen": DateTime.now(),
+            });
 
-          //   print("User Email: ${data['email']}");
-          //   print("Username: ${data['username']}");
-          //   print(
-          //     "Other Data: ${data['dataOther']}",
-          //   ); // 👈 yeh wahi hoga jo aapne save kiya
-          // }
-
-          await provider.setString('firebaseUid', newUser.user!.uid);
-          print("Firebase auth error:---------->> ${e.code} - ${e.message}");
+            await provider.setString('firebaseUid', newUser.user!.uid);
+          } else {
+            // ❌ Agar koi aur error hai (email-already-in-use, wrong-password, etc.)
+            print("❌ Firebase login error: ${e.code} - ${e.message}");
+          }
         } catch (e) {
           print("General error: $e");
         }
@@ -184,7 +179,6 @@ class UserProvider with ChangeNotifier {
         print(
           '------------------login error------------------> ${response.body}',
         );
-
         return response;
       }
     } catch (e) {
