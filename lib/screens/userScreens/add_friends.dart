@@ -206,6 +206,9 @@ class _AddFriendsListState extends State<AddFriendsList>
       ).unFriendFunction(friendId: friendId);
       final responseData = json.decode(response.body);
       if (response.statusCode == 200) {
+         setState(() {
+        filteredFriends.removeWhere((user) => user['id'] == friendId);
+      });
         alertNotification(
           context: context,
           message:
