@@ -474,25 +474,58 @@ class _AddFriendsListState extends State<AddFriendsList>
       ),
     );
   }
-
-  Widget _buildTabView(List<Map<String, dynamic>> userList) {
-    if (userList.isEmpty) {
-      return const Center(
-        child: Text(
-          "No data found",
-          style: TextStyle(fontSize: 16, color: Colors.grey),
-        ),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListView.builder(
-        itemCount: userList.length,
-        itemBuilder: (_, index) => _buildUserTile(userList[index]),
+    Widget _buildTabView(List<Map<String, dynamic>> userList) {
+  if (userList.isEmpty) {
+    return RefreshIndicator(
+      onRefresh: allUsers, // ✅ Pull down refresh when no data
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: const [
+          SizedBox(
+            height: 300,
+            child: Center(
+              child: Text(
+                "No data found",
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
+
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: RefreshIndicator(
+      onRefresh: allUsers, // ✅ Call API again
+      child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: userList.length,
+        itemBuilder: (_, index) => _buildUserTile(userList[index]),
+      ),
+    ),
+  );
+}
+
+  // Widget _buildTabView(List<Map<String, dynamic>> userList) {
+  //   if (userList.isEmpty) {
+  //     return const Center(
+  //       child: Text(
+  //         "No data found",
+  //         style: TextStyle(fontSize: 16, color: Colors.grey),
+  //       ),
+  //     );
+  //   }
+
+  //   return Padding(
+  //     padding: const EdgeInsets.all(8.0),
+  //     child: ListView.builder(
+  //       itemCount: userList.length,
+  //       itemBuilder: (_, index) => _buildUserTile(userList[index]),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
