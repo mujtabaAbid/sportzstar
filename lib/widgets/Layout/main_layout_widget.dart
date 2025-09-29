@@ -15,6 +15,7 @@ class MainLayoutWidget extends StatelessWidget {
     this.bottomNavigationColor,
     this.floatingActionButton,
     this.noDefaultBackground,
+     this.resizeToAvoidBottomInset,
   });
   final Widget? body;
   final Widget? drawer;
@@ -24,6 +25,7 @@ class MainLayoutWidget extends StatelessWidget {
   final Color? bottomNavigationColor;
   final Widget? floatingActionButton;
   final bool? noDefaultBackground;
+  final bool? resizeToAvoidBottomInset;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class MainLayoutWidget extends StatelessWidget {
         children: [
           if (noDefaultBackground != true) Testing(),
           Scaffold(
+             resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
             floatingActionButton: floatingActionButton,
             appBar: appBar,
             drawer: drawer,
