@@ -202,85 +202,7 @@ class EventCard extends StatelessWidget {
                     ],
                   ),
 
-                  // Guests
-                  // if (event.guestList.isNotEmpty) ...[
-                  //   const SizedBox(height: 10),
-                  //   const Text(
-                  //     'Guests:',
-                  //     style: TextStyle(fontWeight: FontWeight.bold),
-                  //   ),
-                  //   const SizedBox(height: 6),
-                  //   SizedBox(
-                  //     height: 50,
-                  //     child: ListView.separated(
-                  //       shrinkWrap: true,
-                  //       scrollDirection: Axis.horizontal,
-                  //       itemCount: event.guestList.length,
-                  //       separatorBuilder:
-                  //           (context, index) => const SizedBox(width: 8),
-                  //       itemBuilder: (context, index) {
-                  //         final guest = event.guestList[index];
-                  //         return Column(
-                  //           children: [
-                  //             CircleAvatar(
-                  //               radius: 18,
-                  //               backgroundImage: NetworkImage(guest.picture),
-                  //             ),
-                  //             const SizedBox(height: 2),
-                  //             Flexible(
-                  //               child: Text(
-                  //                 guest.name,
-                  //                 style: const TextStyle(fontSize: 10),
-                  //                 overflow: TextOverflow.ellipsis,
-                  //                 maxLines: 1,
-                  //               ),
-                  //             ),
-                  //           ],
-                  //         );
-                  //       },
-                  //     ),
-                  //   ),
-                  // ],
-
-                  // // Joiners
-                  // if (event.joiners.isNotEmpty) ...[
-                  //   const SizedBox(height: 10),
-                  //   const Text(
-                  //     'Joiners:',
-                  //     style: TextStyle(fontWeight: FontWeight.bold),
-                  //   ),
-                  //   const SizedBox(height: 6),
-                  //   SizedBox(
-                  //     height: 50,
-                  //     child: ListView.separated(
-                  //       shrinkWrap: true,
-                  //       scrollDirection: Axis.horizontal,
-                  //       itemCount: event.joiners.length,
-                  //       separatorBuilder:
-                  //           (context, index) => const SizedBox(width: 8),
-                  //       itemBuilder: (context, index) {
-                  //         final joiner = event.joiners[index];
-                  //         return Column(
-                  //           children: [
-                  //             CircleAvatar(
-                  //               radius: 18,
-                  //               backgroundImage: NetworkImage(joiner.picture),
-                  //             ),
-                  //             const SizedBox(height: 2),
-                  //             Flexible(
-                  //               child: Text(
-                  //                 joiner.name,
-                  //                 style: const TextStyle(fontSize: 10),
-                  //                 overflow: TextOverflow.ellipsis,
-                  //                 maxLines: 1,
-                  //               ),
-                  //             ),
-                  //           ],
-                  //         );
-                  //       },
-                  //     ),
-                  //   ),
-                  // ],
+             
                 ],
               ),
             ),
@@ -292,7 +214,8 @@ class EventCard extends StatelessWidget {
 }
 
 class MyEventsTab extends StatefulWidget {
-  const MyEventsTab({super.key});
+   final String searchQuery;
+  const MyEventsTab({super.key, required this.searchQuery});
 
   @override
   State<MyEventsTab> createState() => _MyEventsTabState();
@@ -302,7 +225,7 @@ class _MyEventsTabState extends State<MyEventsTab> {
   bool _isLoading = false;
   List<EventModel> _myEvents = [];
   Map<String, String> userData = {};
-
+ 
   Future<void> getMyEvents() async {
     setState(() {
       _isLoading = true;
@@ -360,12 +283,18 @@ class _MyEventsTabState extends State<MyEventsTab> {
 
   @override
   void initState() {
+     getMyEvents();
     super.initState();
-    getMyEvents();
+   
   }
 
   @override
   Widget build(BuildContext context) {
+     final filteredEvents = _myEvents.where((event) {
+      final search = widget.searchQuery.toLowerCase();
+      return event.location.toLowerCase().contains(search) ||
+             event.date.toLowerCase().contains(search);
+    }).toList();
     return Scaffold(
       body:
           _isLoading
@@ -376,10 +305,18 @@ class _MyEventsTabState extends State<MyEventsTab> {
                   'My Events Not Found',
                   style: TextStyle(color: Colors.white),
                 ),
-              )
+              ) 
+              : filteredEvents.isEmpty
+              ? const Center(
+                  child: Text(
+                    'No Events Search',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
               : ListView.builder(
                 padding: const EdgeInsets.all(16),
-                itemCount: _myEvents.length,
+                itemCount: filteredEvents.length,
+                // itemCount: _myEvents.length,
                 itemBuilder: (context, index) {
                   final event = _myEvents[index];
                   return Stack(
@@ -432,7 +369,8 @@ class _MyEventsTabState extends State<MyEventsTab> {
 }
 
 class AllEventsTab extends StatefulWidget {
-  const AllEventsTab({super.key});
+  final String searchQuery;
+  const AllEventsTab({super.key, required this.searchQuery});
 
   @override
   State<AllEventsTab> createState() => _AllEventsTabState();
@@ -475,6 +413,11 @@ class _AllEventsTabState extends State<AllEventsTab> {
 
   @override
   Widget build(BuildContext context) {
+     final filteredEvents = _events.where((event) {
+      final search = widget.searchQuery.toLowerCase();
+      return event.location.toLowerCase().contains(search) ||
+             event.date.toLowerCase().contains(search);
+    }).toList();
     return Scaffold(
       // isLoading: _isLoading,
       body:
@@ -484,7 +427,16 @@ class _AllEventsTabState extends State<AllEventsTab> {
                   'No Events Found',
                   style: TextStyle(color: Colors.white),
                 ),
-              )
+              )  
+               : 
+               
+               filteredEvents.isEmpty
+              ? const Center(
+                  child: Text(
+                    'No Events Search',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
               : SingleChildScrollView(
                 child: Column(
                   children: [
@@ -492,9 +444,11 @@ class _AllEventsTabState extends State<AllEventsTab> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.all(16),
-                      itemCount: _events.length,
+                       itemCount: filteredEvents.length,
+                      // itemCount: _events.length,
                       itemBuilder: (context, index) {
-                        final event = _events[index];
+                        // final event = _events[index];
+                         final event = filteredEvents[index];
                         return EventCard(event: event);
                       },
                     ),
