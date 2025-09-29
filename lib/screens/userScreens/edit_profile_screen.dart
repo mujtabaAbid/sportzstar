@@ -57,57 +57,54 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // String _selectCateory = 'Professional';
   // String _selectedGender = 'male';
   final TextEditingController _linkController = TextEditingController();
-  
-Future<void> _pickImage() async {
-  try {
-    final XFile? picked = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 90,
-    );
-    if (picked == null) return; // user cancelled
 
-    // CroppedFile (plugin returns CroppedFile). Use uiSettings as needed.
-    final CroppedFile? croppedFile = await ImageCropper().cropImage(
-      sourcePath: picked.path,
-      compressFormat: ImageCompressFormat.jpg,
-      compressQuality: 90,
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: 'Crop Image',
-          toolbarColor: Palette.basicColor,
-          toolbarWidgetColor: Colors.white,
-          initAspectRatio: CropAspectRatioPreset.square,
-          lockAspectRatio: false,
-          aspectRatioPresets: [
-            CropAspectRatioPreset.original,
-            CropAspectRatioPreset.square,
-            CropAspectRatioPreset.ratio4x3,
-            CropAspectRatioPreset.ratio16x9,
-          ],
-        ),
-        IOSUiSettings(
-          title: 'Crop Image',
-          aspectRatioLockEnabled: false,
-        ),
-      ],
-    );
-
-    if (croppedFile == null) return; // user cancelled crop
-
-    final File resultFile = File(croppedFile.path);
-
-    if (!mounted) return;
-    setState(() => _image = resultFile);
-  } catch (e, st) {
-    // log & show a friendly error instead of letting the app silently close
-    debugPrint('pickImage/crop error: $e\n$st');
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not pick/crop image: $e')),
+  Future<void> _pickImage() async {
+    try {
+      final XFile? picked = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 90,
       );
+      if (picked == null) return; // user cancelled
+
+      // CroppedFile (plugin returns CroppedFile). Use uiSettings as needed.
+      final CroppedFile? croppedFile = await ImageCropper().cropImage(
+        sourcePath: picked.path,
+        compressFormat: ImageCompressFormat.jpg,
+        compressQuality: 90,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Crop Image',
+            toolbarColor: Palette.basicColor,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: false,
+            aspectRatioPresets: [
+              CropAspectRatioPreset.original,
+              CropAspectRatioPreset.square,
+              CropAspectRatioPreset.ratio4x3,
+              CropAspectRatioPreset.ratio16x9,
+            ],
+          ),
+          IOSUiSettings(title: 'Crop Image', aspectRatioLockEnabled: false),
+        ],
+      );
+
+      if (croppedFile == null) return; // user cancelled crop
+
+      final File resultFile = File(croppedFile.path);
+
+      if (!mounted) return;
+      setState(() => _image = resultFile);
+    } catch (e, st) {
+      // log & show a friendly error instead of letting the app silently close
+      debugPrint('pickImage/crop error: $e\n$st');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not pick/crop image: $e')),
+        );
+      }
     }
   }
-}
   // Future<void> _pickImage() async {
   //   final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
   //   if (picked != null) {
@@ -273,157 +270,287 @@ Future<void> _pickImage() async {
             : userData['start_year'] != null
             ? userData['start_year'].toString()
             : "";
-    if (startYear.isNotEmpty) {
-      final form = _formKey.currentState;
-      if (form != null && form.validate()) {
-        form.save();
 
-        // Prepare social_links array
-        List<Map<String, dynamic>> socialLinks = [];
-        for (int i = 0; i < selectedItems.length; i++) {
-          if (selectedItems[i] != null && controllers[i].text.isNotEmpty) {
-            socialLinks.add({
-              "platform": selectedItems[i],
-              "link": controllers[i].text,
-            });
-          }
-        }
+    final form = _formKey.currentState;
+    if (form != null) {
+      form.save();
 
-        if (socialLinks.isEmpty) {
-          print(
-            'social links are empty -------------------${userData['social_links']}',
-          );
-        } else if (socialLinks == []) {
-          print('social links are empty []-------------- $socialLinks');
-        } else {
-          print('social links are ---->$socialLinks');
-        }
-
-        // Prepare career_history array
-        List<Map<String, dynamic>> careerHistory = [];
-        for (int i = 0; i < selectCareerHistoryItems.length; i++) {
-          careerHistory.add({
-            // "game_name":
-            //     userData["player_category"] ??
-            //     "", // or a separate field if needed
-            "clubName": clubNameControllers[i].text,
-            "title": titleControllers[i].text,
-            "start_date":
-                startDates[i] != null
-                    ? startDates[i]!.toIso8601String().split('T')[0]
-                    : "",
-            "end_date":
-                endDates[i] != null
-                    ? endDates[i]!.toIso8601String().split('T')[0]
-                    : "",
-            "description": descriptionControllers[i].text,
+      // Prepare social_links array
+      List<Map<String, dynamic>> socialLinks = [];
+      for (int i = 0; i < selectedItems.length; i++) {
+        if (selectedItems[i] != null && controllers[i].text.isNotEmpty) {
+          socialLinks.add({
+            "platform": selectedItems[i],
+            "link": controllers[i].text,
           });
         }
+      }
 
-        // Clean career history (remove maps with all empty/null fields)
-        List<Map<String, dynamic>> cleanedCareerHistory =
-            careerHistory
-                .where(
-                  (entry) => entry.values.any(
-                    (value) =>
-                        value != null && value.toString().trim().isNotEmpty,
-                  ),
-                )
-                .toList();
+      // Prepare career_history array
+      List<Map<String, dynamic>> careerHistory = [];
+      for (int i = 0; i < selectCareerHistoryItems.length; i++) {
+        careerHistory.add({
+          "clubName": clubNameControllers[i].text,
+          "title": titleControllers[i].text,
+          "start_date":
+              startDates[i] != null
+                  ? startDates[i]!.toIso8601String().split('T')[0]
+                  : "",
+          "end_date":
+              endDates[i] != null
+                  ? endDates[i]!.toIso8601String().split('T')[0]
+                  : "",
+          "description": descriptionControllers[i].text,
+        });
+      }
 
-        // Clean social links (same approach)
-        List<Map<String, dynamic>> cleanedSocialLinks =
-            socialLinks
-                .where(
-                  (entry) => entry.values.any(
-                    (value) =>
-                        value != null && value.toString().trim().isNotEmpty,
-                  ),
-                )
-                .toList();
+      // Clean career history
+      List<Map<String, dynamic>> cleanedCareerHistory =
+          careerHistory
+              .where(
+                (entry) => entry.values.any(
+                  (value) =>
+                      value != null && value.toString().trim().isNotEmpty,
+                ),
+              )
+              .toList();
 
-        Map<String, dynamic> rawData = {
-          "email": _formData['email'],
-          "full_name": _formData['full_name'],
-          "age": int.tryParse(_formData['age'].toString()) ?? 0,
-          "gender": _formData['gender'] ?? 'male',
-          "player_category":
-              _formData['player_category'] ?? userData["player_category"],
-          "bio": _formData['bio'],
-          "start_year": startYear,
-          "medals": _formData['medals'],
-          "social_links":
-              cleanedSocialLinks.isNotEmpty
-                  ? cleanedSocialLinks
-                  : userData['social_links'] ?? [],
-          "career_history": cleanedCareerHistory,
-        };
+      // Clean social links
+      List<Map<String, dynamic>> cleanedSocialLinks =
+          socialLinks
+              .where(
+                (entry) => entry.values.any(
+                  (value) =>
+                      value != null && value.toString().trim().isNotEmpty,
+                ),
+              )
+              .toList();
 
-        // Remove top-level keys with null, empty strings, or empty lists
-        Map<String, dynamic> finalData = Map.fromEntries(
-          rawData.entries.where((entry) {
-            final value = entry.value;
-            if (value == null) return false;
-            if (value is String && value.trim().isEmpty) return false;
-            if (value is List && value.isEmpty) return false;
-            return true;
-          }),
+      Map<String, dynamic> rawData = {
+        "email": _formData['email'],
+        "full_name": _formData['full_name'],
+        "age": int.tryParse(_formData['age'].toString()) ?? 0,
+        "gender": _formData['gender'] ?? 'male',
+        "player_category":
+            _formData['player_category'] ?? userData["player_category"],
+        "bio": _formData['bio'],
+        "start_year": startYear,
+        "medals": _formData['medals'],
+        "social_links":
+            cleanedSocialLinks.isNotEmpty
+                ? cleanedSocialLinks
+                : userData['social_links'] ?? [],
+        "career_history": cleanedCareerHistory,
+      };
+
+      // Remove top-level null/empty
+      Map<String, dynamic> finalData = Map.fromEntries(
+        rawData.entries.where((entry) {
+          final value = entry.value;
+          if (value == null) return false;
+          if (value is String && value.trim().isEmpty) return false;
+          if (value is List && value.isEmpty) return false;
+          return true;
+        }),
+      );
+
+      print('Final JSON to send:------->>>> $finalData');
+
+      final stringifiedFinalData = finalData.map((key, value) {
+        if (value is List || value is Map) {
+          return MapEntry(key, jsonEncode(value));
+        }
+        return MapEntry(key, value.toString());
+      });
+
+      final response = await Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).updateUserProfile(formData: stringifiedFinalData, file: _image);
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        alertNotification(
+          context: context,
+          message: responseData['detail'],
+          messageType: AlertMessageType.success,
         );
 
-        print('Final JSON to send:------->>>> $finalData');
+        final data = json.encode(responseData['user']);
+        addDataToLocalStorage(name: 'userData', value: data);
 
-        // final response = await Provider.of<UserProvider>(
-        //   context,
-        //   listen: false,
-        // ).updateUserProfile(formData: _formData, file: _image);
-        final stringifiedFinalData = finalData.map((key, value) {
-  if (value is List || value is Map) {
-    return MapEntry(key, jsonEncode(value));
-  }
-  return MapEntry(key, value.toString());
-});
-
-final response = await Provider.of<UserProvider>(
-  context,
-  listen: false,
-).updateUserProfile(formData: stringifiedFinalData, file: _image);
-
-
-        if (response.statusCode == 200) {
-          final responseData = json.decode(response.body);
-          //On success function first show success message
-          alertNotification(
-            context: context,
-            message: responseData['detail'],
-            messageType: AlertMessageType.success,
-          );
-
-          //then update local storage
-          final data = json.encode(responseData['user']);
-          addDataToLocalStorage(name: 'userData', value: data);
-
-          //then send to profile screen
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => BottomNavigationBarScreen(pageIndex: 4),
-            ),
-          );
-        } else {
-          alertNotification(
-            context: context,
-            message: 'Something wrong, try again later',
-            messageType: AlertMessageType.error,
-          );
-        }
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => BottomNavigationBarScreen(pageIndex: 4),
+          ),
+        );
+      } else {
+        alertNotification(
+          context: context,
+          message: 'Something wrong, try again later',
+          messageType: AlertMessageType.error,
+        );
       }
-    } else {
-      alertNotification(
-        context: context,
-        message: 'Start Year field is required',
-        messageType: AlertMessageType.error,
-      );
     }
   }
+
+  // void handleSubmit() async {
+  //   String startYear =
+  //       dobController.text.isNotEmpty
+  //           ? dobController.text
+  //           : userData['start_year'] != null
+  //           ? userData['start_year'].toString()
+  //           : "";
+  //   if (startYear.isNotEmpty) {
+  //     final form = _formKey.currentState;
+  //     if (form != null && form.validate()) {
+  //       form.save();
+
+  //       // Prepare social_links array
+  //       List<Map<String, dynamic>> socialLinks = [];
+  //       for (int i = 0; i < selectedItems.length; i++) {
+  //         if (selectedItems[i] != null && controllers[i].text.isNotEmpty) {
+  //           socialLinks.add({
+  //             "platform": selectedItems[i],
+  //             "link": controllers[i].text,
+  //           });
+  //         }
+  //       }
+
+  //       if (socialLinks.isEmpty) {
+  //         print(
+  //           'social links are empty -------------------${userData['social_links']}',
+  //         );
+  //       } else if (socialLinks == []) {
+  //         print('social links are empty []-------------- $socialLinks');
+  //       } else {
+  //         print('social links are ---->$socialLinks');
+  //       }
+
+  //       // Prepare career_history array
+  //       List<Map<String, dynamic>> careerHistory = [];
+  //       for (int i = 0; i < selectCareerHistoryItems.length; i++) {
+  //         careerHistory.add({
+  //           // "game_name":
+  //           //     userData["player_category"] ??
+  //           //     "", // or a separate field if needed
+  //           "clubName": clubNameControllers[i].text,
+  //           "title": titleControllers[i].text,
+  //           "start_date":
+  //               startDates[i] != null
+  //                   ? startDates[i]!.toIso8601String().split('T')[0]
+  //                   : "",
+  //           "end_date":
+  //               endDates[i] != null
+  //                   ? endDates[i]!.toIso8601String().split('T')[0]
+  //                   : "",
+  //           "description": descriptionControllers[i].text,
+  //         });
+  //       }
+
+  //       // Clean career history (remove maps with all empty/null fields)
+  //       List<Map<String, dynamic>> cleanedCareerHistory =
+  //           careerHistory
+  //               .where(
+  //                 (entry) => entry.values.any(
+  //                   (value) =>
+  //                       value != null && value.toString().trim().isNotEmpty,
+  //                 ),
+  //               )
+  //               .toList();
+
+  //       // Clean social links (same approach)
+  //       List<Map<String, dynamic>> cleanedSocialLinks =
+  //           socialLinks
+  //               .where(
+  //                 (entry) => entry.values.any(
+  //                   (value) =>
+  //                       value != null && value.toString().trim().isNotEmpty,
+  //                 ),
+  //               )
+  //               .toList();
+
+  //       Map<String, dynamic> rawData = {
+  //         "email": _formData['email'],
+  //         "full_name": _formData['full_name'],
+  //         "age": int.tryParse(_formData['age'].toString()) ?? 0,
+  //         "gender": _formData['gender'] ?? 'male',
+  //         "player_category":
+  //             _formData['player_category'] ?? userData["player_category"],
+  //         "bio": _formData['bio'],
+  //         "start_year": startYear,
+  //         "medals": _formData['medals'],
+  //         "social_links":
+  //             cleanedSocialLinks.isNotEmpty
+  //                 ? cleanedSocialLinks
+  //                 : userData['social_links'] ?? [],
+  //         "career_history": cleanedCareerHistory,
+  //       };
+
+  //       // Remove top-level keys with null, empty strings, or empty lists
+  //       Map<String, dynamic> finalData = Map.fromEntries(
+  //         rawData.entries.where((entry) {
+  //           final value = entry.value;
+  //           if (value == null) return false;
+  //           if (value is String && value.trim().isEmpty) return false;
+  //           if (value is List && value.isEmpty) return false;
+  //           return true;
+  //         }),
+  //       );
+
+  //       print('Final JSON to send:------->>>> $finalData');
+
+  //       // final response = await Provider.of<UserProvider>(
+  //       //   context,
+  //       //   listen: false,
+  //       // ).updateUserProfile(formData: _formData, file: _image);
+  //       final stringifiedFinalData = finalData.map((key, value) {
+  //         if (value is List || value is Map) {
+  //           return MapEntry(key, jsonEncode(value));
+  //         }
+  //         return MapEntry(key, value.toString());
+  //       });
+
+  //       final response = await Provider.of<UserProvider>(
+  //         context,
+  //         listen: false,
+  //       ).updateUserProfile(formData: stringifiedFinalData, file: _image);
+
+  //       if (response.statusCode == 200) {
+  //         final responseData = json.decode(response.body);
+  //         //On success function first show success message
+  //         alertNotification(
+  //           context: context,
+  //           message: responseData['detail'],
+  //           messageType: AlertMessageType.success,
+  //         );
+
+  //         //then update local storage
+  //         final data = json.encode(responseData['user']);
+  //         addDataToLocalStorage(name: 'userData', value: data);
+
+  //         //then send to profile screen
+  //         Navigator.of(context).push(
+  //           MaterialPageRoute(
+  //             builder: (context) => BottomNavigationBarScreen(pageIndex: 4),
+  //           ),
+  //         );
+  //       } else {
+  //         alertNotification(
+  //           context: context,
+  //           message: 'Something wrong, try again later',
+  //           messageType: AlertMessageType.error,
+  //         );
+  //       }
+  //     }
+  //   } else {
+  //     alertNotification(
+  //       context: context,
+  //       message: 'Start Year field is required',
+  //       messageType: AlertMessageType.error,
+  //     );
+  //   }
+  // }
 
   Future<void> pickDate(BuildContext context, int index, bool isStart) async {
     final picked = await showDatePicker(
@@ -564,7 +691,7 @@ final response = await Provider.of<UserProvider>(
                 const SizedBox(height: 8),
                 //gender
                 DropdownButtonFormField<String>(
-                  value: capitalize(userData['gender'] ?? 'Male'),
+                  initialValue: capitalize(userData['gender'] ?? 'Male'),
                   // borderRadius: BorderRadius.all(Radius.circular(12),),
                   decoration: InputDecoration(
                     labelStyle: TextStyle(color: Colors.white),
@@ -617,7 +744,7 @@ final response = await Provider.of<UserProvider>(
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
-                  value:
+                  initialValue:
                       userData['player_category'] != null &&
                               userData['player_category'] != ''
                           ? userData['player_category']
@@ -786,7 +913,7 @@ final response = await Provider.of<UserProvider>(
                             ), // Dropdown background color (optional)
                           ),
                           child: DropdownButtonFormField<String>(
-                            value: selectedItems[index],
+                            initialValue: selectedItems[index],
                             hint: Text(
                               'Select Link',
                               style: TextStyle(

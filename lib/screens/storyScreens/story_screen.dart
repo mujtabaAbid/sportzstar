@@ -323,7 +323,6 @@ class _StoryScreenState extends State<StoryScreen> {
                     int crossAxisCount = (constraints.maxWidth / 120)
                         .floor()
                         .clamp(2, 6);
-
                     return GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: crossAxisCount,
