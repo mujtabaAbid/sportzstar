@@ -210,57 +210,278 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
       body: CustomScrollView(
         // physics: NeverScrollableScrollPhysics(),
         slivers: [
-          SliverAppBar(
-            automaticallyImplyLeading: false,
-            pinned: false,
-            expandedHeight: 200,
-            backgroundColor: const Color.fromARGB(255, 250, 248, 248),
-            flexibleSpace: FlexibleSpaceBar(
-              background: Stack(
-                clipBehavior: Clip.none,
+          // SliverAppBar(
+          //   automaticallyImplyLeading: false,
+          //   pinned: false,
+          //   expandedHeight: 200,
+          //   backgroundColor: const Color.fromARGB(255, 250, 248, 248),
+          //   flexibleSpace: FlexibleSpaceBar(
+          //     background: Stack(
+          //       clipBehavior: Clip.none,
+          //       children: [
+          //         Container(
+          //           margin: const EdgeInsets.only(top: 80),
+          //           // height: 180,
+          //           width: double.infinity,
+          //           decoration: const BoxDecoration(
+          //             image: DecorationImage(
+          //               image: AssetImage('assets/profile/cover.png'),
+          //               fit: BoxFit.cover,
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          //   bottom: PreferredSize(
+          //     preferredSize: const Size.fromHeight(80),
+          //     child: Transform.translate(
+          //       offset: const Offset(0, 50), // pushes down half image
+          //       child: Padding(
+          //         padding: const EdgeInsets.symmetric(horizontal: 18.0),
+          //         child: Column(
+          //           children: [
+          //             Row(
+          //               children: [
+          //                 CircleAvatar(
+          //                   radius: 50,
+          //                   backgroundColor: Colors.white,
+          //                   child: CircleAvatar(
+          //                     radius: 47,
+          //                     backgroundImage:
+          //                         widget.userData['profile_picture'] != null &&
+          //                                 widget.userData['profile_picture'] !=
+          //                                     ''
+          //                             ? NetworkImage(
+          //                               widget.userData['profile_picture'],
+          //                             )
+          //                             : AssetImage('assets/profile/dummy.png'),
+          //                   ),
+          //                 ),
+
+          //                 const SizedBox(width: 20),
+          //                 Expanded(
+          //                   child: Row(
+          //                     mainAxisAlignment: MainAxisAlignment.end,
+          //                     children: [
+          //                       // IconButton(
+          //                       //   icon: const Icon(
+          //                       //     Icons.email_outlined,
+          //                       //     color: Colors.white,
+          //                       //   ),
+          //                       //   onPressed: () {},
+          //                       // ),
+          //                       FutureBuilder<String?>(
+          //                         future: getFirebaseUidByEmail(
+          //                           widget.userData['email'],
+          //                         ),
+          //                         builder: (context, snapshot) {
+          //                           if (snapshot.connectionState ==
+          //                               ConnectionState.waiting) {
+          //                             return const SizedBox.shrink(); // loading me kuch mat dikhao
+          //                           }
+
+          //                           if (!snapshot.hasData ||
+          //                               snapshot.data == null) {
+          //                             return const SizedBox.shrink(); // user Firebase me nahi hai
+          //                           }
+
+          //                           // agar user Firebase me hai, to button dikhao
+          //                           return Container(
+          //                             width: 40,
+          //                             height: 40,
+          //                             // margin: EdgeInsets.all(20),
+          //                             decoration: BoxDecoration(
+          //                               color: Palette.facebookColor,
+          //                               borderRadius: BorderRadius.circular(20),
+          //                             ),
+          //                             child: IconButton(
+          //                               icon: const Icon(
+          //                                 Icons.email_outlined,
+          //                                 color: Colors.white,
+          //                               ),
+          //                               onPressed: () {
+          //                                 setState(() {
+          //                                   _isLoading = true;
+          //                                 });
+          //                                 print(
+          //                                   "Firebase UID of ${widget.userData['email']} => ${snapshot.data}",
+          //                                 );
+
+          //                                 Navigator.push(
+          //                                   context,
+          //                                   MaterialPageRoute(
+          //                                     builder:
+          //                                         (_) => ChatDetailScreen(
+          //                                           // name: user['fullName'],
+          //                                           receiverId:
+          //                                               snapshot.data
+          //                                                   .toString(),
+          //                                           // image: user['profileImage'],
+          //                                         ),
+          //                                   ),
+          //                                 );
+
+          //                                 setState(() {
+          //                                   _isLoading = false;
+          //                                 });
+          //                               },
+          //                             ),
+          //                           );
+          //                         },
+          //                       ),
+
+          //                       const SizedBox(width: 10),
+          //                       if (widget.userType == 'User')
+          //                         ElevatedButton(
+          //                           onPressed: () {
+          //                             print(
+          //                               "Send friend request to ${widget.userData['id']}",
+          //                             );
+          //                             addFriend(
+          //                               friendId: widget.userData['id'],
+          //                             );
+          //                           },
+          //                           style: ElevatedButton.styleFrom(
+          //                             backgroundColor: Palette.facebookColor,
+          //                             shape: RoundedRectangleBorder(
+          //                               borderRadius: BorderRadius.circular(20),
+          //                             ),
+          //                           ),
+          //                           child: const Text(
+          //                             'Add Friend',
+          //                             style: TextStyle(color: Colors.white),
+          //                           ),
+          //                         ),
+          //                       if (widget.userType == 'Sent')
+          //                         ElevatedButton(
+          //                           onPressed: null,
+          //                           style: ElevatedButton.styleFrom(
+          //                             backgroundColor: Palette.facebookColor,
+          //                             shape: RoundedRectangleBorder(
+          //                               borderRadius: BorderRadius.circular(20),
+          //                             ),
+          //                           ),
+          //                           child: const Text(
+          //                             'Request Sent',
+          //                             style: TextStyle(color: Colors.white),
+          //                           ),
+          //                         ),
+          //                       if (widget.userType == 'Received')
+          //                         Row(
+          //                           children: [
+          //                             ElevatedButton(
+          //                               onPressed: () {
+          //                                 print(
+          //                                   "Accept friend request from ${widget.userData['id']}",
+          //                                 );
+          //                                 acceptFriend(
+          //                                   friendId: widget.userData['id'],
+          //                                 );
+          //                               },
+          //                               style: ElevatedButton.styleFrom(
+          //                                 backgroundColor: Colors.green,
+          //                                 padding: const EdgeInsets.all(0),
+          //                               ),
+          //                               child: const Text(
+          //                                 "Accept",
+          //                                 style: TextStyle(color: Colors.white),
+          //                               ),
+          //                             ),
+          //                             SizedBox(width: 6),
+          //                             ElevatedButton(
+          //                               onPressed: () {
+          //                                 print(
+          //                                   "Reject friend request from ${widget.userData['id']}",
+          //                                 );
+          //                                 rejectFriend(
+          //                                   friendId: widget.userData['id'],
+          //                                 );
+          //                               },
+          //                               style: ElevatedButton.styleFrom(
+          //                                 backgroundColor: Colors.red,
+          //                                 padding: const EdgeInsets.all(0),
+          //                               ),
+          //                               child: const Text(
+          //                                 "Reject",
+          //                                 style: TextStyle(color: Colors.white),
+          //                               ),
+          //                             ),
+          //                           ],
+          //                         )
+          //                       else if (widget.userType == 'Friends')
+          //                         ElevatedButton(
+          //                           onPressed: () {
+          //                             print(
+          //                               "Unfriend user ${widget.userData['id']}",
+          //                             );
+          //                             unfriend(friendId: widget.userData['id']);
+          //                           },
+          //                           style: ElevatedButton.styleFrom(
+          //                             backgroundColor: Colors.red,
+          //                             shape: RoundedRectangleBorder(
+          //                               borderRadius: BorderRadius.circular(20),
+          //                             ),
+          //                           ),
+          //                           child: const Text(
+          //                             'Unfriend',
+          //                             style: TextStyle(color: Colors.white),
+          //                           ),
+          //                         ),
+          //                     ],
+          //                   ),
+          //                 ),
+          //               ],
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 18,
+              ), // adjust top spacing
+
+              child: Stack(
                 children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 80),
-                    // height: 180,
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/profile/cover.png'),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(80),
-              child: Transform.translate(
-                offset: const Offset(0, 50), // pushes down half image
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                  child: Column(
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      const SizedBox(height: 60), // Adjust height as needed
+                      // Rest of your profile content
+
+                      Column(
+                    children: [
+                   
+                    Row(
                         children: [
-                          CircleAvatar(
-                            radius: 50,
-                            backgroundColor: Colors.white,
-                            child: CircleAvatar(
-                              radius: 47,
-                              backgroundImage:
-                                  widget.userData['profile_picture'] != null &&
-                                          widget.userData['profile_picture'] !=
-                                              ''
-                                      ? NetworkImage(
-                                        widget.userData['profile_picture'],
-                                      )
-                                      : AssetImage('assets/profile/dummy.png'),
+                          const Spacer(), 
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: CircleAvatar(
+                                radius: 50,
+                                backgroundColor: Colors.white,
+                                child: CircleAvatar(
+                                  radius: 47,
+                                  backgroundImage:
+                                      widget.userData['profile_picture'] != null &&
+                                              widget.userData['profile_picture'] !=
+                                                  ''
+                                          ? NetworkImage(
+                                            widget.userData['profile_picture'],
+                                          )
+                                          : AssetImage('assets/profile/dummy.png'),
+                                ),
+                              ),
                             ),
                           ),
 
-                          const SizedBox(width: 20),
-                          Expanded(
+                          Flexible(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
@@ -435,24 +656,6 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                       ),
                     ],
                   ),
-                ),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 18,
-              ), // adjust top spacing
-
-              child: Stack(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 60), // Adjust height as needed
-                      // Rest of your profile content
                       Container(
                         // padding: EdgeInsets.only(left: 18),
                         // color: Colors.amber,

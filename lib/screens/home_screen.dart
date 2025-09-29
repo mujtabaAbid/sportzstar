@@ -512,7 +512,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     padding: EdgeInsets.only(left: index == 0 ? 10 : 0),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 0),
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
                       child: Column(
                         children: [
                           Stack(
