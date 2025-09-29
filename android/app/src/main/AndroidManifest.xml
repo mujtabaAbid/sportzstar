@@ -3,7 +3,7 @@
 
     <application
         android:usesCleartextTraffic="true"
-        android:label="sportzStar"
+        android:label="SportzStar"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

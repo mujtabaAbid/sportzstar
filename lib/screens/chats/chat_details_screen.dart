@@ -259,7 +259,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 
           // 👇 Input field
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            padding: const EdgeInsets.only(
+              left: 18,
+              right: 6,
+              bottom: 20,
+              top: 10,),
             child: Row(
               children: [
                 Expanded(

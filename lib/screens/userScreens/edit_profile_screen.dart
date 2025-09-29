@@ -33,7 +33,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, String> _formData = {};
   List<String> sportsCategories = [];
-  final List<String> allOptions = ['Facebook', 'Instagram', 'Twitter'];
+  final List<String> allOptions = ['Facebook', 'Instagram', 'TikTok', 'YouTube', 'X', ];
   final List<String?> selectedItems = [];
   final List<TextEditingController> controllers = [];
   final List<String?> selectCareerHistoryItems = [];

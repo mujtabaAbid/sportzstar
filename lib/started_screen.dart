@@ -78,7 +78,7 @@ class _StartedScreenState extends State<StartedScreen>
                 children: [
                   SizedBox(height: height * 0.45), // Push content down
                   Text(
-                    'Welcome to SportsStar',
+                    'Welcome to SportzStar',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: height * 0.03,
