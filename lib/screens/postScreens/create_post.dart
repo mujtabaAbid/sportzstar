@@ -149,79 +149,93 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   @override
   Widget build(BuildContext context) {
     return MainLayoutWidget(
+      resizeToAvoidBottomInset: true,
       isLoading: _isLoading,
       appBar: AppBar(
         title: const Text("Create Post", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextFormField(
-                keyboardType: TextInputType.text,
-                onSaved: (value) => handleSave('title', value ?? ''),
-                decoration: const InputDecoration(hintText: 'Title'),
+      body: Form(
+        key: _formKey,
+        child: SafeArea(
+          child: SingleChildScrollView(
+             padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 20, // 👈 keyboard space adjust
+                top: 16,
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'This field is required';
-                  }
-                  return null;
-                },
-                controller: _textController,
-                maxLines: 4,
-                onSaved: (value) => handleSave('post_description', value ?? ''),
-                decoration: const InputDecoration(
-                  hintText: "What's on your mind?",
-                  border: OutlineInputBorder(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              // crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  onSaved: (value) => handleSave('title', value ?? ''),
+                  decoration: const InputDecoration(hintText: 'Title'),
                 ),
-              ),
-              const SizedBox(height: 16),
-
-              // Image Preview
-              if (_selectedImage != null)
-                SizedBox(
-                  height: 400,
-                  child: Image.file(_selectedImage!, fit: BoxFit.cover),
-                ),
-
-              // Video Preview
-              if (_selectedVideo != null &&
-                  _videoController != null &&
-                  _videoController!.value.isInitialized)
-                SizedBox(
-                  height: 400,
-                  child: AspectRatio(
-                    aspectRatio: _videoController!.value.aspectRatio,
-                    child: VideoPlayer(_videoController!),
+                const SizedBox(height: 12),
+                TextFormField(
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'This field is required';
+                    }
+                    return null;
+                  },
+                  controller: _textController,
+                  maxLines: 4,
+                  onSaved: (value) => handleSave('post_description', value ?? ''),
+                  decoration: const InputDecoration(
+                    hintText: "What's on your mind?",
+                    border: OutlineInputBorder(),
                   ),
                 ),
-
-              const SizedBox(height: 20),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  _MediaButton(icon: Icons.image, onTap: _pickImage),
-                  const SizedBox(width: 8),
-                  _MediaButton(icon: Icons.videocam, onTap: _pickVideo),
-                ],
-              ),
-              const SizedBox(height: 20),
-            ],
+                const SizedBox(height: 16),
+                
+                // Image Preview
+                if (_selectedImage != null)
+                  SizedBox(
+                    height: 400,
+                    child: Image.file(_selectedImage!, fit: BoxFit.cover),
+                  ),
+                
+                // Video Preview
+                if (_selectedVideo != null &&
+                    _videoController != null &&
+                    _videoController!.value.isInitialized)
+                  SizedBox(
+                    height: 400,
+                    child: AspectRatio(
+                      aspectRatio: _videoController!.value.aspectRatio,
+                      child: VideoPlayer(_videoController!),
+                    ),
+                  ),
+                
+                const SizedBox(height: 20),
+                
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    _MediaButton(icon: Icons.image, onTap: _pickImage),
+                    const SizedBox(width: 8),
+                    _MediaButton(icon: Icons.videocam, onTap: _pickVideo),
+                  ],
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+         padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        // bottom: MediaQuery.of(context).viewInsets.bottom + 50, // 👈 keyboard ke hisaab se adjust
+        top: 12,
+      ),
           child: SizedBox(
             width: double.infinity, // Full width
             height: 50, // Fixed height for responsiveness
@@ -242,23 +256,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           ),
         ),
       ),
-
-      // bottomNavigationBar: Container(
-      //   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-      //   child: ElevatedButton.icon(
-      //     onPressed: handleSubmit,
-      //     style: ElevatedButton.styleFrom(
-      //       padding: const EdgeInsets.all(12),
-      //       backgroundColor: Palette.facebookColor,
-      //     ),
-      //     icon: const Icon(Icons.publish, color: Colors.white),
-      //     label: const Text(
-      //       "Post",
-      //       style: TextStyle(color: Colors.white, fontSize: 18),
-      //     ),
-      //   ),
-      // ),
-    );
+     );
   }
 }
 

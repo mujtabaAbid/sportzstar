@@ -56,12 +56,9 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     StoryScreen(),
     CreatePostScreen(),
     EventScreen(eventIndex: widget.eventIndex),
-    // ChatListScreen(),
-    // SportsList(),
+ 
     UserProfileScreen(),
-
-    // Center(child: Text('jhyfgudsyfgk')),
-  ];
+ ];
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +68,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
         Scaffold(
           extendBody: true,
           body: pages[selectedIndex],
-
+        
           bottomNavigationBar: BottomAppBar(
             shape: const CircularNotchedRectangle(),
             notchMargin: 0,
