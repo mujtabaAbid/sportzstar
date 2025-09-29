@@ -356,7 +356,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(bottom: 20, top: 60),
+            padding: EdgeInsets.only(bottom: 4, top: 60),
             color: Colors.transparent,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -495,7 +495,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          SizedBox(height: 10),
+          // SizedBox(height: 10),
           // all users list
           Container(
             color: Colors.transparent,
@@ -510,9 +510,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     getUserStories(story['user_id'] ?? story['id']);
                   },
                   child: Container(
-                    padding: EdgeInsets.only(left: index == 0 ? 16 : 0),
+                    padding: EdgeInsets.only(left: index == 0 ? 10 : 0),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      padding: const EdgeInsets.symmetric(horizontal: 0),
                       child: Column(
                         children: [
                           Stack(
@@ -682,31 +682,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   displayType: PostDisplayType.text,
                 );
 
-                // if (post['post_type'] == 'text') {
-                //   // Display post_description in PostCard
-                //   return PostCard(
-                //     post: post,
-                //     selectedCategory: selectedCategory,
-                //     displayType: PostDisplayType.text,
-                //   );
-                // } else if (post['post_type'] == 'image') {
-                //   // Display image_url and post_description in PostCard
-                //   return PostCard(
-                //     post: post,
-                //     selectedCategory: selectedCategory,
-                //     displayType: PostDisplayType.image,
-                //   );
-                // } else if (post['post_type'] == 'video') {
-                //   // Display video_url and post_description in PostCard
-                //   return PostCard(
-                //     post: post,
-                //     selectedCategory: selectedCategory,
-                //     displayType: PostDisplayType.video,
-                //   );
-                // } else {
-                //   // Handle any other cases here, though your provided examples cover text, image, and video scenarios
-                //   return SizedBox(); // Placeholder for other scenarios
-                // }
+               
               },
             ),
           ),
