@@ -601,7 +601,7 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                                       ],
                                     )
                                   else if (widget.userType == 'Friends')
-                                    ElevatedButton(
+                                    ElevatedButton( 
                                       onPressed:
                                           () => unfriend(
                                             friendId: widget.userData['id'],
