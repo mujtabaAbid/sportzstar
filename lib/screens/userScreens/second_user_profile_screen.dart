@@ -192,10 +192,10 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
     }
     return null;
   }
-   @override
+
+  @override
   Widget build(BuildContext context) {
     return MainLayoutWidget(
-
       isLoading: _isLoading,
       // noDefaultBackground: true,
       // backgroundColor: Colors.white,
@@ -479,52 +479,203 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                               child: Row(
                                 children: [
                                   // Chat Button
-                                  FutureBuilder<String?>(
-                                    future: getFirebaseUidByEmail(
-                                      widget.userData['email'],
-                                    ),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                              ConnectionState.waiting ||
-                                          !snapshot.hasData) {
-                                        return const SizedBox.shrink();
-                                      }
-                                      return Container(
-                                        width: 40,
-                                        height: 40,
-                                        margin: const EdgeInsets.only(right: 8),
-                                        decoration: BoxDecoration(
-                                          color: Palette.facebookColor,
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
-                                        ),
-                                        child: IconButton(
-                                          icon: const Icon(
-                                            Icons.email_outlined,
-                                            color: Colors.white,
-                                          ),
-                                          onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (_) => ChatDetailScreen(
-                                                      receiverId:
-                                                          snapshot.data
-                                                              .toString(),
-                                                    ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                  // FutureBuilder<String?>(
+                                  //   future: getFirebaseUidByEmail(
+                                  //     widget.userData['email'],
+                                  //   ),
+                                  //   builder: (context, snapshot) {
+                                  //     if (snapshot.connectionState ==
+                                  //             ConnectionState.waiting ||
+                                  //         !snapshot.hasData) {
+                                  //       return const SizedBox.shrink();
+                                  //     }
+                                  //     return Container(
+                                  //       width: 40,
+                                  //       height: 40,
+                                  //       margin: const EdgeInsets.only(right: 8),
+                                  //       decoration: BoxDecoration(
+                                  //         color: Palette.facebookColor,
+                                  //         borderRadius: BorderRadius.circular(
+                                  //           20,
+                                  //         ),
+                                  //       ),
+                                  //       child: IconButton(
+                                  //         icon: const Icon(
+                                  //           Icons.email_outlined,
+                                  //           color: Colors.white,
+                                  //         ),
+                                  //         onPressed: () {
+                                  //           Navigator.push(
+                                  //             context,
+                                  //             MaterialPageRoute(
+                                  //               builder:
+                                  //                   (_) => ChatDetailScreen(
+                                  //                     receiverId:
+                                  //                         snapshot.data
+                                  //                             .toString(),
+                                  //                   ),
+                                  //             ),
+                                  //           );
+                                  //         },
+                                  //       ),
+                                  //     );
+                                  //   },
+                                  // ),
 
                                   // Friend Buttons
-                                  if (widget.userType == 'User')
-                                    ElevatedButton(
+                                  // if (widget.userType == 'User')
+                                  //   ElevatedButton(
+                                  //     onPressed:
+                                  //         () => addFriend(
+                                  //           friendId: widget.userData['id'],
+                                  //         ),
+                                  //     style: ElevatedButton.styleFrom(
+                                  //       backgroundColor: Palette.facebookColor,
+                                  //       shape: RoundedRectangleBorder(
+                                  //         borderRadius: BorderRadius.circular(
+                                  //           20,
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //     child: const Text(
+                                  //       'Add Friend',
+                                  //       style: TextStyle(color: Colors.white),
+                                  //     ),
+                                  //   )
+                                  // else if (widget.userType == 'Sent')
+                                  //   ElevatedButton(
+                                  //     onPressed: null,
+                                  //     style: ElevatedButton.styleFrom(
+                                  //       backgroundColor: Palette.facebookColor,
+                                  //       shape: RoundedRectangleBorder(
+                                  //         borderRadius: BorderRadius.circular(
+                                  //           20,
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //     child: const Text(
+                                  //       'Request Sent',
+                                  //       style: TextStyle(color: Colors.white),
+                                  //     ),
+                                  //   )
+                                  // else if (widget.userType == 'Received')
+                                  //   Row(
+                                  //     children: [
+                                  //       ElevatedButton(
+                                  //         onPressed:
+                                  //             () => acceptFriend(
+                                  //               friendId: widget.userData['id'],
+                                  //             ),
+                                  //         style: ElevatedButton.styleFrom(
+                                  //           backgroundColor: Colors.green,
+                                  //           padding: const EdgeInsets.symmetric(
+                                  //             horizontal: 12,
+                                  //           ),
+                                  //         ),
+                                  //         child: const Text(
+                                  //           "Accept",
+                                  //           style: TextStyle(
+                                  //             color: Colors.white,
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //       const SizedBox(width: 6),
+                                  //       ElevatedButton(
+                                  //         onPressed:
+                                  //             () => rejectFriend(
+                                  //               friendId: widget.userData['id'],
+                                  //             ),
+                                  //         style: ElevatedButton.styleFrom(
+                                  //           backgroundColor: Colors.red,
+                                  //           padding: const EdgeInsets.symmetric(
+                                  //             horizontal: 12,
+                                  //           ),
+                                  //         ),
+                                  //         child: const Text(
+                                  //           "Reject",
+                                  //           style: TextStyle(
+                                  //             color: Colors.white,
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // else if (widget.userType == 'Friends')
+                                  // ElevatedButton(
+                                  //   onPressed: () {
+                                  //     unfriend(
+                                  //       friendId: widget.userData['id'],
+                                  //     );
+                                  //   },
+                                  //   style: ElevatedButton.styleFrom(
+                                  //     backgroundColor: Colors.red,
+                                  //     shape: RoundedRectangleBorder(
+                                  //       borderRadius: BorderRadius.circular(
+                                  //         20,
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  //   child: const Text(
+                                  //     'Unfriend',
+                                  //     style: TextStyle(color: Colors.white),
+                                  //   ),
+                                  // ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.userData['full_name'] != null &&
+                                        widget.userData['full_name'] != ''
+                                    ? capitalize(widget.userData['full_name'])
+                                    : '',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              // const SizedBox(height: 2),
+                              Text(
+                                widget.userData['username'] != null &&
+                                        widget.userData['username'] != ''
+                                    ? widget.userData['username']
+                                    : '',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+
+                              // Text(
+                              //   widget.userData['player_category'] != null
+                              //       ? '🏆 ${widget.userData['player_category']}'
+                              //       : '',
+                              //   style: TextStyle(
+                              //     fontSize: 14,
+                              //     color: Colors.white,
+                              //   ),
+                              // ),
+                              // Text(
+                              //   '📩 ${widget.userData['email']}',
+                              //   style: TextStyle(color: Colors.white),
+                              // ),
+                            ],
+                          ),
+                          Container(
+                            child:
+                                (widget.userType == 'User')
+                                    ? ElevatedButton(
                                       onPressed:
                                           () => addFriend(
                                             friendId: widget.userData['id'],
@@ -542,8 +693,8 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                                         style: TextStyle(color: Colors.white),
                                       ),
                                     )
-                                  else if (widget.userType == 'Sent')
-                                    ElevatedButton(
+                                    : (widget.userType == 'Sent')
+                                    ? ElevatedButton(
                                       onPressed: null,
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Palette.facebookColor,
@@ -558,8 +709,8 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                                         style: TextStyle(color: Colors.white),
                                       ),
                                     )
-                                  else if (widget.userType == 'Received')
-                                    Row(
+                                    : (widget.userType == 'Received')
+                                    ? Row(
                                       children: [
                                         ElevatedButton(
                                           onPressed:
@@ -600,14 +751,36 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                                         ),
                                       ],
                                     )
-                                  else if (widget.userType == 'Friends')
-                                    ElevatedButton( 
-                                      onPressed:
-                                          () => unfriend(
-                                            friendId: widget.userData['id'],
-                                          ),
+                                    : (widget.userType == 'Friends')
+                                    ? ElevatedButton(
+                                      onPressed: () async {
+                                        final snapshot =
+                                            await FirebaseFirestore.instance
+                                                .collection('users')
+                                                .where(
+                                                  'userId',
+                                                  isEqualTo:
+                                                      widget.userData['id'],
+                                                ) // backend userId field
+                                                .limit(1)
+                                                .get();
+                                        if (snapshot.docs.isNotEmpty) {
+                                          final firebaseUserId =
+                                              snapshot.docs.first.id;
+
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (_) => ChatDetailScreen(
+                                                    receiverId: firebaseUserId,
+                                                  ),
+                                            ),
+                                          );
+                                        }
+                                      },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.red,
+                                        backgroundColor: Palette.facebookColor,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                             20,
@@ -615,56 +788,11 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                                         ),
                                       ),
                                       child: const Text(
-                                        'Unfriend',
+                                        'Message',
                                         style: TextStyle(color: Colors.white),
                                       ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                     Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.userData['full_name'] != null &&
-                                    widget.userData['full_name'] != ''
-                                ? capitalize(widget.userData['full_name'])
-                                : '',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
-                          ),
-                          // const SizedBox(height: 2),
-                          Text(
-                            widget.userData['username'] != null &&
-                                    widget.userData['username'] != ''
-                                ? widget.userData['username']
-                                : '',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                      
-                          Text(
-                            widget.userData['player_category'] != null
-                                ? '🏆 ${widget.userData['player_category']}'
-                                : '',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                            '📩 ${widget.userData['email']}',
-                            style: TextStyle(color: Colors.white),
+                                    )
+                                    : SizedBox(),
                           ),
                         ],
                       ),
@@ -701,30 +829,30 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                                     ),
                                   ),
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    // crossAxisAlignment:
+                                    // CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        'Name: ${widget.userData['full_name'] ?? 'N/A'}',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Username: @${widget.userData['username'] ?? 'N/A'}',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Email: ${widget.userData['email'] ?? 'N/A'}',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                        ),
-                                      ),
+                                      // Text(
+                                      //   'Name: ${widget.userData['full_name'] ?? 'N/A'}',
+                                      //   style: TextStyle(
+                                      //     color: Colors.white,
+                                      //     fontSize: 14,
+                                      //   ),
+                                      // ),
+                                      // Text(
+                                      //   'Username: ${widget.userData['username'] ?? 'N/A'}',
+                                      //   style: TextStyle(
+                                      //     color: Colors.white,
+                                      //     fontSize: 14,
+                                      //   ),
+                                      // ),
+                                      // Text(
+                                      //   'Email: ${widget.userData['email'] ?? 'N/A'}',
+                                      //   style: TextStyle(
+                                      //     color: Colors.white,
+                                      //     fontSize: 14,
+                                      //   ),
+                                      // ),
                                       if (widget.userData['age'] != null)
                                         Text(
                                           'Age: ${widget.userData['age']}',
@@ -733,16 +861,16 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                                             fontSize: 14,
                                           ),
                                         ),
-                                      if ((widget.userData['gender'] ?? '')
-                                          .toString()
-                                          .isNotEmpty)
-                                        Text(
-                                          'Gender: ${widget.userData['gender']}',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                          ),
-                                        ),
+                                      // if ((widget.userData['gender'] ?? '')
+                                      //     .toString()
+                                      //     .isNotEmpty)
+                                      //   Text(
+                                      //     'Gender: ${widget.userData['gender']}',
+                                      //     style: TextStyle(
+                                      //       color: Colors.white,
+                                      //       fontSize: 14,
+                                      //     ),
+                                      //   ),
                                       if ((widget.userData['bio'] ?? '')
                                           .toString()
                                           .isNotEmpty)
@@ -757,16 +885,16 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                                               fontSize: 14,
                                             ),
                                           ),
-                                      if ((widget.userData['start_year'] ?? '')
-                                          .toString()
-                                          .isNotEmpty)
-                                        Text(
-                                          'Start Year: ${widget.userData['start_year']}',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                          ),
-                                        ),
+                                      // if ((widget.userData['start_year'] ?? '')
+                                      //     .toString()
+                                      //     .isNotEmpty)
+                                      //   Text(
+                                      //     'Start Year: ${widget.userData['start_year']}',
+                                      //     style: TextStyle(
+                                      //       color: Colors.white,
+                                      //       fontSize: 14,
+                                      //     ),
+                                      //   ),
                                     ],
                                   ),
                                 ),
@@ -1029,6 +1157,35 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                                             ),
                                           ),
                                 ),
+                                if (widget.userType == 'Friends')
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 40,
+                                        vertical: 20,
+                                      ),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          unfriend(
+                                            friendId: widget.userData['id'],
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.red,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'Unfriend',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
