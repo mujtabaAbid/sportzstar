@@ -659,30 +659,60 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           //post card widget call
+          // Expanded(
+          //   child: ListView.builder(
+          //     padding: EdgeInsets.only(top: 10, bottom: 80),
+          //     itemCount:
+          //         posts
+          //             .where(
+          //               (post) => post['player_category'] == selectedCategory,
+          //             )
+          //             .length,
+          //     itemBuilder: (context, index) {
+          //       final filteredPosts =
+          //           posts
+          //               .where(
+          //                 (post) => post['player_category'] == selectedCategory,
+          //               )
+          //               .toList();
+          //       final post = filteredPosts[index];
+          //       return PostCard(
+          //         post: post,
+          //         selectedCategory: selectedCategory,
+          //         displayType: PostDisplayType.text,
+          //       );
+
+          //     },
+          //   ),
+          // ),
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.only(top: 10, bottom: 80),
+              padding: const EdgeInsets.only(top: 10, bottom: 80),
               itemCount:
                   posts
                       .where(
-                        (post) => post['player_category'] == selectedCategory,
+                        (post) =>
+                            selectedCategory.isEmpty ||
+                            post['player_category'] == selectedCategory,
                       )
                       .length,
               itemBuilder: (context, index) {
                 final filteredPosts =
                     posts
                         .where(
-                          (post) => post['player_category'] == selectedCategory,
+                          (post) =>
+                              selectedCategory.isEmpty ||
+                              post['player_category'] == selectedCategory,
                         )
                         .toList();
+
                 final post = filteredPosts[index];
+
                 return PostCard(
                   post: post,
                   selectedCategory: selectedCategory,
                   displayType: PostDisplayType.text,
                 );
-
-               
               },
             ),
           ),

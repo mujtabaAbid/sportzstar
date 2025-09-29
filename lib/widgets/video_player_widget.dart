@@ -7,6 +7,7 @@ class VideoPlayerWidget extends StatefulWidget {
   bool stopPlaying;
   double? iconsize;
   bool fullWidth;
+  bool noFullScreenIcon;
 
   VideoPlayerWidget({
     super.key,
@@ -14,6 +15,7 @@ class VideoPlayerWidget extends StatefulWidget {
     this.stopPlaying = false,
     this.fullWidth = false,
     this.iconsize,
+    this.noFullScreenIcon = false,
   });
 
   @override
@@ -50,12 +52,12 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget>
       }
     }
   }
- 
- void pauseVideo() {
-  if (_controller.value.isPlaying) {
-    _controller.pause();
+
+  void pauseVideo() {
+    if (_controller.value.isPlaying) {
+      _controller.pause();
+    }
   }
-}
 
   Future<void> _initializeVideo() async {
     try {
@@ -141,28 +143,30 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget>
             ),
 
             // Expand icon (bottom-right)
-            Positioned(
-              bottom: 40,
-              right: 12,
-              child: GestureDetector(
-                onTap: () {
-                  _controller.pause();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (_) =>
-                              FullScreenVideoPlayer(videoUrl: widget.videoUrl),
-                    ),
-                  );
-                },
-                child: const Icon(
-                  Icons.fullscreen,
-                  color: Colors.white,
-                  size: 32,
+            if (widget.noFullScreenIcon != true)
+              Positioned(
+                bottom: 40,
+                right: 12,
+                child: GestureDetector(
+                  onTap: () {
+                    _controller.pause();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => FullScreenVideoPlayer(
+                              videoUrl: widget.videoUrl,
+                            ),
+                      ),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.fullscreen,
+                    color: Colors.white,
+                    size: 32,
+                  ),
                 ),
               ),
-            ),
           ],
         )
         : const Center(child: CircularProgressIndicator());
@@ -262,14 +266,13 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
                             ),
                           ),
                         ),
-                         const SizedBox(width: 12),
+                        const SizedBox(width: 12),
                       ],
                     ),
                   ],
                 )
                 : const CircularProgressIndicator(),
       ),
-     
     );
   }
 }

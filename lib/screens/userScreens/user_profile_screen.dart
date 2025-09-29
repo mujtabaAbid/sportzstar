@@ -17,6 +17,7 @@ import 'package:sportzstar/widgets/post_card_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../helper/local_storage.dart';
+import '../../widgets/video_player_widget.dart';
 import '../postScreens/post_detail_screen.dart';
 import 'full_image_view_screen.dart';
 
@@ -181,16 +182,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       Row(
                         children: [
                           GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (_) => FullScreenImageViewer(
-                                    imageUrl: userData['profile_picture'],
-                                  ),
-                            ),
-                          );
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) => FullScreenImageViewer(
+                                        imageUrl: userData['profile_picture'],
+                                      ),
+                                ),
+                              );
                             },
                             child: CircleAvatar(
                               radius: 50,
@@ -230,7 +231,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               ),
                               child: Center(
                                 child: Text(
-                                   'Message',
+                                  'Message',
                                   style: const TextStyle(
                                     fontSize: 14,
                                     color: Colors.white,
@@ -463,7 +464,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           // Text(
                                           //   'Name: ${userData['full_name'] ?? 'N/A'}',
@@ -494,6 +496,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                 fontSize: 14,
                                               ),
                                             ),
+
                                           // if ((userData['gender'] ?? '')
                                           //     .toString()
                                           //     .isNotEmpty)
@@ -504,7 +507,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           //       fontSize: 14,
                                           //     ),
                                           //   ),
-
                                           if ((userData['player_category'] ??
                                                   '')
                                               .toString()
@@ -534,102 +536,111 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     if ((userData['bio'] ?? '')
                                         .toString()
                                         .isNotEmpty)
-                                        Column(
-                                           crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                      Text(
-                                        'Bio',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    SizedBox(height: 10),
-                                    Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: const Color.fromARGB(
-                                          54,
-                                          96,
-                                          125,
-                                          139,
-                                        ),
-                                      ),
-                                      child: Column(
+                                      Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            '${userData['bio']}',
+                                            'Bio',
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 14,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          Container(
+                                            width: double.infinity,
+                                            padding: EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              color: const Color.fromARGB(
+                                                54,
+                                                96,
+                                                125,
+                                                139,
+                                              ),
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '${userData['bio']}',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ),],),
 
                                     SizedBox(height: 10),
-                                     if (userData['social_links'] !=
-                                                  null &&
-                                              (userData['social_links'] as List)
-                                                  .isNotEmpty)
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Social Media',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                         SizedBox(height: 10),
-                                    Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: const Color.fromARGB(
-                                          54,
-                                          96,
-                                          125,
-                                          139,
-                                        ),
-                                      ),
-                                      child: Column(
+                                    if (userData['social_links'] != null &&
+                                        (userData['social_links'] as List)
+                                            .isNotEmpty)
+                                      Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                         
-                                            ...List<Widget>.from(
-                                              (userData['social_links'] as List)
-                                                  .map(
-                                                    (linkData) => Text(
-                                                      '${linkData['platform']}: ${linkData['link']}',
-                                                      style: const TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 14,
-                                                      ),
-                                                    ),
-                                                  ),
+                                          Text(
+                                            'Social Media',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
                                             ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          Container(
+                                            width: double.infinity,
+                                            padding: EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              color: const Color.fromARGB(
+                                                54,
+                                                96,
+                                                125,
+                                                139,
+                                              ),
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                ...List<Widget>.from(
+                                                  (userData['social_links']
+                                                          as List)
+                                                      .map(
+                                                        (linkData) => Text(
+                                                          '${linkData['platform']}: ${linkData['link']}',
+                                                          style:
+                                                              const TextStyle(
+                                                                color:
+                                                                    Colors
+                                                                        .white,
+                                                                fontSize: 14,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                    ),
-                                      ],
-                                    ),
-                                   
+
                                     SizedBox(height: 10),
 
                                     if ((userData['medals'] ?? '')
                                         .toString()
                                         .isNotEmpty)
                                       Column(
-                                         crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             'Medals',
@@ -639,29 +650,30 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                             ),
                                           ),
                                           SizedBox(height: 10),
-                                    Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: const Color.fromARGB(
-                                          54,
-                                          96,
-                                          125,
-                                          139,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        '${userData['medals']}',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ),
+                                          Container(
+                                            width: double.infinity,
+                                            padding: EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              color: const Color.fromARGB(
+                                                54,
+                                                96,
+                                                125,
+                                                139,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              '${userData['medals']}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                    
+
                                     // Career History (List)
                                     if ((userData['career_history'] ?? [])
                                             is List &&
@@ -940,31 +952,43 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           //     : post['post_type'] == 'video'
                                           //     ? Text(post['video_url'])
                                           //     :
-                                          Container(
-                                            // height: 150,
-                                            // width: 150,
-                                            decoration: BoxDecoration(
-                                              image:
-                                                  post['post_type'] ==
-                                                              'image' &&
-                                                          post['image_url'] !=
-                                                              null
-                                                      ? DecorationImage(
+                                          post['post_type'] == 'video' &&
+                                                  post['video_url'] != null
+                                              ? (post['video_url'].endsWith(
+                                                        '.mp4',
+                                                      ) ||
+                                                      post['video_url']
+                                                          .endsWith('.mov') ||
+                                                      post['video_url']
+                                                          .endsWith('.avi') ||
+                                                      post['video_url']
+                                                          .endsWith('.mkv'))
+                                                  ? VideoPlayerWidget(
+                                                    iconsize: 20,
+                                                    noFullScreenIcon: true,
+                                                    stopPlaying: true,
+                                                    videoUrl: post['video_url'],
+                                                  )
+                                                  : Container(
+                                                    decoration: BoxDecoration(
+                                                      image: DecorationImage(
                                                         image: NetworkImage(
-                                                          post['image_url'],
-                                                        ),
-                                                        fit: BoxFit.cover,
-                                                      )
-                                                      : DecorationImage(
-                                                        image: AssetImage(
-                                                          'assets/images/start.png',
+                                                          post['video_url'],
                                                         ),
                                                         fit: BoxFit.cover,
                                                       ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                          ),
+                                                      // : DecorationImage(
+                                                      //   image: AssetImage(
+                                                      //     'assets/images/nostories.png',
+                                                      //   ),
+                                                      //   fit: BoxFit.cover,
+                                                      // ),
+                                                      // borderRadius:
+                                                      //     BorderRadius.circular(8),
+                                                    ),
+                                                  )
+                                              : SizedBox(),
+
                                           Positioned(
                                             bottom: 6,
                                             left: 6,
