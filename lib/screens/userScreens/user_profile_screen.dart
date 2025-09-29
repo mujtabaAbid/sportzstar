@@ -1078,7 +1078,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       allUserPosts
                                           .where(
                                             (post) =>
-                                                post['post_type'] != 'text',
+                                                post['post_type'] != 'text' &&
+                                                    post['image_url'] != null ||
+                                                post['video_url'] != null,
                                           )
                                           .length,
                                   gridDelegate:
@@ -1093,7 +1095,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         allUserPosts
                                             .where(
                                               (post) =>
-                                                  post['post_type'] != 'text',
+                                                  post['post_type'] != 'text' &&
+                                                      post['image_url'] !=
+                                                          null ||
+                                                  post['video_url'] != null,
                                             )
                                             .toList();
                                     final post = filteredPosts[index];
@@ -1119,8 +1124,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           //     : post['post_type'] == 'video'
                                           //     ? Text(post['video_url'])
                                           //     :
-                                          post['post_type'] == 'video' &&
-                                                  post['video_url'] != null
+                                          (post['post_type'] == 'video' &&
+                                                  post['video_url'] != null)
+                                              //  ||
+                                              //   (post['post_type'] == 'image' && post['image_url'] != null))
                                               ? (post['video_url'].endsWith(
                                                         '.mp4',
                                                       ) ||
@@ -1134,6 +1141,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                     iconsize: 20,
                                                     noFullScreenIcon: true,
                                                     stopPlaying: true,
+                                                    fullWidth: true,
                                                     videoUrl: post['video_url'],
                                                   )
                                                   : Container(
@@ -1154,7 +1162,35 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                       //     BorderRadius.circular(8),
                                                     ),
                                                   )
-                                              : SizedBox(),
+                                              : (post['post_type'] == 'image' &&
+                                                  post['image_url'] != null)
+                                              ? Container(
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: NetworkImage(
+                                                      post['image_url'],
+                                                    ),
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                  // : DecorationImage(
+                                                  //   image: AssetImage(
+                                                  //     'assets/images/nostories.png',
+                                                  //   ),
+                                                  //   fit: BoxFit.cover,
+                                                  // ),
+                                                  // borderRadius:
+                                                  //     BorderRadius.circular(8),
+                                                ),
+                                              )
+                                              : Center(
+                                                child: SizedBox(
+                                                  child: Icon(
+                                                    Icons
+                                                        .image_not_supported_outlined,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ),
 
                                           Positioned(
                                             bottom: 6,
@@ -1181,8 +1217,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                 ),
                                                 const SizedBox(width: 4),
                                                 Text(
-                                                  post['total_likes']
-                                                      .toString(),
+                                                  post['post_id'].toString(),
                                                   style: const TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 12,
