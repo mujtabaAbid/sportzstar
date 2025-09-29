@@ -147,167 +147,167 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       body: CustomScrollView(
         // physics: NeverScrollableScrollPhysics(),
         slivers: [
-          SliverAppBar(
-            automaticallyImplyLeading: false,
-            pinned: false,
-            expandedHeight: 200,
-            backgroundColor: const Color.fromARGB(255, 250, 248, 248),
-            flexibleSpace: FlexibleSpaceBar(
-              background: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 80),
-                    // height: 180,
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/profile/cover.png'),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(80),
-              child: Transform.translate(
-                offset: const Offset(0, 50), // pushes down half image
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: (){
-                              Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (_) => FullScreenImageViewer(
-                                    imageUrl: userData['profile_picture'],
-                                  ),
-                            ),
-                          );
-                            },
-                            child: CircleAvatar(
-                              radius: 50,
-                              backgroundColor: Colors.white,
-                              child: CircleAvatar(
-                                radius: 47,
-                                backgroundImage:
-                                    userData['profile_picture'] != null &&
-                                            userData['profile_picture'] != ''
-                                        ? NetworkImage(
-                                          userData['profile_picture'],
-                                        )
-                                        : AssetImage(
-                                          'assets/profile/dummy.png',
-                                        ),
-                              ),
-                            ),
-                          ),
+          // SliverAppBar(
+          //   automaticallyImplyLeading: false,
+          //   pinned: false,
+          //   expandedHeight: 200,
+          //   backgroundColor: const Color.fromARGB(255, 250, 248, 248),
+          //   flexibleSpace: FlexibleSpaceBar(
+          //     background: Stack(
+          //       clipBehavior: Clip.none,
+          //       children: [
+          //         Container(
+          //           margin: const EdgeInsets.only(top: 80),
+          //           // height: 180,
+          //           width: double.infinity,
+          //           decoration: const BoxDecoration(
+          //             image: DecorationImage(
+          //               image: AssetImage('assets/profile/cover.png'),
+          //               fit: BoxFit.cover,
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          //   bottom: PreferredSize(
+          //     preferredSize: const Size.fromHeight(80),
+          //     child: Transform.translate(
+          //       offset: const Offset(0, 50), // pushes down half image
+          //       child: Padding(
+          //         padding: const EdgeInsets.symmetric(horizontal: 18.0),
+          //         child: Column(
+          //           children: [
+          //             Row(
+          //               children: [
+          //                 GestureDetector(
+          //                   onTap: (){
+          //                     Navigator.push(
+          //                   context,
+          //                   MaterialPageRoute(
+          //                     builder:
+          //                         (_) => FullScreenImageViewer(
+          //                           imageUrl: userData['profile_picture'],
+          //                         ),
+          //                   ),
+          //                 );
+          //                   },
+          //                   child: CircleAvatar(
+          //                     radius: 50,
+          //                     backgroundColor: Colors.white,
+          //                     child: CircleAvatar(
+          //                       radius: 47,
+          //                       backgroundImage:
+          //                           userData['profile_picture'] != null &&
+          //                                   userData['profile_picture'] != ''
+          //                               ? NetworkImage(
+          //                                 userData['profile_picture'],
+          //                               )
+          //                               : AssetImage(
+          //                                 'assets/profile/dummy.png',
+          //                               ),
+          //                     ),
+          //                   ),
+          //                 ),
 
-                          Spacer(),
-                          GestureDetector(
-                            onTap: () {
-                              pushNamedNavigate(
-                                context: context,
-                                pageName: chatListScreenRoute,
-                              );
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(left: 20),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Palette.basicColor,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Center(
-                                child: Text(
-                                   'Message',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            actions: [
-              Container(
-                margin: EdgeInsets.only(right: 30),
-                height: 30,
+          //                 Spacer(),
+          //                 GestureDetector(
+          //                   onTap: () {
+          //                     pushNamedNavigate(
+          //                       context: context,
+          //                       pageName: chatListScreenRoute,
+          //                     );
+          //                   },
+          //                   child: Container(
+          //                     margin: const EdgeInsets.only(left: 20),
+          //                     padding: const EdgeInsets.symmetric(
+          //                       horizontal: 14,
+          //                       vertical: 8,
+          //                     ),
+          //                     decoration: BoxDecoration(
+          //                       color: Palette.basicColor,
+          //                       borderRadius: BorderRadius.circular(20),
+          //                     ),
+          //                     child: Center(
+          //                       child: Text(
+          //                          'Message',
+          //                         style: const TextStyle(
+          //                           fontSize: 14,
+          //                           color: Colors.white,
+          //                         ),
+          //                       ),
+          //                     ),
+          //                   ),
+          //                 ),
+          //               ],
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          //   actions: [
+          //     Container(
+          //       margin: EdgeInsets.only(right: 30),
+          //       height: 30,
 
-                child: PopupMenuButton<String>(
-                  color: const Color.fromARGB(144, 28, 72, 159),
-                  icon: Icon(Icons.more_horiz_rounded, size: 24),
-                  onSelected: (String value) {
-                    if (value == 'edit') {
-                      pushNamedNavigate(
-                        context: context,
-                        pageName: editProfileScreenRoute,
-                      );
+          //       child: PopupMenuButton<String>(
+          //         color: const Color.fromARGB(144, 28, 72, 159),
+          //         icon: Icon(Icons.more_horiz_rounded, size: 24),
+          //         onSelected: (String value) {
+          //           if (value == 'edit') {
+          //             pushNamedNavigate(
+          //               context: context,
+          //               pageName: editProfileScreenRoute,
+          //             );
 
-                      print('---edit post function call button--------');
-                    } else if (value == 'logout') {
-                      logoutFunction();
-                      print('---logout function call button--------');
-                    } else {
-                      print('---Nothing call--------');
-                    }
-                  },
-                  itemBuilder:
-                      (BuildContext context) => [
-                        PopupMenuItem<String>(
-                          value: 'edit',
-                          child: Row(
-                            children: [
-                              Icon(Icons.edit, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'Edit Profile',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem<String>(
-                          value: 'logout',
-                          child: Row(
-                            children: [
-                              Icon(Icons.logout_outlined, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'Logout',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                ),
-                // const Icon(
-                //   Icons.more_horiz,
-                //   size: 14,
-                //   color: Colors.white,
-                // ),
-              ),
-              // ),
-            ],
-          ),
+          //             print('---edit post function call button--------');
+          //           } else if (value == 'logout') {
+          //             logoutFunction();
+          //             print('---logout function call button--------');
+          //           } else {
+          //             print('---Nothing call--------');
+          //           }
+          //         },
+          //         itemBuilder:
+          //             (BuildContext context) => [
+          //               PopupMenuItem<String>(
+          //                 value: 'edit',
+          //                 child: Row(
+          //                   children: [
+          //                     Icon(Icons.edit, color: Colors.white),
+          //                     SizedBox(width: 8),
+          //                     Text(
+          //                       'Edit Profile',
+          //                       style: TextStyle(color: Colors.white),
+          //                     ),
+          //                   ],
+          //                 ),
+          //               ),
+          //               PopupMenuItem<String>(
+          //                 value: 'logout',
+          //                 child: Row(
+          //                   children: [
+          //                     Icon(Icons.logout_outlined, color: Colors.white),
+          //                     SizedBox(width: 8),
+          //                     Text(
+          //                       'Logout',
+          //                       style: TextStyle(color: Colors.white),
+          //                     ),
+          //                   ],
+          //                 ),
+          //               ),
+          //             ],
+          //       ),
+          //       // const Icon(
+          //       //   Icons.more_horiz,
+          //       //   size: 14,
+          //       //   color: Colors.white,
+          //       // ),
+          //     ),
+          //     // ),
+          //   ],
+          // ),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -320,7 +320,175 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 60), // Adjust height as needed
+                      const SizedBox(height: 40), // Adjust height as needed
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              PopupMenuButton<String>(
+                                color: const Color.fromARGB(144, 28, 72, 159),
+                                icon: Icon(
+                                  Icons.more_vert_outlined,
+                                  size: 24,
+                                  color: Colors.white,
+                                ),
+                                onSelected: (String value) {
+                                  if (value == 'edit') {
+                                    pushNamedNavigate(
+                                      context: context,
+                                      pageName: editProfileScreenRoute,
+                                    );
+
+                                    print(
+                                      '---edit post function call button--------',
+                                    );
+                                  } else if (value == 'logout') {
+                                    logoutFunction();
+                                    print(
+                                      '---logout function call button--------',
+                                    );
+                                  } else {
+                                    print('---Nothing call--------');
+                                  }
+                                },
+                                itemBuilder:
+                                    (BuildContext context) => [
+                                      PopupMenuItem<String>(
+                                        value: 'edit',
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.edit,
+                                              color: Colors.white,
+                                            ),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              'Edit Profile',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      PopupMenuItem<String>(
+                                        value: 'logout',
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.logout_outlined,
+                                              color: Colors.white,
+                                            ),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              'Logout',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                              ),
+                            ],
+                          ),
+                          // ),
+                          Row(
+                            children: [
+                              Expanded(child: SizedBox()),
+                              Expanded(
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (_) => FullScreenImageViewer(
+                                                imageUrl:
+                                                    userData['profile_picture'],
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                    child: CircleAvatar(
+                                      radius: 50,
+                                      backgroundColor: Colors.white,
+                                      child: CircleAvatar(
+                                        radius: 47,
+                                        backgroundImage:
+                                            userData['profile_picture'] !=
+                                                        null &&
+                                                    userData['profile_picture'] !=
+                                                        ''
+                                                ? NetworkImage(
+                                                  userData['profile_picture'],
+                                                )
+                                                : const AssetImage(
+                                                      'assets/profile/dummy.png',
+                                                    )
+                                                    as ImageProvider,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    pushNamedNavigate(
+                                      context: context,
+                                      pageName: chatListScreenRoute,
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 20),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Palette.basicColor,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: const Text(
+                                      'Message',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 12),
+                          Text(
+                            userData['full_name'] != null &&
+                                    userData['full_name'] != ''
+                                ? capitalize(userData['full_name'])
+                                : '',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
+                          ),
+                          // const SizedBox(height: 2),
+                          Text(
+                            userData['username'] != null &&
+                                    userData['username'] != ''
+                                ? userData['username']
+                                : '',
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                      ),
                       // Rest of your profile content
                       Container(
                         // padding: EdgeInsets.only(left: 18),
@@ -328,43 +496,42 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              userData['full_name'] != null &&
-                                      userData['full_name'] != ''
-                                  ? capitalize(userData['full_name'])
-                                  : '',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: Colors.white,
-                              ),
-                            ),
-                            // const SizedBox(height: 2),
-                            Text(
-                              userData['username'] != null &&
-                                      userData['username'] != ''
-                                  ? userData['username']
-                                  : '',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-
-                            Text(
-                              userData['player_category'] != null
-                                  ? '🏆 ${userData['player_category']}'
-                                  : '',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Text(
-                              '📩 ${userData['email']}',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                            // Text(
+                            //   userData['full_name'] != null &&
+                            //           userData['full_name'] != ''
+                            //       ? capitalize(userData['full_name'])
+                            //       : '',
+                            //   style: TextStyle(
+                            //     fontWeight: FontWeight.bold,
+                            //     fontSize: 18,
+                            //     color: Colors.white,
+                            //   ),
+                            // ),
+                            // // const SizedBox(height: 2),
+                            // Text(
+                            //   userData['username'] != null &&
+                            //           userData['username'] != ''
+                            //       ? userData['username']
+                            //       : '',
+                            //   style: TextStyle(
+                            //     fontSize: 18,
+                            //     color: Colors.white,
+                            //   ),
+                            // ),
+                            // const SizedBox(height: 8),
+                            // Text(
+                            //   userData['player_category'] != null
+                            //       ? '🏆 ${userData['player_category']}'
+                            //       : '',
+                            //   style: TextStyle(
+                            //     fontSize: 14,
+                            //     color: Colors.white,
+                            //   ),
+                            // ),
+                            // Text(
+                            //   '📩 ${userData['email']}',
+                            //   style: TextStyle(color: Colors.white),
+                            // ),
                           ],
                         ),
                       ),
@@ -453,17 +620,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       padding: EdgeInsets.all(12),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(12),
-                                        color: const Color.fromARGB(
-                                          54,
-                                          96,
-                                          125,
-                                          139,
-                                        ),
+                                        // color: const Color.fromARGB(
+                                        //   54,
+                                        //   96,
+                                        //   125,
+                                        //   139,
+                                        // ),
                                       ),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           // Text(
                                           //   'Name: ${userData['full_name'] ?? 'N/A'}',
@@ -494,6 +662,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                 fontSize: 14,
                                               ),
                                             ),
+
                                           // if ((userData['gender'] ?? '')
                                           //     .toString()
                                           //     .isNotEmpty)
@@ -504,7 +673,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           //       fontSize: 14,
                                           //     ),
                                           //   ),
-
                                           if ((userData['player_category'] ??
                                                   '')
                                               .toString()
@@ -534,102 +702,111 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     if ((userData['bio'] ?? '')
                                         .toString()
                                         .isNotEmpty)
-                                        Column(
-                                           crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                      Text(
-                                        'Bio',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    SizedBox(height: 10),
-                                    Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: const Color.fromARGB(
-                                          54,
-                                          96,
-                                          125,
-                                          139,
-                                        ),
-                                      ),
-                                      child: Column(
+                                      Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            '${userData['bio']}',
+                                            'Bio',
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 14,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          Container(
+                                            width: double.infinity,
+                                            padding: EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              // color: const Color.fromARGB(
+                                              //   54,
+                                              //   96,
+                                              //   125,
+                                              //   139,
+                                              // ),
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '${userData['bio']}',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ),],),
 
                                     SizedBox(height: 10),
-                                     if (userData['social_links'] !=
-                                                  null &&
-                                              (userData['social_links'] as List)
-                                                  .isNotEmpty)
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Social Media',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                         SizedBox(height: 10),
-                                    Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: const Color.fromARGB(
-                                          54,
-                                          96,
-                                          125,
-                                          139,
-                                        ),
-                                      ),
-                                      child: Column(
+                                    if (userData['social_links'] != null &&
+                                        (userData['social_links'] as List)
+                                            .isNotEmpty)
+                                      Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                         
-                                            ...List<Widget>.from(
-                                              (userData['social_links'] as List)
-                                                  .map(
-                                                    (linkData) => Text(
-                                                      '${linkData['platform']}: ${linkData['link']}',
-                                                      style: const TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 14,
-                                                      ),
-                                                    ),
-                                                  ),
+                                          Text(
+                                            'Social Media',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
                                             ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          Container(
+                                            width: double.infinity,
+                                            padding: EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              // color: const Color.fromARGB(
+                                              //   54,
+                                              //   96,
+                                              //   125,
+                                              //   139,
+                                              // ),
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                ...List<Widget>.from(
+                                                  (userData['social_links']
+                                                          as List)
+                                                      .map(
+                                                        (linkData) => Text(
+                                                          '${linkData['platform']}: ${linkData['link']}',
+                                                          style:
+                                                              const TextStyle(
+                                                                color:
+                                                                    Colors
+                                                                        .white,
+                                                                fontSize: 14,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                    ),
-                                      ],
-                                    ),
-                                   
+
                                     SizedBox(height: 10),
 
                                     if ((userData['medals'] ?? '')
                                         .toString()
                                         .isNotEmpty)
                                       Column(
-                                         crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             'Medals',
@@ -639,29 +816,30 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                             ),
                                           ),
                                           SizedBox(height: 10),
-                                    Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: const Color.fromARGB(
-                                          54,
-                                          96,
-                                          125,
-                                          139,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        '${userData['medals']}',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ),
+                                          Container(
+                                            width: double.infinity,
+                                            padding: EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              // color: const Color.fromARGB(
+                                              //   54,
+                                              //   96,
+                                              //   125,
+                                              //   139,
+                                              // ),
+                                            ),
+                                            child: Text(
+                                              '${userData['medals']}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                    
+
                                     // Career History (List)
                                     if ((userData['career_history'] ?? [])
                                             is List &&
@@ -683,12 +861,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           borderRadius: BorderRadius.circular(
                                             12,
                                           ),
-                                          color: const Color.fromARGB(
-                                            54,
-                                            96,
-                                            125,
-                                            139,
-                                          ),
+                                          // color: const Color.fromARGB(
+                                          //   54,
+                                          //   96,
+                                          //   125,
+                                          //   139,
+                                          // ),
                                         ),
                                         child: Column(
                                           mainAxisAlignment:
