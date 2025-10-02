@@ -808,6 +808,8 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+
+                                
                                 Text(
                                   'Player Info',
                                   style: TextStyle(
