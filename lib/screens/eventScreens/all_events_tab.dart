@@ -7,6 +7,7 @@ import 'package:sportzstar/provider/event_provider.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/Loader/loading_widget.dart';
+import 'package:intl/intl.dart';
 
 import '../../helper/local_storage.dart';
 import 'event_details_screen.dart';
@@ -107,12 +108,28 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String formatDate(String dateString) {
+  try {
+    DateTime date;
+
+    try {
+      date = DateTime.parse(dateString);
+    } catch (_) {
+      date = DateFormat("MMMM dd, yyyy").parse(dateString);
+    }
+
+    return DateFormat('MM-dd-yyyy').format(date);
+  } catch (e) {
+    return dateString; // fallback if parsing fails
+  }
+}
+
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => EventDetailScreen(event: event, ),
+            builder: (context) => EventDetailScreen(event: event),
           ),
         );
       },
@@ -163,7 +180,8 @@ class EventCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    event.date,
+                    formatDate(event.date),
+                    // event.date,
                     style: const TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.w500,
@@ -201,8 +219,6 @@ class EventCard extends StatelessWidget {
                       Text(event.hostName),
                     ],
                   ),
-
-             
                 ],
               ),
             ),
@@ -214,7 +230,7 @@ class EventCard extends StatelessWidget {
 }
 
 class MyEventsTab extends StatefulWidget {
-   final String searchQuery;
+  final String searchQuery;
   const MyEventsTab({super.key, required this.searchQuery});
 
   @override
@@ -226,6 +242,17 @@ class _MyEventsTabState extends State<MyEventsTab> {
   List<EventModel> _myEvents = [];
   Map<String, String> userData = {};
  
+  DateTime _parseDate(String dateString) {
+  try {
+    return DateTime.parse(dateString); // ISO
+  } catch (_) {
+    try {
+      return DateFormat("MMMM dd, yyyy").parse(dateString); // September 30, 2025
+    } catch (e) {
+      return DateTime(1900); // fallback (very old so it goes bottom)
+    }
+  }
+}
   Future<void> getMyEvents() async {
     setState(() {
       _isLoading = true;
@@ -247,6 +274,11 @@ class _MyEventsTabState extends State<MyEventsTab> {
                 .where((e) => e['user_id'].toString() == userId)
                 .map((e) => EventModel.fromJson(e))
                 .toList();
+                 _myEvents.sort((a, b) {
+        DateTime dateA = _parseDate(a.date);
+        DateTime dateB = _parseDate(b.date);
+        return dateB.compareTo(dateA); // recent → top
+      });
       }
     } catch (e) {
       print('Error in getMyEvents: $e');
@@ -283,18 +315,42 @@ class _MyEventsTabState extends State<MyEventsTab> {
 
   @override
   void initState() {
-     getMyEvents();
+    getMyEvents();
     super.initState();
-   
   }
+  
+   String formatDate(String dateString) {
+  try {
+    DateTime date;
+    try {
+      date = DateTime.parse(dateString);
+    } catch (_) {
+      date = DateFormat("MMMM dd, yyyy").parse(dateString);
+    }
+    return DateFormat('MM-dd-yyyy').format(date);
+  } catch (e) {
+    return dateString;
+  }
+}
 
   @override
   Widget build(BuildContext context) {
-     final filteredEvents = _myEvents.where((event) {
-      final search = widget.searchQuery.toLowerCase();
-      return event.location.toLowerCase().contains(search) ||
-             event.date.toLowerCase().contains(search);
-    }).toList();
+       final filteredEvents = widget.searchQuery.isEmpty
+    ? _myEvents
+    : _myEvents.where((event) {
+        final search = widget.searchQuery.toLowerCase();
+
+        return event.title.toLowerCase().contains(search) ||   // 🔥 title
+               event.location.toLowerCase().contains(search) || // 🔥 location
+               event.hostName.toLowerCase().contains(search) || // 🔥 host
+               formatDate(event.date).toLowerCase().contains(search); // 🔥 formatted date
+      }).toList();
+    // final filteredEvents =
+    //     _myEvents.where((event) {
+    //       final search = widget.searchQuery.toLowerCase();
+    //       return event.location.toLowerCase().contains(search) ||
+    //           event.date.toLowerCase().contains(search);
+    //     }).toList();
     return Scaffold(
       body:
           _isLoading
@@ -305,20 +361,20 @@ class _MyEventsTabState extends State<MyEventsTab> {
                   'My Events Not Found',
                   style: TextStyle(color: Colors.white),
                 ),
-              ) 
+              )
               : filteredEvents.isEmpty
               ? const Center(
-                  child: Text(
-                    'No Events Search',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                )
+                child: Text(
+                  'No Events Search',
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
               : ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: filteredEvents.length,
                 // itemCount: _myEvents.length,
                 itemBuilder: (context, index) {
-                  final event = _myEvents[index];
+                  final event = filteredEvents[index];
                   return Stack(
                     children: [
                       EventCard(event: event),
@@ -380,6 +436,18 @@ class _AllEventsTabState extends State<AllEventsTab> {
   bool _isLoading = false;
 
   List<EventModel> _events = [];
+  
+  DateTime _parseDate(String dateString) {
+  try {
+    return DateTime.parse(dateString); // ISO
+  } catch (_) {
+    try {
+      return DateFormat("MMMM dd, yyyy").parse(dateString); // September 30, 2025
+    } catch (e) {
+      return DateTime(1900); // fallback (very old so it goes bottom)
+    }
+  }
+}
 
   Future<void> getAllEvents() async {
     setState(() {
@@ -395,6 +463,11 @@ class _AllEventsTabState extends State<AllEventsTab> {
 
       if (response != null && response is List) {
         _events = response.map((e) => EventModel.fromJson(e)).toList();
+         _events.sort((a, b) {
+        DateTime dateA = _parseDate(a.date);
+        DateTime dateB = _parseDate(b.date);
+        return dateB.compareTo(dateA); // recent → top
+      });
       }
     } catch (e) {
       print('Error in getAllEvents: $e');
@@ -410,14 +483,33 @@ class _AllEventsTabState extends State<AllEventsTab> {
     getAllEvents();
     super.initState();
   }
+   String formatDate(String dateString) {
+  try {
+    DateTime date;
+    try {
+      date = DateTime.parse(dateString);
+    } catch (_) {
+      date = DateFormat("MMMM dd, yyyy").parse(dateString);
+    }
+    return DateFormat('MM-dd-yyyy').format(date);
+  } catch (e) {
+    return dateString;
+  }
+}
 
   @override
   Widget build(BuildContext context) {
-     final filteredEvents = _events.where((event) {
-      final search = widget.searchQuery.toLowerCase();
-      return event.location.toLowerCase().contains(search) ||
-             event.date.toLowerCase().contains(search);
-    }).toList();
+   final filteredEvents = widget.searchQuery.isEmpty
+    ? _events
+    : _events.where((event) {
+        final search = widget.searchQuery.toLowerCase();
+
+        return event.title.toLowerCase().contains(search) ||   // 🔥 title
+               event.location.toLowerCase().contains(search) || // 🔥 location
+               event.hostName.toLowerCase().contains(search) || // 🔥 host
+               formatDate(event.date).toLowerCase().contains(search); // 🔥 formatted date
+      }).toList();
+
     return Scaffold(
       // isLoading: _isLoading,
       body:
@@ -427,16 +519,14 @@ class _AllEventsTabState extends State<AllEventsTab> {
                   'No Events Found',
                   style: TextStyle(color: Colors.white),
                 ),
-              )  
-               : 
-               
-               filteredEvents.isEmpty
+              )
+              : filteredEvents.isEmpty
               ? const Center(
-                  child: Text(
-                    'No Events Search',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                )
+                child: Text(
+                  'No Events Search',
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
               : SingleChildScrollView(
                 child: Column(
                   children: [
@@ -444,11 +534,11 @@ class _AllEventsTabState extends State<AllEventsTab> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.all(16),
-                       itemCount: filteredEvents.length,
+                      itemCount: filteredEvents.length,
                       // itemCount: _events.length,
                       itemBuilder: (context, index) {
                         // final event = _events[index];
-                         final event = filteredEvents[index];
+                        final event = filteredEvents[index];
                         return EventCard(event: event);
                       },
                     ),
