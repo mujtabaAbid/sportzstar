@@ -194,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               pageName: forgetPasswordScreenRoute,
                             ),
                         child: const Text(
-                          'Forget Password?',
+                          'Forgot Password?',
                           style: TextStyle(color: Palette.facebookColor),
                         ),
                       ),
