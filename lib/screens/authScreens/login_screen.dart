@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
 import 'package:sportzstar/helper/close_keyboard.dart';
@@ -117,6 +118,8 @@ class _LoginScreenState extends State<LoginScreen> {
           message: 'Something Went wrong, Try again later',
           messageType: AlertMessageType.info,
         );
+        final preferances = await SharedPreferences.getInstance();
+        preferances.clear();
       }
     } else {
       print('Form is not valid');

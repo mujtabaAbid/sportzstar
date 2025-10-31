@@ -152,6 +152,36 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // Future<void> getPosts() async {
+  //   try {
+  //     final response =
+  //         await Provider.of<HomeProvider>(context, listen: false).getAllPosts();
+
+  //     print('type=====>>> ${response.runtimeType}');
+
+  //     if (response is Map<String, dynamic>) {
+  //       if (response['detail'] ==
+  //           'Authentication credentials were not provided or are invalid.') {
+  //         logoutFunction();
+  //       }
+  //       alertNotification(
+  //         context: context,
+  //         message: response['detail'],
+  //         messageType: AlertMessageType.error,
+  //       );
+  //     }
+
+  //     final postsList = List<Map<String, dynamic>>.from(response);
+
+  //     setState(() {
+  //       posts.clear(); // clear previous data if any
+  //       posts.addAll(postsList);
+  //     });
+  //     print('✅ All posts:-------------------> $posts');
+  //   } catch (e) {
+  //     print('❌ Error parsing posts:-----------------> $e');
+  //   }
+  // }
   Future<void> getPosts() async {
     try {
       final response =
@@ -173,11 +203,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
       final postsList = List<Map<String, dynamic>>.from(response);
 
+      // ✅ Filter only if a category is selected
+      List<Map<String, dynamic>> filteredPosts =
+          selectedCategory.isEmpty
+              ? postsList
+              : postsList
+                  .where(
+                    (post) => post['category']?.toString() == selectedCategory,
+                  )
+                  .toList();
+
       setState(() {
-        posts.clear(); // clear previous data if any
-        posts.addAll(postsList);
+        posts
+          ..clear()
+          ..addAll(filteredPosts);
       });
-      print('✅ All posts:-------------------> $posts');
+
+      print('✅ Filtered posts:-------------------> $posts');
     } catch (e) {
       print('❌ Error parsing posts:-----------------> $e');
     }
@@ -603,6 +645,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           selectedCategory = category;
                           print('selectedCategory ------>>>>$selectedCategory');
                         });
+                        // getPosts();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:

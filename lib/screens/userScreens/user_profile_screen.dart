@@ -101,7 +101,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       );
       alertNotification(
         context: context,
-        message: 'User Logout Successfully',
+        message: 'Logout Successful',
         messageType: AlertMessageType.success,
       );
     } catch (e) {
@@ -524,16 +524,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                 fontSize: 14,
                                               ),
                                             ),
-                                          if ((userData['start_year'] ?? '')
-                                              .toString()
-                                              .isNotEmpty)
-                                            Text(
-                                              'Start Year: ${userData['start_year']}',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14,
-                                              ),
-                                            ),
+                                          // if ((userData['start_year'] ?? '')
+                                          //     .toString()
+                                          //     .isNotEmpty)
+                                          //   Text(
+                                          //     'Start Year: ${userData['start_year']}',
+                                          //     style: TextStyle(
+                                          //       color: Colors.white,
+                                          //       fontSize: 14,
+                                          //     ),
+                                          //   ),
                                         ],
                                       ),
                                     ),
