@@ -1052,6 +1052,32 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                                             ),
                                           ),
                                 ),
+                                SizedBox(height: 40),
+                                if (widget.userType == 'Friends')
+                                  Center(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        print(
+                                          "Unfriend user ${widget.userData['id']}",
+                                        );
+                                        unfriend(
+                                          friendId: widget.userData['id'],
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        'Unfriend',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
