@@ -43,7 +43,10 @@ class PostCard extends StatefulWidget {
   State<PostCard> createState() => _PostCardState();
 }
 
-class _PostCardState extends State<PostCard> {
+class _PostCardState extends State<PostCard>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   bool isExpanded = false;
   bool isLiked = false;
   int alphabetCount = 0;
@@ -222,6 +225,7 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final post = widget.post;
     // final String postType = post['post_type'] ?? '';
     final String? videoUrl = post['video_url'];
@@ -344,48 +348,50 @@ class _PostCardState extends State<PostCard> {
             if (isImagePost && videoUrl != null || post['image_url'] != null)
               // if (post['image_url'] != null &&
               //     post['image_url'].toString().isNotEmpty)
-             Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 18),
-  child: ClipRRect(
-    borderRadius: BorderRadius.circular(12),
-    child: Image.network(
-      videoUrl ?? post['image_url'],
-      fit: BoxFit.cover,
-      width: double.infinity,
-      height: 250,
-      // 👇 Show loader until image is fully loaded (no progressive display)
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) {
-          return child; // Only show the image when fully loaded
-        } else {
-          return Container(
-            width: double.infinity,
-            height: 250,
-            color: Colors.grey.shade200, // optional placeholder color
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-      },
-      // 👇 Optional error fallback
-      errorBuilder: (context, error, stackTrace) {
-        return Container(
-          width: double.infinity,
-          height: 250,
-          color: Colors.grey.shade300,
-          alignment: Alignment.center,
-          child: const Icon(
-            Icons.broken_image,
-            color: Colors.grey,
-            size: 60,
-          ),
-        );
-      },
-    ),
-  ),
-)
-
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    videoUrl ?? post['image_url'],
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: 250,
+                    // 👇 Show loader until image is fully loaded (no progressive display)
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child; // Only show the image when fully loaded
+                      } else {
+                        return Container(
+                          width: double.infinity,
+                          height: 250,
+                          color:
+                              Colors
+                                  .grey
+                                  .shade200, // optional placeholder color
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                    },
+                    // 👇 Optional error fallback
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: double.infinity,
+                        height: 250,
+                        color: Colors.grey.shade300,
+                        alignment: Alignment.center,
+                        child: const Icon(
+                          Icons.broken_image,
+                          color: Colors.grey,
+                          size: 60,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              )
             // Padding(
             //   padding: const EdgeInsets.symmetric(horizontal: 18),
             //   child: ClipRRect(

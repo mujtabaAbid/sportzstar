@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sportzstar/helper/local_storage.dart';
+import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/screens/chats/chat_list_screen.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:sportzstar/screens/eventScreens/tabbar_screen.dart';
@@ -42,12 +44,22 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
 
   Future<void> _loadUserData() async {
     final data = await getDataFromLocalStorage(name: 'userData');
+    final fid = await getDataFromLocalStorage(name: 'firebaseUid');
+    final preference = await SharedPreferences.getInstance();
     if (data != null) {
       setState(() {
         userData = jsonDecode(data);
         print('iwehdfjoejoejakhd=====>>>$userData');
+
         selectedIndex = widget.pageIndex ?? 0;
       });
+    }
+    if (fid == null) {
+      await preference.clear();
+      pushNamedAndRemoveUntilNavigate(
+        pageName: loginScreenRoute,
+        context: context,
+      );
     }
   }
 
@@ -56,9 +68,9 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
     StoryScreen(),
     CreatePostScreen(),
     EventScreen(eventIndex: widget.eventIndex),
- 
+
     UserProfileScreen(),
- ];
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +80,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
         Scaffold(
           extendBody: true,
           body: pages[selectedIndex],
-        
+
           bottomNavigationBar: BottomAppBar(
             shape: const CircularNotchedRectangle(),
             notchMargin: 0,
@@ -92,7 +104,8 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                   // _buildNavIcon(Icons.gamepad_outlined, 4, ''),
                   _buildNavIcon(
                     Icons.person_outline,
-                    4, 'Profile',
+                    4,
+                    'Profile',
                     // userData['full_name'],
                     profilePicture: userData['profile_picture'] as String?,
                   ),

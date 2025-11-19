@@ -33,7 +33,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, String> _formData = {};
   List<String> sportsCategories = [];
-  final List<String> allOptions = ['Facebook', 'Instagram', 'TikTok', 'YouTube', 'X', ];
+  final List<String> allOptions = [
+    'Facebook',
+    'Instagram',
+    'TikTok',
+    'YouTube',
+    'X',
+  ];
   final List<String?> selectedItems = [];
   final List<TextEditingController> controllers = [];
   final List<String?> selectCareerHistoryItems = [];
@@ -690,15 +696,58 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 const SizedBox(height: 8),
                 //gender
+                // DropdownButtonFormField<String>(
+                //   initialValue: capitalize(userData['gender'] ?? 'Male'),
+                //   // borderRadius: BorderRadius.all(Radius.circular(12),),
+                //   decoration: InputDecoration(
+                //     labelStyle: TextStyle(color: Colors.white),
+                //     filled: true,
+                //     fillColor: Color.fromARGB(51, 224, 224, 224),
+                //     // labelText: 'Gender',
+                //     // border: OutlineInputBorder(),
+                //     border: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(16),
+                //       borderSide: BorderSide(color: Colors.transparent),
+                //     ),
+                //     enabledBorder: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(16),
+                //       borderSide: BorderSide(color: Colors.transparent),
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(16),
+                //       borderSide: BorderSide(color: Palette.facebookColor),
+                //     ),
+                //   ),
+                //   items:
+                //       ['Male', 'Female']
+                //           .map(
+                //             (gender) => DropdownMenuItem(
+                //               value: gender,
+                //               child: Text(gender),
+                //             ),
+                //           )
+                //           .toList(),
+                //   onChanged: (value) {
+                //     handleSave('gender', value!.toLowerCase());
+                //     // setState(() {
+                //     //   _selectedGender = value!;
+                //     // });
+                //   },
+                // ),
                 DropdownButtonFormField<String>(
+                  dropdownColor:
+                      Colors.black, // optional: dropdown background color
+                  style: const TextStyle(
+                    color: Colors.white, // ✅ selected text color
+                    fontSize: 16,
+                  ),
+                  iconEnabledColor:
+                      Colors.white, // makes the dropdown arrow white
                   initialValue: capitalize(userData['gender'] ?? 'Male'),
-                  // borderRadius: BorderRadius.all(Radius.circular(12),),
                   decoration: InputDecoration(
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     filled: true,
-                    fillColor: Color.fromARGB(51, 224, 224, 224),
-                    // labelText: 'Gender',
-                    // border: OutlineInputBorder(),
+                    fillColor: const Color.fromARGB(51, 224, 224, 224),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide(color: Colors.transparent),
@@ -717,15 +766,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           .map(
                             (gender) => DropdownMenuItem(
                               value: gender,
-                              child: Text(gender),
+                              child: Text(
+                                gender,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ), // ✅ white in dropdown menu
+                              ),
                             ),
                           )
                           .toList(),
                   onChanged: (value) {
                     handleSave('gender', value!.toLowerCase());
-                    // setState(() {
-                    //   _selectedGender = value!;
-                    // });
                   },
                 ),
                 const SizedBox(height: 16),

@@ -209,7 +209,7 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
       // backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
-                  SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 18,
@@ -421,26 +421,26 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
                                       ),
                                     ),
                                   ],
-                                )
-                              else if (widget.userType == 'Friends')
-                                ElevatedButton(
-                                  onPressed: () {
-                                    print(
-                                      "Unfriend user ${widget.userData['id']}",
-                                    );
-                                    unfriend(friendId: widget.userData['id']);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    'Unfriend',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
                                 ),
+                              // else if (widget.userType == 'Friends')
+                              //   ElevatedButton(
+                              //     onPressed: () {
+                              //       print(
+                              //         "Unfriend user ${widget.userData['id']}",
+                              //       );
+                              //       unfriend(friendId: widget.userData['id']);
+                              //     },
+                              //     style: ElevatedButton.styleFrom(
+                              //       backgroundColor: Colors.red,
+                              //       shape: RoundedRectangleBorder(
+                              //         borderRadius: BorderRadius.circular(20),
+                              //       ),
+                              //     ),
+                              //     child: const Text(
+                              //       'Unfriend',
+                              //       style: TextStyle(color: Colors.white),
+                              //     ),
+                              //   ),
                             ],
                           ),
 

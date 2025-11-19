@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:143379946503:android:ae16069cbb0920b12d9ea2",
+        "mobilesdk_app_id": "1:143379946503:android:03edec9807f248cc2d9ea2",
         "android_client_info": {
-          "package_name": "com.sportzstar.apps"
+          "package_name": "com.sportzstart.community"
         }
       },
       "oauth_client": [],

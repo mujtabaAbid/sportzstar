@@ -294,11 +294,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       color: Palette.basicColor,
                                       borderRadius: BorderRadius.circular(20),
                                     ),
-                                    child: const Text(
-                                      'Message',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.white,
+                                    child: Center(
+                                      child: const Text(
+                                        'Messages',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -724,7 +726,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                         .toString()
                                                         .isNotEmpty)
                                                       Text(
-                                                        '🔹 Title: ${career['title']}',
+                                                        'Position: ${career['title']}',
                                                         style: TextStyle(
                                                           color: Colors.white,
                                                           fontSize: 14,
@@ -735,7 +737,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                         .toString()
                                                         .isNotEmpty)
                                                       Text(
-                                                        '🏛 Club: ${career['clubName']}',
+                                                        'Team: ${career['clubName']}',
                                                         style: TextStyle(
                                                           color: Colors.white,
                                                           fontSize: 14,
@@ -746,7 +748,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                         .toString()
                                                         .isNotEmpty)
                                                       Text(
-                                                        '📄 Description: ${career['description']}',
+                                                        'Description: ${career['description']}',
                                                         style: TextStyle(
                                                           color: Colors.white,
                                                           fontSize: 14,
@@ -757,7 +759,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                         .toString()
                                                         .isNotEmpty)
                                                       Text(
-                                                        '📅 Start: ${career['start_date']}',
+                                                        'Start: ${career['start_date']}',
                                                         style: TextStyle(
                                                           color: Colors.white,
                                                           fontSize: 14,
@@ -768,7 +770,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                         .toString()
                                                         .isNotEmpty)
                                                       Text(
-                                                        '📅 End: ${career['end_date']}',
+                                                        'End: ${career['end_date']}',
                                                         style: TextStyle(
                                                           color: Colors.white,
                                                           fontSize: 14,

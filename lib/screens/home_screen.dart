@@ -202,7 +202,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       final postsList = List<Map<String, dynamic>>.from(response);
-
       // ✅ Filter only if a category is selected
       List<Map<String, dynamic>> filteredPosts =
           selectedCategory.isEmpty

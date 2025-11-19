@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyClPqCOUH73VK4jWiWL8anHAoQpEBTAzzE',
-    appId: '1:143379946503:android:ae16069cbb0920b12d9ea2',
+    appId: '1:143379946503:android:03edec9807f248cc2d9ea2',
     messagingSenderId: '143379946503',
     projectId: 'sportzstar-92998',
     storageBucket: 'sportzstar-92998.firebasestorage.app',
@@ -59,11 +59,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBntvzrjGwO5HIStz4_OKH1WmWUs7dTDsE',
-    appId: '1:143379946503:ios:df831393d28d80d72d9ea2',
+    appId: '1:143379946503:ios:ae3d857a64bfe9832d9ea2',
     messagingSenderId: '143379946503',
     projectId: 'sportzstar-92998',
     storageBucket: 'sportzstar-92998.firebasestorage.app',
-    iosBundleId: 'com.sportzstar.apps',
+    iosBundleId: 'com.sportzstart.community',
   );
-
 }

@@ -69,73 +69,73 @@ class _BasicProfileScreenState extends State<BasicProfileScreen> {
     });
   }
 
-  Future<String?> _showCategoryModal(BuildContext context) async {
-    return await showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return SizedBox(
-          height: MediaQuery.of(context).size.height * 0.85,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Text(
-                    'Select Your Category',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                SizedBox(height: 16),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: sportsCategories.length,
-                    itemBuilder: (context, index) {
-                      final sport = sportsCategories[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context, sport['game_name']);
-                        },
-                        child: Container(
-                          margin: EdgeInsets.symmetric(vertical: 8),
-                          height: 140,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(sport['game_picture']),
-                              fit: BoxFit.cover,
-                              colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.4),
-                                BlendMode.darken,
-                              ),
-                            ),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            sport['game_name'],
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // Future<String?> _showCategoryModal(BuildContext context) async {
+  //   return await showModalBottomSheet<String>(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     backgroundColor: Colors.white,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  //     ),
+  //     builder: (context) {
+  //       return SizedBox(
+  //         height: MediaQuery.of(context).size.height * 0.85,
+  //         child: Padding(
+  //           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Center(
+  //                 child: Text(
+  //                   'Select Your Category',
+  //                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+  //                 ),
+  //               ),
+  //               SizedBox(height: 16),
+  //               Expanded(
+  //                 child: ListView.builder(
+  //                   itemCount: sportsCategories.length,
+  //                   itemBuilder: (context, index) {
+  //                     final sport = sportsCategories[index];
+  //                     return GestureDetector(
+  //                       onTap: () {
+  //                         Navigator.pop(context, sport['game_name']);
+  //                       },
+  //                       child: Container(
+  //                         margin: EdgeInsets.symmetric(vertical: 8),
+  //                         height: 140,
+  //                         decoration: BoxDecoration(
+  //                           image: DecorationImage(
+  //                             image: NetworkImage(sport['game_picture']),
+  //                             fit: BoxFit.cover,
+  //                             colorFilter: ColorFilter.mode(
+  //                               Colors.black.withOpacity(0.4),
+  //                               BlendMode.darken,
+  //                             ),
+  //                           ),
+  //                           borderRadius: BorderRadius.circular(16),
+  //                         ),
+  //                         alignment: Alignment.center,
+  //                         child: Text(
+  //                           sport['game_name'],
+  //                           style: TextStyle(
+  //                             color: Colors.white,
+  //                             fontSize: 20,
+  //                             fontWeight: FontWeight.bold,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     );
+  //                   },
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   void addNewItem() {
     if (selectedItems.length < allOptions.length) {
@@ -292,7 +292,7 @@ class _BasicProfileScreenState extends State<BasicProfileScreen> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
-                  value: 'Male',
+                  initialValue: 'Male',
                   style: TextStyle(color: Colors.white),
                   dropdownColor: const Color.fromARGB(255, 64, 64, 64),
                   // borderRadius: BorderRadius.all(Radius.circular(12),),
@@ -361,25 +361,52 @@ class _BasicProfileScreenState extends State<BasicProfileScreen> {
                 const SizedBox(height: 8),
 
                 // playerType,
-                TextFormField(
-                  controller: _categoryController,
-                  readOnly: true,
-                  onTap: () async {
-                    final selectedCategory = await _showCategoryModal(context);
-                    if (selectedCategory != null) {
-                      _categoryController.text = selectedCategory;
-                      handleSave('player_category', selectedCategory);
-                    }
-                  },
-                  style: const TextStyle(color: Colors.white),
+                // TextFormField(
+                //   controller: _categoryController,
+                //   readOnly: true,
+                //   onTap: () async {
+                //     final selectedCategory = await _showCategoryModal(context);
+                //     if (selectedCategory != null) {
+                //       _categoryController.text = selectedCategory;
+                //       handleSave('player_category', selectedCategory);
+                //     }
+                //   },
+                //   style: const TextStyle(color: Colors.white),
+                //   decoration: InputDecoration(
+                //     border: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(
+                //         16,
+                //       ), // ✅ Rounded corners
+                //       borderSide: BorderSide(
+                //         color: Colors.transparent,
+                //       ), // ✅ Invisible border
+                //     ),
+                //     enabledBorder: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(16),
+                //       borderSide: BorderSide(color: Colors.transparent),
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(16),
+                //       borderSide: BorderSide(color: Colors.transparent),
+                //     ),
+                //     hintText: 'Select Player Category',
+                //     filled: true,
+                //     fillColor: Color.fromARGB(51, 224, 224, 224),
+                //     suffix: Icon(
+                //       Icons.arrow_drop_down_sharp,
+                //       color: const Color.fromARGB(255, 137, 137, 137),
+                //     ),
+                //   ),
+                // ),
+                DropdownButtonFormField<String>(
+                  initialValue:
+                      _categoryController.text.isEmpty
+                          ? null
+                          : _categoryController.text,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        16,
-                      ), // ✅ Rounded corners
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                      ), // ✅ Invisible border
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Colors.transparent),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -390,13 +417,63 @@ class _BasicProfileScreenState extends State<BasicProfileScreen> {
                       borderSide: BorderSide(color: Colors.transparent),
                     ),
                     hintText: 'Select Player Category',
-                    filled: true,
-                    fillColor: Color.fromARGB(51, 224, 224, 224),
-                    suffix: Icon(
-                      Icons.arrow_drop_down_sharp,
-                      color: const Color.fromARGB(255, 137, 137, 137),
+                    hintStyle: const TextStyle(
+                      color: Color.fromARGB(255, 180, 180, 180),
                     ),
+                    filled: true,
+                    fillColor: const Color.fromARGB(51, 224, 224, 224),
                   ),
+                  dropdownColor: const Color(
+                    0xFF1E1E1E,
+                  ), // ✅ Dark dropdown background
+                  icon: const Icon(
+                    Icons.arrow_drop_down_outlined,
+                    color: Color.fromARGB(255, 137, 137, 137),
+                  ),
+                  style: const TextStyle(
+                    color: Colors.white, // ✅ Selected value color
+                    fontSize: 16,
+                  ),
+                  items:
+                      sportsCategories.map<DropdownMenuItem<String>>((sport) {
+                        return DropdownMenuItem<String>(
+                          value: sport['game_name'],
+                          child:
+                          // Row(
+                          //   children: [
+                          // ClipRRect(
+                          //   borderRadius: BorderRadius.circular(8),
+                          //   child: Image.network(
+                          //     sport['game_picture'],
+                          //     width: 40,
+                          //     height: 40,
+                          //     fit: BoxFit.cover,
+                          //   ),
+                          // ),
+                          // const SizedBox(width: 10),
+                          Text(
+                            sport['game_name'],
+                            style: const TextStyle(
+                              color:
+                                  Colors.white, // ✅ White text in dropdown list
+                            ),
+                          ),
+                          // ],
+                          // ),
+                        );
+                      }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      _categoryController.text = value;
+                      handleSave('player_category', value);
+                    }
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select player category';
+                    }
+                    return null;
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -411,14 +488,14 @@ class _BasicProfileScreenState extends State<BasicProfileScreen> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                
+
                 Column(
                   children: List.generate(selectedItems.length, (index) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         DropdownButtonFormField<String>(
-                          value: selectedItems[index],
+                          initialValue: selectedItems[index],
                           hint: Text('Select Link'),
                           decoration: InputDecoration(
                             filled: true,

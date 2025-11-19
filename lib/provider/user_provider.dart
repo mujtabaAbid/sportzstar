@@ -90,100 +90,166 @@ class UserProvider with ChangeNotifier {
   //   }
   // }
 
+  // Future<dynamic> loginFunction({required Map<String, String> formData}) async {
+  //   print('loginfunction ---->> $formData');
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse(loginUserApi),
+  //       headers: {'Accept': 'application/json'},
+  //       body: formData,
+  //     );
+  //     if (response.statusCode == 200) {
+  //       final responseData = json.decode(response.body);
+  //       final SharedPreferences provider =
+  //           await SharedPreferences.getInstance();
+  //       await provider.clear();
+  //       provider.setString('userData', json.encode(responseData['user']));
+  //       await provider.setString('refresh', responseData['refresh']);
+  //       await provider.setString('access', responseData['access']);
+  //       refresh = responseData['refresh'];
+  //       access = responseData['access'];
+  //       print(
+  //         '------------------login Successfully------------------> $responseData',
+  //       );
+
+  //       // ==== FIREBASE AUTH ====
+  //       final firebaseAuth = FirebaseAuth.instance;
+  //       final firestore = FirebaseFirestore.instance;
+
+  //       try {
+  //         // 🔹 Pehle login try karo
+  //         UserCredential userCred = await firebaseAuth
+  //             .signInWithEmailAndPassword(
+  //               email: responseData['user']['email'],
+  //               password: formData['password']!,
+  //             );
+
+  //         print("✅ Firebase login success:uid------> ${userCred.user!.uid}");
+  //         print("✅ Firebase login success:user -------> ${userCred.user!}");
+  //         print(
+  //           "✅ Firebase login success:comp-----------> ${userCred.additionalUserInfo}",
+  //         );
+  //         print(
+  //           "✅ Firebase login success:comp-----------> ${userCred.user!.providerData}",
+  //         );
+
+  //         await provider.setString('firebaseUid', userCred.user!.uid);
+  //       } on FirebaseAuthException catch (e) {
+  //         if (e.code == 'user-not-found') {
+  //           // 🔹 Sirf tab naya user create karo jab user nahi hai
+  //           UserCredential newUser = await firebaseAuth
+  //               .createUserWithEmailAndPassword(
+  //                 email: responseData['user']['email'],
+  //                 password: formData['password']!,
+  //               );
+
+  //           print("🆕 Firebase signup success:uid------>>${newUser.user!.uid}");
+  //           print(
+  //             "🆕 Firebase signup success:user----------->>${newUser.user!}",
+  //           );
+  //           print(
+  //             "🆕 Firebase signup success:new--------->> ${newUser.additionalUserInfo}",
+  //           );
+  //           print("🆕 Firebase signup success:new--------->> $newUser");
+
+  //           // Firestore me user profile save karo
+  //           await firestore.collection("users").doc(newUser.user!.uid).set({
+  //             "id": newUser.user!.uid,
+  //             "userId": responseData['user']['id'],
+  //             "email": responseData['user']['email'],
+  //             "fullName": responseData['user']['full_name'],
+  //             "userName": responseData['user']['username'],
+  //             "profileImage": responseData['user']['profile_picture'],
+  //             "dataOther": 'owjefjsoejhfods',
+  //             "createdAt": DateTime.now().toIso8601String(),
+  //             "isOnline": false, // Default offline
+  //             "lastSeen": DateTime.now(),
+  //           });
+
+  //           await provider.setString('firebaseUid', newUser.user!.uid);
+  //         } else {
+  //           // ❌ Agar koi aur error hai (email-already-in-use, wrong-password, etc.)
+  //           print("❌ Firebase login error: ${e.code} - ${e.message}");
+  //         }
+  //       } catch (e) {
+  //         print("General error: $e");
+  //       }
+  //       return response;
+
+  //     } else {
+  //       print(
+  //         '------------------login error------------------> ${response.body}',
+  //       );
+  //       return response;
+  //     }
+  //   } catch (e) {
+  //     print('error in login function-------------->  $e');
+  //     print("❌ FirebaseAuth error: $e - $e");
+  //   }
+  // }
   Future<dynamic> loginFunction({required Map<String, String> formData}) async {
     print('loginfunction ---->> $formData');
+
     try {
       final response = await http.post(
         Uri.parse(loginUserApi),
         headers: {'Accept': 'application/json'},
         body: formData,
       );
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        final SharedPreferences provider =
-            await SharedPreferences.getInstance();
-        await provider.clear();
-        provider.setString('userData', json.encode(responseData['user']));
-        await provider.setString('refresh', responseData['refresh']);
-        await provider.setString('access', responseData['access']);
-        refresh = responseData['refresh'];
-        access = responseData['access'];
-        print(
-          '------------------login Successfully------------------> $responseData',
-        );
 
-        // ==== FIREBASE AUTH ====
-        final firebaseAuth = FirebaseAuth.instance;
-        final firestore = FirebaseFirestore.instance;
-
-        try {
-          // 🔹 Pehle login try karo
-          UserCredential userCred = await firebaseAuth
-              .signInWithEmailAndPassword(
-                email: responseData['user']['email'],
-                password: formData['password']!,
-              );
-
-          print("✅ Firebase login success:uid------> ${userCred.user!.uid}");
-          print("✅ Firebase login success:user -------> ${userCred.user!}");
-          print(
-            "✅ Firebase login success:comp-----------> ${userCred.additionalUserInfo}",
-          );
-          print(
-            "✅ Firebase login success:comp-----------> ${userCred.user!.providerData}",
-          );
-
-          await provider.setString('firebaseUid', userCred.user!.uid);
-        } on FirebaseAuthException catch (e) {
-          if (e.code == 'user-not-found') {
-            // 🔹 Sirf tab naya user create karo jab user nahi hai
-            UserCredential newUser = await firebaseAuth
-                .createUserWithEmailAndPassword(
-                  email: responseData['user']['email'],
-                  password: formData['password']!,
-                );
-
-            print("🆕 Firebase signup success:uid------>>${newUser.user!.uid}");
-            print(
-              "🆕 Firebase signup success:user----------->>${newUser.user!}",
-            );
-            print(
-              "🆕 Firebase signup success:new--------->> ${newUser.additionalUserInfo}",
-            );
-            print("🆕 Firebase signup success:new--------->> $newUser");
-
-            // Firestore me user profile save karo
-            await firestore.collection("users").doc(newUser.user!.uid).set({
-              "id": newUser.user!.uid,
-              "userId": responseData['user']['id'],
-              "email": responseData['user']['email'],
-              "fullName": responseData['user']['full_name'],
-              "userName": responseData['user']['username'],
-              "profileImage": responseData['user']['profile_picture'],
-              "dataOther": 'owjefjsoejhfods',
-              "createdAt": DateTime.now().toIso8601String(),
-              "isOnline": false, // Default offline
-              "lastSeen": DateTime.now(),
-            });
-
-            await provider.setString('firebaseUid', newUser.user!.uid);
-          } else {
-            // ❌ Agar koi aur error hai (email-already-in-use, wrong-password, etc.)
-            print("❌ Firebase login error: ${e.code} - ${e.message}");
-          }
-        } catch (e) {
-          print("General error: $e");
-        }
-        return response;
-      } else {
+      if (response.statusCode != 200) {
         print(
           '------------------login error------------------> ${response.body}',
         );
         return response;
       }
+
+      // API successful
+      final responseData = json.decode(response.body);
+      final SharedPreferences provider = await SharedPreferences.getInstance();
+
+      await provider.clear();
+      provider.setString('userData', json.encode(responseData['user']));
+      await provider.setString('refresh', responseData['refresh']);
+      await provider.setString('access', responseData['access']);
+      refresh = responseData['refresh'];
+      access = responseData['access'];
+
+      print(
+        '------------------login Successfully------------------> $responseData',
+      );
+
+      // ==== FIREBASE AUTH ====
+      final firebaseAuth = FirebaseAuth.instance;
+      final firestore = FirebaseFirestore.instance;
+
+      try {
+        // Try firebase login
+        UserCredential userCred = await firebaseAuth.signInWithEmailAndPassword(
+          email: responseData['user']['email'],
+          password: formData['password']!,
+        );
+
+        await provider.setString('firebaseUid', userCred.user!.uid);
+      } on FirebaseAuthException catch (e) {
+        // 🔥 yahan par turant return kar do
+        return {
+          "success": false,
+          "message": "Firebase login/signup error",
+          "firebase_error": e.code,
+          "firebase_message": e.message,
+        };
+      }
+
+      // Agar firebase success hoga tab hi ye chalega
+      return response;
     } catch (e) {
       print('error in login function-------------->  $e');
-      print("❌ FirebaseAuth error: $e - $e");
+      return {
+        "success": false,
+        "message": "Something went wrong",
+        "error": e.toString(),
+      };
     }
   }
 

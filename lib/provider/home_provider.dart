@@ -170,26 +170,163 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
-  Future<dynamic> getAllSports() async {
-    try {
-      final response = await http.get(
-        Uri.parse(getSportsApi),
-        headers: {'Accept': 'application/json'},
-      );
+  // Future<dynamic> getAllSports() async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse(getSportsApi),
+  //       headers: {'Accept': 'application/json'},
+  //     );
 
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        print('getAllSports ---->>>> $responseData');
-        // Filter cricket ko remove karne ke liye
-        responseData.removeWhere((sport) => sport['game_name'] == 'Cricket');
-        return responseData;
-      } else {
-        print('getAllSports ---error->>>> ${response.body}');
-      }
-    } catch (e) {
-      print('getAllPosts  error --e-->>>> $e');
-    }
+  //     if (response.statusCode == 200) {
+  //       final responseData = json.decode(response.body);
+  //       print('getAllSports ---->>>> $responseData');
+  //       // Filter cricket ko remove karne ke liye
+  //       responseData.removeWhere((sport) => sport['game_name'] == 'Cricket');
+  //       return responseData;
+  //     } else {
+  //       print('getAllSports ---error->>>> ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     print('getAllPosts  error --e-->>>> $e');
+  //   }
+  // }
+  Future<dynamic> getAllSports() async {
+    // try {
+    //   // final response = await http.get(
+    //   //   Uri.parse(getSportsApi),
+    //   //   headers: {'Accept': 'application/json'},
+    //   // );
+
+    //   if (response.statusCode == 200) {
+    //     final responseData = json.decode(response.body);
+    //     print('getAllSports ---->>>> $responseData');
+
+    //     // Cricket ko remove karne ke liye
+    //     responseData.removeWhere((sport) => sport['game_name'] == 'Cricket');
+
+    //     return responseData;
+    //   } else {
+    //     print('getAllSports ---error->>>> ${response.body}');
+    //     return _getStaticSports(); // fallback to static data
+    //   }
+    // } catch (e) {
+    //   print('getAllSports error --e-->>>> $e');
+    //   return _getStaticSports(); // fallback to static data
+    // }
+    return [
+      {"game_id": 0, "game_name": "Baseball"},
+      {"game_id": 1, "game_name": "Basketball"},
+      {"game_id": 2, "game_name": "Cycling"},
+      {"game_id": 3, "game_name": "Football"},
+      {"game_id": 4, "game_name": "Gaming"},
+      {"game_id": 5, "game_name": "Golf"},
+      {"game_id": 6, "game_name": "Gymnastics"},
+      {"game_id": 7, "game_name": "Hockey"},
+      {"game_id": 8, "game_name": "Motor Sports"},
+      {"game_id": 9, "game_name": "Soccer"},
+      {"game_id": 10, "game_name": "Tennis"},
+      {"game_id": 11, "game_name": "Track & Cross Country"},
+      {"game_id": 12, "game_name": "Volleyball"},
+      {"game_id": 13, "game_name": "XGames"},
+      {"game_id": 14, "game_name": "Combat Sports"},
+    ];
   }
+
+  /// 🔹 Static fallback data (same format as API)
+  // List<Map<String, dynamic>> _getStaticSports() {
+  //   return [
+  //     {
+  //       "game_id": 0,
+  //       "game_name": "Baseball",
+  //       "game_picture": "http://77.37.125.189/media/sports/Baseball.jpg",
+  //       "game_discraption": ""
+  //     },
+  //     {
+  //       "game_id": 1,
+  //       "game_name": "Basketball",
+  //       "game_picture": "http://77.37.125.189/media/sports/Basketball.jpg",
+  //       "game_discraption": ""
+  //     },
+  //     {
+  //       "game_id": 2,
+  //       "game_name": "Cycling",
+  //       "game_picture": "http://77.37.125.189/media/sports/Cycling.jpg",
+  //       "game_discraption": ""
+  //     },
+  //     {
+  //       "game_id": 3,
+  //       "game_name": "Football",
+  //       "game_picture": "http://77.37.125.189/media/sports/Football.jpg",
+  //       "game_discraption": ""
+  //     },
+  //     {
+  //       "game_id": 4,
+  //       "game_name": "Gaming",
+  //       "game_picture": "http://77.37.125.189/media/sports/Gaming.jpg",
+  //       "game_discraption": ""
+  //     },
+  //     {
+  //       "game_id": 5,
+  //       "game_name": "Golf",
+  //       "game_picture": "http://77.37.125.189/media/sports/Golf.jpg",
+  //       "game_discraption": ""
+  //     },
+  //     {
+  //       "game_id": 6,
+  //       "game_name": "Gymnastics",
+  //       "game_picture": "http://77.37.125.189/media/sports/Gymnastics.jpg",
+  //       "game_discraption": ""
+  //     },
+  //     {
+  //       "game_id": 7,
+  //       "game_name": "Hockey",
+  //       "game_picture": "http://77.37.125.189/media/sports/Hockey.jpg",
+  //       "game_discraption": ""
+  //     },
+  //     {
+  //       "game_id": 8,
+  //       "game_name": "Motor Sports",
+  //       "game_picture": "http://77.37.125.189/media/sports/Motor_Sports.jpg",
+  //       "game_discraption": ""
+  //     },
+  //     {
+  //       "game_id": 9,
+  //       "game_name": "Soccer",
+  //       "game_picture": "http://77.37.125.189/media/sports/Soccer.jpg",
+  //       "game_discraption": ""
+  //     },
+  //     {
+  //       "game_id": 10,
+  //       "game_name": "Tennis",
+  //       "game_picture": "http://77.37.125.189/media/sports/Tennis.jpg",
+  //       "game_discraption": ""
+  //     },
+  //     {
+  //       "game_id": 11,
+  //       "game_name": "Track & Cross Country",
+  //       "game_picture": "http://77.37.125.189/media/sports/Track_Cross_Country.jpg",
+  //       "game_discraption": ""
+  //     },
+  //     {
+  //       "game_id": 12,
+  //       "game_name": "Volleyball",
+  //       "game_picture": "http://77.37.125.189/media/sports/Volleyball.jpg",
+  //       "game_discraption": ""
+  //     },
+  //     {
+  //       "game_id": 13,
+  //       "game_name": "XGames",
+  //       "game_picture": "http://77.37.125.189/media/sports/XGames.jpg",
+  //       "game_discraption": ""
+  //     },
+  //     {
+  //       "game_id": 14,
+  //       "game_name": "Combat Sports",
+  //       "game_picture": "http://77.37.125.189/media/sports/Combat_Sports.jpg",
+  //       "game_discraption": ""
+  //     },
+  //   ];
+  // }
 
   Future<dynamic> userData() async {
     final data = await getDataFromLocalStorage(name: 'userData');

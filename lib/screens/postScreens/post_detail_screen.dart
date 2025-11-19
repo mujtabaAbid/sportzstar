@@ -89,17 +89,27 @@ class PostDetailScreen extends StatelessWidget {
 
               // === VIDEO ===
               if (post['video_url'] != null &&
-                  post['video_url'].toString().isNotEmpty)
+                  post['video_url'].toString().isNotEmpty &&
+                  (post['video_url'].toString().endsWith('.mp4') ||
+                      post['video_url'].toString().endsWith('.mov') ||
+                      post['video_url'].toString().endsWith('.avi') ||
+                      post['video_url'].toString().endsWith('.mkv')))
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: VideoPlayerWidget(videoUrl: post['video_url']),
                 ),
 
               const SizedBox(height: 16),
-
+              
               // === IMAGE ===
-              if (post['image_url'] != null &&
-                  post['image_url'].toString().isNotEmpty)
+              if ((post['image_url'] != null &&
+                      post['image_url'].toString().isNotEmpty) ||
+                  (post['video_url'] != null &&
+                      post['video_url'].toString().isNotEmpty &&
+                      (!post['video_url'].toString().endsWith('.mp4') &&
+                          !post['video_url'].toString().endsWith('.mov') &&
+                          !post['video_url'].toString().endsWith('.avi') &&
+                          !post['video_url'].toString().endsWith('.mkv'))))
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -108,7 +118,8 @@ class PostDetailScreen extends StatelessWidget {
                         builder:
                             (context) => FullScreenImageViewer(
                               imageUrl:
-                                  post['image_url'], // yahan tumhara URL pass hoga
+                                  post['image_url'] ??
+                                  post['video_url'], // yahan tumhara URL pass hoga
                             ),
                       ),
                     );
@@ -116,7 +127,7 @@ class PostDetailScreen extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.network(
-                      post['image_url'],
+                      post['image_url'] ?? post['video_url'],
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: 450,
