@@ -31,12 +31,8 @@ void main() async {
   );
   await FirebaseAppCheck.instance.activate(
     androidProvider:
-        kDebugMode
-            ? AndroidProvider
-                .debug // Debug/Test mode
-            : AndroidProvider.playIntegrity, // Release/Production mode
-    appleProvider:
-        AppleProvider.deviceCheck, // iOS ke liye agar baad me zarurat ho
+        kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+    appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck,
   );
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

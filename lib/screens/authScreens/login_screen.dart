@@ -254,3 +254,21 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+
+// flutter clean
+// flutter pub get
+// rm -rf ios/Pods
+// rm -rf ios/Podfile.lock
+// cd ios
+// pod install
+
+
+
+// flutter clean
+// rm -rf ios/Pods
+// rm -rf ios/Podfile.lock
+// flutter pub get
+// cd ios
+// pod install
+
