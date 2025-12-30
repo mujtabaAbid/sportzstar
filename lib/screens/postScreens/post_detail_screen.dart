@@ -39,13 +39,14 @@ class PostDetailScreen extends StatelessWidget {
         }
       },
       child: MainLayoutWidget(
+        appBar: AppBar( backgroundColor: Colors.transparent, iconTheme: const IconThemeData(color: Colors.white),),
         isLoading: _isLoading,
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 40),
+              // const SizedBox(height: 40),
 
               // User Info
               Row(
@@ -100,7 +101,7 @@ class PostDetailScreen extends StatelessWidget {
                 ),
 
               const SizedBox(height: 16),
-              
+
               // === IMAGE ===
               if ((post['image_url'] != null &&
                       post['image_url'].toString().isNotEmpty) ||
