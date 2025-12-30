@@ -10,6 +10,7 @@ import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import '../../config/palette.dart';
 
@@ -43,29 +44,31 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
             url.endsWith('.gif'));
 
     if (isVideo) {
-      _videoController = VideoPlayerController.networkUrl(Uri.parse(url))
-        ..initialize().then((_) {
-          setState(() {});
-          _videoController?.play();
+        _initializeVideo();
 
-          _videoController?.addListener(() {
-            final controller = _videoController!;
-            final total = controller.value.duration;
-            final current = controller.value.position;
+      // _videoController = VideoPlayerController.networkUrl(Uri.parse(url))
+      //   ..initialize().then((_) {
+      //     setState(() {});
+      //     _videoController?.play();
 
-            if (mounted) {
-              setState(() {
-                progress = current.inMilliseconds / total.inMilliseconds;
-              });
-            }
+      //     _videoController?.addListener(() {
+      //       final controller = _videoController!;
+      //       final total = controller.value.duration;
+      //       final current = controller.value.position;
 
-            // ✅ Close screen when video ends
-            if (controller.value.position >= controller.value.duration &&
-                !controller.value.isPlaying) {
-              Navigator.pop(context);
-            }
-          });
-        });
+      //       if (mounted) {
+      //         setState(() {
+      //           progress = current.inMilliseconds / total.inMilliseconds;
+      //         });
+      //       }
+
+      //       // ✅ Close screen when video ends
+      //       if (controller.value.position >= controller.value.duration &&
+      //           !controller.value.isPlaying) {
+      //         Navigator.pop(context);
+      //       }
+      //     });
+      //   });
     } else {
       _startTimer();
     }
@@ -137,6 +140,42 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
       print('error in deleting story------.>>>>>$e');
     }
   }
+  
+  Future<void> _initializeVideo() async {
+  try {
+    final url = widget.story['video_url'] ?? '';
+    // Download video to cache
+    final file = await DefaultCacheManager().getSingleFile(url);
+
+    // Initialize controller with local file
+    _videoController = VideoPlayerController.file(file);
+    await _videoController!.initialize();
+
+    setState(() {});
+
+    _videoController!.play();
+
+    _videoController!.addListener(() {
+      final controller = _videoController!;
+      final total = controller.value.duration;
+      final current = controller.value.position;
+
+      if (mounted) {
+        setState(() {
+          progress = current.inMilliseconds / total.inMilliseconds;
+        });
+      }
+
+      // ✅ Close screen when video ends
+      if (controller.value.position >= controller.value.duration &&
+          !controller.value.isPlaying) {
+        Navigator.pop(context);
+      }
+    });
+  } catch (e) {
+    print('❌ StoryDetailScreen video initialization error: $e');
+  }
+}
 
   @override
   Widget build(BuildContext context) {

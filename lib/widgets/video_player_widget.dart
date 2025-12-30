@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sportzstar/config/palette.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
@@ -59,15 +60,37 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget>
     }
   }
 
-  Future<void> _initializeVideo() async {
-    try {
-      await _controller.initialize();
-      setState(() {
-        _isInitialized = true;
-      });
-    } catch (e) {
-      print('❌ VideoPlayer initialization error: $e');
-    }
+  // Future<void> _initializeVideo() async {
+  //   try {
+  //     await _controller.initialize();
+  //     setState(() {
+  //       _isInitialized = true;
+  //     });
+  //   } catch (e) {
+  //     print('❌ VideoPlayer initialization error: $e');
+  //   }
+
+  //   _controller.addListener(() {
+  //     if (mounted) {
+  //       setState(() {
+  //         _isPlaying = _controller.value.isPlaying;
+  //       });
+  //     }
+  //   });
+  // }
+
+Future<void> _initializeVideo() async {
+  try {
+    // Download video to cache
+    final file = await DefaultCacheManager().getSingleFile(widget.videoUrl);
+    
+    // Initialize controller with local file
+    _controller = VideoPlayerController.file(file);
+
+    await _controller.initialize();
+    setState(() {
+      _isInitialized = true;
+    });
 
     _controller.addListener(() {
       if (mounted) {
@@ -76,7 +99,10 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget>
         });
       }
     });
+  } catch (e) {
+    print('❌ VideoPlayer initialization error: $e');
   }
+}
 
   void _togglePlayPause() {
     if (_controller.value.isPlaying) {
@@ -188,14 +214,35 @@ class _FullScreenVideoPlayerState extends State<FullScreenVideoPlayer> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(widget.videoUrl)
-      ..initialize().then((_) {
-        setState(() {
-          _isInitialized = true;
-        });
-        _controller.play();
-      });
+        _initializeVideo();
+    // _controller = VideoPlayerController.network(widget.videoUrl)
+    //   ..initialize().then((_) {
+    //     setState(() {
+    //       _isInitialized = true;
+    //     });
+    //     _controller.play();
+    //   });
   }
+
+ Future<void> _initializeVideo() async {
+    try {
+      // Download video to cache
+      final file = await DefaultCacheManager().getSingleFile(widget.videoUrl);
+
+      // Initialize controller with local file
+      _controller = VideoPlayerController.file(file);
+      await _controller.initialize();
+      
+      setState(() {
+        _isInitialized = true;
+      });
+
+      _controller.play();
+    } catch (e) {
+      print('❌ FullScreenVideoPlayer initialization error: $e');
+    }
+  }
+
 
   @override
   void dispose() {

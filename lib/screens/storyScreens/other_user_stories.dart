@@ -8,6 +8,7 @@ import 'package:sportzstar/provider/stories_provider.dart';
 import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class OtherUserStoryDetailScreen extends StatefulWidget {
   final List<Map<String, dynamic>> story;
@@ -50,41 +51,85 @@ class _OtherUserStoryDetailScreenState
       ),
     );
   }
+  void _loadStory() async {
+  _videoController?.dispose();
+  _timer?.cancel();
+  progress = 0;
 
-  void _loadStory() {
-    _videoController?.dispose();
-    _timer?.cancel();
-    progress = 0;
+  final url = widget.story[currentIndex]['video_url'] ?? '';
 
-    final url = widget.story[currentIndex]['video_url'] ?? '';
+  if (isVideo) {
+    try {
+      // Download video to cache
+      final file = await DefaultCacheManager().getSingleFile(url);
 
-    if (isVideo) {
-      _videoController = VideoPlayerController.networkUrl(Uri.parse(url))
-        ..initialize().then((_) {
-          setState(() {});
-          _videoController?.play();
+      // Initialize controller with local file
+      _videoController = VideoPlayerController.file(file);
+      await _videoController!.initialize();
 
-          _videoController?.addListener(() {
-            final controller = _videoController!;
-            final total = controller.value.duration;
-            final current = controller.value.position;
+      setState(() {});
 
-            if (mounted) {
-              setState(() {
-                progress = current.inMilliseconds / total.inMilliseconds;
-              });
-            }
+      _videoController!.play();
 
-            if (controller.value.position >= total &&
-                !controller.value.isPlaying) {
-              _goToNextStory();
-            }
+      _videoController!.addListener(() {
+        final controller = _videoController!;
+        final total = controller.value.duration;
+        final current = controller.value.position;
+
+        if (mounted) {
+          setState(() {
+            progress = current.inMilliseconds / total.inMilliseconds;
           });
-        });
-    } else {
-      _startImageTimer();
+        }
+
+        if (controller.value.position >= total &&
+            !controller.value.isPlaying) {
+          _goToNextStory();
+        }
+      });
+    } catch (e) {
+      print('❌ OtherUserStoryDetailScreen video init error: $e');
     }
+  } else {
+    _startImageTimer();
   }
+}
+
+  // void _loadStory() {
+  //   _videoController?.dispose();
+  //   _timer?.cancel();
+  //   progress = 0;
+
+  //   final url = widget.story[currentIndex]['video_url'] ?? '';
+
+  //   if (isVideo) {
+  //     _videoController = VideoPlayerController.networkUrl(Uri.parse(url))
+  //       ..initialize().then((_) {
+  //         setState(() {});
+  //         _videoController?.play();
+
+  //         _videoController?.addListener(() {
+  //           final controller = _videoController!;
+  //           final total = controller.value.duration;
+  //           final current = controller.value.position;
+
+  //           if (mounted) {
+  //             setState(() {
+  //               progress = current.inMilliseconds / total.inMilliseconds;
+  //             });
+  //           }
+
+  //           if (controller.value.position >= total &&
+  //               !controller.value.isPlaying) {
+  //             _goToNextStory();
+  //           }
+  //         });
+  //       });
+  //   } else {
+  //     _startImageTimer();
+  //   }
+  // }
+  
 
   void _startImageTimer() {
     // const duration = Duration(seconds: 1);

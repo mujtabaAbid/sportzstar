@@ -47,5 +47,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>SportzStar needs access to your photo library to upload profile pictures and share media.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>SportzStar needs permission to save images to your photo library.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>SportzStar needs camera access to capture profile photos and media.</string>
 </dict>
 </plist>
