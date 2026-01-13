@@ -263,7 +263,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               left: 18,
               right: 6,
               bottom: 20,
-              top: 10,),
+              top: 10,
+            ),
             child: Row(
               children: [
                 Expanded(

@@ -49,6 +49,15 @@ class _EventScreenState extends State<EventScreen>
     return MainLayoutWidget(
       isLoading: false,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            pushNamedNavigate(
+              context: context,
+              pageName: bottomNavigationBarRoute,
+            );
+          },
+        ),
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         title: const Text('Events', style: TextStyle(color: Colors.white)),

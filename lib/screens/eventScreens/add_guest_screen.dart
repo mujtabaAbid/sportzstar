@@ -301,7 +301,7 @@ class _AddGuestScreenState extends State<AddGuestScreen> {
           child: Column(
             children: [
               const Text(
-                'Add spicial guest in your envent',
+                'Add special guest in your envent',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,

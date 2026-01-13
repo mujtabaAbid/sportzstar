@@ -95,7 +95,7 @@ class _StoryScreenState extends State<StoryScreen> {
         } catch (e) {
           alertNotification(
             context: context,
-            message: 'Something went wrong, try again later.',
+            message: 'Something went wrong.\nTry again later.',
             messageType: AlertMessageType.error,
           );
         }
@@ -220,18 +220,18 @@ class _StoryScreenState extends State<StoryScreen> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              TextFormField(
-                                keyboardType: TextInputType.multiline,
-                                maxLines: null,
-                                onSaved:
-                                    (value) => handleSave('title', value ?? ''),
-                                decoration: const InputDecoration(
-                                  hintText: 'Title',
-                                  filled: true,
-                                  fillColor: Colors.black,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
+                              // TextFormField(
+                              //   keyboardType: TextInputType.multiline,
+                              //   maxLines: null,
+                              //   onSaved:
+                              //       (value) => handleSave('title', value ?? ''),
+                              //   decoration: const InputDecoration(
+                              //     hintText: 'Title',
+                              //     filled: true,
+                              //     fillColor: Colors.black,
+                              //   ),
+                              // ),
+                              // const SizedBox(height: 10),
                               TextFormField(
                                 keyboardType: TextInputType.multiline,
                                 maxLines: null,

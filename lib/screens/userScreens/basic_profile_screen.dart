@@ -189,7 +189,7 @@ class _BasicProfileScreenState extends State<BasicProfileScreen> {
       } catch (e) {
         alertNotification(
           context: context,
-          message: 'Something went wrong, try again later.',
+          message: 'Something went wrong.\nTry again later.',
           messageType: AlertMessageType.error,
         );
         print('Error saving comment: $e');

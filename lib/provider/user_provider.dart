@@ -247,7 +247,7 @@ class UserProvider with ChangeNotifier {
       print('error in login function-------------->  $e');
       return {
         "success": false,
-        "message": "Something went wrong",
+        "message": "Something went wrong.\nTry again later.",
         "error": e.toString(),
       };
     }

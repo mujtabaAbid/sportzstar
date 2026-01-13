@@ -90,7 +90,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     } catch (e) {
       alertNotification(
         context: context,
-        message: 'Something went wrong. Try again later.',
+        message: 'Something went wrong.\nTry again later.',
         messageType: AlertMessageType.error,
       );
       print('Error: $e');
@@ -160,22 +160,24 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         key: _formKey,
         child: SafeArea(
           child: SingleChildScrollView(
-             padding: EdgeInsets.only(
-                left: 16,
-                right: 16,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 20, // 👈 keyboard space adjust
-                top: 16,
-              ),
+            padding: EdgeInsets.only(
+              left: 16,
+              right: 16,
+              bottom:
+                  MediaQuery.of(context).viewInsets.bottom +
+                  20, // 👈 keyboard space adjust
+              top: 16,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               // crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                TextFormField(
-                  keyboardType: TextInputType.text,
-                  onSaved: (value) => handleSave('title', value ?? ''),
-                  decoration: const InputDecoration(hintText: 'Title'),
-                ),
-                const SizedBox(height: 12),
+                // TextFormField(
+                //   keyboardType: TextInputType.text,
+                //   onSaved: (value) => handleSave('title', value ?? ''),
+                //   decoration: const InputDecoration(hintText: 'Title'),
+                // ),
+                // const SizedBox(height: 12),
                 TextFormField(
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -185,21 +187,24 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   },
                   controller: _textController,
                   maxLines: 4,
-                  onSaved: (value) => handleSave('post_description', value ?? ''),
+                  onSaved: (value) {
+                    handleSave('title', '');
+                    handleSave('post_description', value ?? '');
+                  },
                   decoration: const InputDecoration(
                     hintText: "What's on your mind?",
                     border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Image Preview
                 if (_selectedImage != null)
                   SizedBox(
                     height: 400,
                     child: Image.file(_selectedImage!, fit: BoxFit.cover),
                   ),
-                
+
                 // Video Preview
                 if (_selectedVideo != null &&
                     _videoController != null &&
@@ -211,9 +216,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       child: VideoPlayer(_videoController!),
                     ),
                   ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -230,12 +235,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-         padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        // bottom: MediaQuery.of(context).viewInsets.bottom + 50, // 👈 keyboard ke hisaab se adjust
-        top: 12,
-      ),
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            // bottom: MediaQuery.of(context).viewInsets.bottom + 50, // 👈 keyboard ke hisaab se adjust
+            top: 12,
+          ),
           child: SizedBox(
             width: double.infinity, // Full width
             height: 50, // Fixed height for responsiveness
@@ -256,7 +261,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           ),
         ),
       ),
-     );
+    );
   }
 }
 

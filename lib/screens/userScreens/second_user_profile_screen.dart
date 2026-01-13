@@ -207,6 +207,20 @@ class _SecondUserProfileScreenState extends State<SecondUserProfileScreen> {
       isLoading: _isLoading,
       noDefaultBackground: true,
       // backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        title: const Text(
+          'User Profile',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(

@@ -115,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
         print('error---------> ${e.toString()}');
         alertNotification(
           context: context,
-          message: 'Something Went wrong, Try again later',
+          message: 'Something Went wrong.\nTry again later.',
           messageType: AlertMessageType.info,
         );
         final preferances = await SharedPreferences.getInstance();
