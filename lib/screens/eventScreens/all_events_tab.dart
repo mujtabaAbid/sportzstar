@@ -10,6 +10,7 @@ import 'package:sportzstar/widgets/Loader/loading_widget.dart';
 import 'package:intl/intl.dart';
 
 import '../../helper/local_storage.dart';
+import '../../helper/report_dialog.dart';
 import 'event_details_screen.dart';
 
 class GuestModel {
@@ -103,26 +104,27 @@ class EventModel {
 
 class EventCard extends StatelessWidget {
   final EventModel event;
+  final int? userId;
 
-  const EventCard({super.key, required this.event});
+  const EventCard({super.key, required this.event, this.userId});
 
   @override
   Widget build(BuildContext context) {
     String formatDate(String dateString) {
-  try {
-    DateTime date;
+      try {
+        DateTime date;
 
-    try {
-      date = DateTime.parse(dateString);
-    } catch (_) {
-      date = DateFormat("MMMM dd, yyyy").parse(dateString);
+        try {
+          date = DateTime.parse(dateString);
+        } catch (_) {
+          date = DateFormat("MMMM dd, yyyy").parse(dateString);
+        }
+
+        return DateFormat('MM-dd-yyyy').format(date);
+      } catch (e) {
+        return dateString; // fallback if parsing fails
+      }
     }
-
-    return DateFormat('MM-dd-yyyy').format(date);
-  } catch (e) {
-    return dateString; // fallback if parsing fails
-  }
-}
 
     return InkWell(
       onTap: () {
@@ -179,13 +181,40 @@ class EventCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    formatDate(event.date),
-                    // event.date,
-                    style: const TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        formatDate(event.date),
+                        // event.date,
+                        style: const TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      userId != event.userId
+                          ? PopupMenuButton<String>(
+                            icon: const Icon(Icons.more_horiz_rounded),
+                            onSelected: (value) {
+                              if (value == 'report') {
+                                ReportDialogHelper.showReportDialog(context);
+                              }
+                            },
+                            itemBuilder:
+                                (_) => const [
+                                  PopupMenuItem(
+                                    value: 'report',
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.flag, color: Colors.orange),
+                                        SizedBox(width: 8),
+                                        Text('Report'),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                          )
+                          : Text('$userId and ${event.userId}'),
+                    ],
                   ),
                   const SizedBox(height: 6),
                   Text(
@@ -241,18 +270,21 @@ class _MyEventsTabState extends State<MyEventsTab> {
   bool _isLoading = false;
   List<EventModel> _myEvents = [];
   Map<String, String> userData = {};
- 
+
   DateTime _parseDate(String dateString) {
-  try {
-    return DateTime.parse(dateString); // ISO
-  } catch (_) {
     try {
-      return DateFormat("MMMM dd, yyyy").parse(dateString); // September 30, 2025
-    } catch (e) {
-      return DateTime(1900); // fallback (very old so it goes bottom)
+      return DateTime.parse(dateString); // ISO
+    } catch (_) {
+      try {
+        return DateFormat(
+          "MMMM dd, yyyy",
+        ).parse(dateString); // September 30, 2025
+      } catch (e) {
+        return DateTime(1900); // fallback (very old so it goes bottom)
+      }
     }
   }
-}
+
   Future<void> getMyEvents() async {
     setState(() {
       _isLoading = true;
@@ -274,11 +306,11 @@ class _MyEventsTabState extends State<MyEventsTab> {
                 .where((e) => e['user_id'].toString() == userId)
                 .map((e) => EventModel.fromJson(e))
                 .toList();
-                 _myEvents.sort((a, b) {
-        DateTime dateA = _parseDate(a.date);
-        DateTime dateB = _parseDate(b.date);
-        return dateB.compareTo(dateA); // recent → top
-      });
+        _myEvents.sort((a, b) {
+          DateTime dateA = _parseDate(a.date);
+          DateTime dateB = _parseDate(b.date);
+          return dateB.compareTo(dateA); // recent → top
+        });
       }
     } catch (e) {
       print('Error in getMyEvents: $e');
@@ -318,33 +350,38 @@ class _MyEventsTabState extends State<MyEventsTab> {
     getMyEvents();
     super.initState();
   }
-  
-   String formatDate(String dateString) {
-  try {
-    DateTime date;
+
+  String formatDate(String dateString) {
     try {
-      date = DateTime.parse(dateString);
-    } catch (_) {
-      date = DateFormat("MMMM dd, yyyy").parse(dateString);
+      DateTime date;
+      try {
+        date = DateTime.parse(dateString);
+      } catch (_) {
+        date = DateFormat("MMMM dd, yyyy").parse(dateString);
+      }
+      return DateFormat('MM-dd-yyyy').format(date);
+    } catch (e) {
+      return dateString;
     }
-    return DateFormat('MM-dd-yyyy').format(date);
-  } catch (e) {
-    return dateString;
   }
-}
 
   @override
   Widget build(BuildContext context) {
-       final filteredEvents = widget.searchQuery.isEmpty
-    ? _myEvents
-    : _myEvents.where((event) {
-        final search = widget.searchQuery.toLowerCase();
+    final filteredEvents =
+        widget.searchQuery.isEmpty
+            ? _myEvents
+            : _myEvents.where((event) {
+              final search = widget.searchQuery.toLowerCase();
 
-        return event.title.toLowerCase().contains(search) ||   // 🔥 title
-               event.location.toLowerCase().contains(search) || // 🔥 location
-               event.hostName.toLowerCase().contains(search) || // 🔥 host
-               formatDate(event.date).toLowerCase().contains(search); // 🔥 formatted date
-      }).toList();
+              return event.title.toLowerCase().contains(search) || // 🔥 title
+                  event.location.toLowerCase().contains(
+                    search,
+                  ) || // 🔥 location
+                  event.hostName.toLowerCase().contains(search) || // 🔥 host
+                  formatDate(
+                    event.date,
+                  ).toLowerCase().contains(search); // 🔥 formatted date
+            }).toList();
     // final filteredEvents =
     //     _myEvents.where((event) {
     //       final search = widget.searchQuery.toLowerCase();
@@ -434,25 +471,31 @@ class AllEventsTab extends StatefulWidget {
 
 class _AllEventsTabState extends State<AllEventsTab> {
   bool _isLoading = false;
-
+  Map<String, dynamic> userData = {};
   List<EventModel> _events = [];
-  
+
   DateTime _parseDate(String dateString) {
-  try {
-    return DateTime.parse(dateString); // ISO
-  } catch (_) {
     try {
-      return DateFormat("MMMM dd, yyyy").parse(dateString); // September 30, 2025
-    } catch (e) {
-      return DateTime(1900); // fallback (very old so it goes bottom)
+      return DateTime.parse(dateString); // ISO
+    } catch (_) {
+      try {
+        return DateFormat(
+          "MMMM dd, yyyy",
+        ).parse(dateString); // September 30, 2025
+      } catch (e) {
+        return DateTime(1900); // fallback (very old so it goes bottom)
+      }
     }
   }
-}
 
   Future<void> getAllEvents() async {
     setState(() {
       _isLoading = true;
     });
+
+    final pref = await getDataFromLocalStorage(name: 'userData');
+    userData = json.decode(pref);
+    print('userData =====>>>${userData['id']}');
 
     try {
       final response =
@@ -463,11 +506,11 @@ class _AllEventsTabState extends State<AllEventsTab> {
 
       if (response != null && response is List) {
         _events = response.map((e) => EventModel.fromJson(e)).toList();
-         _events.sort((a, b) {
-        DateTime dateA = _parseDate(a.date);
-        DateTime dateB = _parseDate(b.date);
-        return dateB.compareTo(dateA); // recent → top
-      });
+        _events.sort((a, b) {
+          DateTime dateA = _parseDate(a.date);
+          DateTime dateB = _parseDate(b.date);
+          return dateB.compareTo(dateA); // recent → top
+        });
       }
     } catch (e) {
       print('Error in getAllEvents: $e');
@@ -483,32 +526,38 @@ class _AllEventsTabState extends State<AllEventsTab> {
     getAllEvents();
     super.initState();
   }
-   String formatDate(String dateString) {
-  try {
-    DateTime date;
+
+  String formatDate(String dateString) {
     try {
-      date = DateTime.parse(dateString);
-    } catch (_) {
-      date = DateFormat("MMMM dd, yyyy").parse(dateString);
+      DateTime date;
+      try {
+        date = DateTime.parse(dateString);
+      } catch (_) {
+        date = DateFormat("MMMM dd, yyyy").parse(dateString);
+      }
+      return DateFormat('MM-dd-yyyy').format(date);
+    } catch (e) {
+      return dateString;
     }
-    return DateFormat('MM-dd-yyyy').format(date);
-  } catch (e) {
-    return dateString;
   }
-}
 
   @override
   Widget build(BuildContext context) {
-   final filteredEvents = widget.searchQuery.isEmpty
-    ? _events
-    : _events.where((event) {
-        final search = widget.searchQuery.toLowerCase();
+    final filteredEvents =
+        widget.searchQuery.isEmpty
+            ? _events
+            : _events.where((event) {
+              final search = widget.searchQuery.toLowerCase();
 
-        return event.title.toLowerCase().contains(search) ||   // 🔥 title
-               event.location.toLowerCase().contains(search) || // 🔥 location
-               event.hostName.toLowerCase().contains(search) || // 🔥 host
-               formatDate(event.date).toLowerCase().contains(search); // 🔥 formatted date
-      }).toList();
+              return event.title.toLowerCase().contains(search) || // 🔥 title
+                  event.location.toLowerCase().contains(
+                    search,
+                  ) || // 🔥 location
+                  event.hostName.toLowerCase().contains(search) || // 🔥 host
+                  formatDate(
+                    event.date,
+                  ).toLowerCase().contains(search); // 🔥 formatted date
+            }).toList();
 
     return Scaffold(
       // isLoading: _isLoading,
@@ -539,7 +588,7 @@ class _AllEventsTabState extends State<AllEventsTab> {
                       itemBuilder: (context, index) {
                         // final event = _events[index];
                         final event = filteredEvents[index];
-                        return EventCard(event: event);
+                        return EventCard(event: event, userId: userData['id']);
                       },
                     ),
                     SizedBox(height: 60),
