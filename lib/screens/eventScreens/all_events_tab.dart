@@ -181,7 +181,7 @@ class EventCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         formatDate(event.date),
