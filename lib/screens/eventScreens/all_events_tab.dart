@@ -213,7 +213,7 @@ class EventCard extends StatelessWidget {
                                   ),
                                 ],
                           )
-                          : Text('$userId and ${event.userId}'),
+                          : SizedBox(),
                     ],
                   ),
                   const SizedBox(height: 6),
