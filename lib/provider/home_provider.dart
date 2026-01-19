@@ -89,29 +89,6 @@ class HomeProvider with ChangeNotifier {
     }
   }
 
-  //   void logoutFunction() async {
-  //   try {
-  //     final preference = await SharedPreferences.getInstance();
-  //     await preference.clear();
-  //     pushNamedAndRemoveUntilNavigate(
-  //       pageName: loginScreenRoute,
-  //       context: context,
-  //     );
-  //     alertNotification(
-  //       context: context,
-  //       message: 'User Logout Successfully',
-  //       messageType: AlertMessageType.success,
-  //     );
-  //   } catch (e) {
-  //     print('error in logut function ---->>>$e');
-  //     alertNotification(
-  //       context: context,
-  //       message: 'User Not logout, Try again Later',
-  //       messageType: AlertMessageType.error,
-  //     );
-  //   }
-  // }
-
   Future<dynamic> getAllPosts() async {
     try {
       final authToken = await getDataFromLocalStorage(name: 'access');
@@ -122,9 +99,21 @@ class HomeProvider with ChangeNotifier {
           'Authorization': 'Bearer $authToken',
         },
       );
+      final firstResponse = json.decode(response.body);
       print('initial print =11111=====token=====dd=>>>>$authToken');
+      final pref = await getDataFromLocalStorage(name: 'blockUser');
 
-      final responseData = json.decode(response.body);
+      dynamic responseData;
+      if (pref != null) {
+        final blockUser = jsonDecode(pref);
+        responseData =
+            firstResponse
+                .where((post) => !blockUser.contains(post['user_id']))
+                .toList();
+      } else {
+        responseData = firstResponse;
+      }
+
       if (response.statusCode == 200) {
         print('getAllPosts --1-->>>> $responseData');
 

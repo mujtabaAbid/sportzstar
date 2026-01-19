@@ -73,7 +73,7 @@ class ReportDialogHelper {
                     const SizedBox(height: 10),
                     TextFormField(
                       controller: otherController,
-                       style: const TextStyle(
+                      style: const TextStyle(
                         color: Colors.black, // 👈 typed text color
                       ),
                       enabled: isOtherSelected,

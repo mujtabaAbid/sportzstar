@@ -188,6 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
           await Provider.of<HomeProvider>(context, listen: false).getAllPosts();
 
       print('type=====>>> ${response.runtimeType}');
+      
 
       if (response is Map<String, dynamic>) {
         if (response['detail'] ==
@@ -232,11 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
         pageName: loginScreenRoute,
         context: context,
       );
-      // alertNotification(
-      //   context: context,
-      //   message: 'User Logout, Please login Again.',
-      //   messageType: AlertMessageType.success,
-      // );
+
     } catch (e) {
       print('error in logut function ---->>>$e');
       alertNotification(
@@ -262,11 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
       );
 
       if (response['total_stories'] == 0) {
-        // alertNotification(
-        //   context: context,
-        //   message: 'No stories Posted',
-        //   messageType: AlertMessageType.warning,
-        // );
+
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => BottomNavigationBarScreen(pageIndex: 1),
@@ -377,7 +370,11 @@ class _HomeScreenState extends State<HomeScreen> {
       'isOwn': false,
     },
   ];
-  // Set default selected category to "Badminton"
+
+
+  Future<void> blockUserOrPost() async {
+    try {} catch (e) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -460,32 +457,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     // Stack(
                     SizedBox(width: 8),
-                    //   children: [
-                    // Container(
-                    //   decoration: BoxDecoration(
-                    //     color: const Color.fromARGB(115, 53, 53, 53),
-                    //     borderRadius: BorderRadius.all(Radius.circular(30)),
-                    //   ),
-                    //   child: IconButton(
-                    //     onPressed: () {
-                    //       // pushNamedNavigate(
-                    //       //   context: context,
-                    //       //   pageName: addFriendListScreenRoute,
-                    //       // );
-                    //       Navigator.of(context).push(
-                    //         MaterialPageRoute(
-                    //           builder: (context) => SportsList(),
-                    //           //  BaseballGamesScreen(),
-                    //         ),
-                    //       );
-                    //     },
-                    //     icon: Icon(
-                    //       Icons.games_outlined,
-                    //       color: Colors.white,
-                    //       size: 28,
-                    //     ),
-                    //   ),
-                    // ),
                     SizedBox(width: 8),
                     Container(
                       decoration: BoxDecoration(
@@ -507,7 +478,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     SizedBox(width: 8),
-                    //   children: [
                     Container(
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(115, 53, 53, 53),
@@ -658,75 +628,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   );
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     setState(() {
-                  //       selectedCategory = category;
-                  //       print('kjfskdjfhsdjf---->>>>$selectedCategory');
-                  //     });
-                  //   },
-                  //   child:
-
-                  //    Container(
-                  //     padding: EdgeInsets.symmetric(
-                  //       horizontal: 16,
-                  //       // vertical: 8,
-                  //     ),
-                  //     // margin: EdgeInsets.all(8),
-                  //     decoration: BoxDecoration(
-                  //       border: Border(
-                  //         bottom: BorderSide(
-                  //           color:
-                  //               isSelected
-                  //                   ? Colors.black
-                  //                   : const Color.fromARGB(192, 213, 213, 213),
-                  //           width: 2,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     child: Center(
-                  //       child: Text(
-                  //         category,
-                  //         style: TextStyle(
-                  //           color: isSelected ? Colors.black : Palette.darkgray,
-                  //           fontSize: 14,
-                  //           fontWeight: FontWeight.bold,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // );
                 },
               ),
             ),
           ),
-          //post card widget call
-          // Expanded(
-          //   child: ListView.builder(
-          //     padding: EdgeInsets.only(top: 10, bottom: 80),
-          //     itemCount:
-          //         posts
-          //             .where(
-          //               (post) => post['player_category'] == selectedCategory,
-          //             )
-          //             .length,
-          //     itemBuilder: (context, index) {
-          //       final filteredPosts =
-          //           posts
-          //               .where(
-          //                 (post) => post['player_category'] == selectedCategory,
-          //               )
-          //               .toList();
-          //       final post = filteredPosts[index];
-          //       return PostCard(
-          //         post: post,
-          //         selectedCategory: selectedCategory,
-          //         displayType: PostDisplayType.text,
-          //       );
 
-          //     },
-          //   ),
-          // ),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.only(top: 10, bottom: 80),

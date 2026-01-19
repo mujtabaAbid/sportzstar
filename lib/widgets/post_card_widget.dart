@@ -16,6 +16,7 @@ import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/helper/report_dialog.dart';
 import 'package:sportzstar/provider/home_provider.dart';
 import 'package:sportzstar/provider/post_provider.dart';
+import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/postScreens/post_detail_screen.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 // import 'package:sportzstar/widgets/input_widget.dart';
@@ -59,6 +60,13 @@ class _PostCardState extends State<PostCard>
   final Map<String, String> _formData = {};
   // final GlobalKey _repaintKey = GlobalKey();
   // BuildContext? _loaderContext;
+  static bool isChecked = false;
+
+  // void blockusertoggle() {
+  //   setState(() {
+  //     isChecked = !isChecked;
+  //   });
+  // }
 
   Future<void> allpostsdata() async {
     try {
@@ -225,160 +233,6 @@ class _PostCardState extends State<PostCard>
     });
   }
 
-  // void showLoadingDialog(BuildContext context) {
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     useRootNavigator: true,
-  //     builder: (ctx) {
-  //       _loaderContext = ctx; // 👈 SAVE loader context
-  //       return const Center(child: CircularProgressIndicator());
-  //     },
-  //   );
-  // }
-
-  // void showReportDialog(BuildContext context) {
-  //   List<String> selectedReasons = [];
-  //   TextEditingController otherController = TextEditingController();
-
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return StatefulBuilder(
-  //         builder: (context, setState) {
-  //           bool isOtherSelected = selectedReasons.contains('Other');
-
-  //           Widget reasonTile(String title) {
-  //             return CheckboxListTile(
-  //               title: Text(title),
-  //               value: selectedReasons.contains(title),
-  //               onChanged: (val) {
-  //                 setState(() {
-  //                   if (val == true) {
-  //                     selectedReasons.add(title);
-  //                   } else {
-  //                     selectedReasons.remove(title);
-  //                   }
-  //                 });
-  //               },
-  //             );
-  //           }
-
-  //           return AlertDialog(
-  //             title: const Text(
-  //               'Report This!',
-  //               style: TextStyle(color: Colors.black),
-  //             ),
-  //             content: SingleChildScrollView(
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   const Text(
-  //                     'Select Reason',
-  //                     style: TextStyle(fontWeight: FontWeight.bold),
-  //                   ),
-  //                   reasonTile('Nudity or Sexual Content'),
-  //                   reasonTile('Hate Speech or Violence'),
-  //                   reasonTile('Harassment or Bullying'),
-  //                   reasonTile('Illegal Activities'),
-  //                   reasonTile('Other'),
-
-  //                   const SizedBox(height: 10),
-  //                   TextFormField(
-  //                     controller: otherController,
-  //                     enabled: isOtherSelected,
-  //                     style: const TextStyle(
-  //                       color: Colors.black, // 👈 typed text color
-  //                     ),
-  //                     decoration: InputDecoration(
-  //                       hintText: 'Type Reason',
-  //                       hintStyle: const TextStyle(
-  //                         color: Colors.grey, // optional: hint color
-  //                       ),
-  //                       filled: true,
-  //                       fillColor:
-  //                           isOtherSelected
-  //                               ? Colors.white
-  //                               : Colors.grey.shade300,
-  //                       border: OutlineInputBorder(
-  //                         borderRadius: BorderRadius.circular(8),
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //             actions: [
-  //               TextButton(
-  //                 onPressed: () => Navigator.pop(context),
-  //                 child: const Text('Cancel'),
-  //               ),
-  //               ElevatedButton(
-  //                 onPressed:
-  //                     selectedReasons.isEmpty
-  //                         ? null
-  //                         : () async {
-  //                           // 1️⃣ Close report dialog (dialog ka context)
-  //                           Navigator.pop(context);
-
-  //                           // 2️⃣ Show loader (ROOT navigator)
-  //                           showLoadingDialog(this.context);
-
-  //                           // 3️⃣ Delay
-  //                           await Future.delayed(const Duration(seconds: 2));
-
-  //                           if (!mounted) return;
-
-  //                           // 4️⃣ Close loader SAFELY
-  //                           if (_loaderContext != null) {
-  //                             Navigator.of(
-  //                               _loaderContext!,
-  //                               rootNavigator: true,
-  //                             ).pop();
-  //                             _loaderContext = null;
-  //                           }
-
-  //                           // 5️⃣ Show success dialog
-  //                           showDialog(
-  //                             context: this.context,
-  //                             useRootNavigator: true,
-  //                             builder: (_) {
-  //                               return AlertDialog(
-  //                                 title: const Text(
-  //                                   'Report Submitted',
-  //                                   style: TextStyle(color: Colors.black),
-  //                                 ),
-  //                                 content: const Text(
-  //                                   'Your report will be reviewed by admin within 24 hours, but it may take longer depending on the volume of reports we receive. Thank you for helping us keep our community safe.',
-  //                                 ),
-  //                                 actions: [
-  //                                   TextButton(
-  //                                     onPressed:
-  //                                         () =>
-  //                                             Navigator.of(
-  //                                               this.context,
-  //                                               rootNavigator: true,
-  //                                             ).pop(),
-  //                                     child: const Text('OK'),
-  //                                   ),
-  //                                 ],
-  //                               );
-  //                             },
-  //                           );
-
-  //                           debugPrint('Reasons: $selectedReasons');
-  //                           debugPrint('Other text: ${otherController.text}');
-  //                         },
-  //                 child: const Text('Submit'),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -455,19 +309,6 @@ class _PostCardState extends State<PostCard>
                                   ],
                                 ),
                               ),
-                              // PopupMenuItem<String>(
-                              //   value: 'update',
-                              //   child: Row(
-                              //     children: [
-                              //       Icon(
-                              //         Icons.update_sharp,
-                              //         color: Palette.basicgreen,
-                              //       ),
-                              //       SizedBox(width: 8),
-                              //       Text('Update'),
-                              //     ],
-                              //   ),
-                              // ),
                             ],
                       )
                       : PopupMenuButton<String>(
@@ -475,6 +316,171 @@ class _PostCardState extends State<PostCard>
                         onSelected: (value) {
                           if (value == 'report') {
                             ReportDialogHelper.showReportDialog(context);
+                          } else if (value == 'delete') {
+                            // bool isChecked = false;
+                            showDialog(
+                              context: context,
+                              useRootNavigator: true,
+                              builder: (_) {
+                                return StatefulBuilder(
+                                  builder: (context, setStateDialog) {
+                                    return AlertDialog(
+                                      title: const Text(
+                                        'Post Deleted',
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                      content: Text(
+                                        'Post deleted successfully.',
+                                      ),
+                                      // Row(
+                                      //   children: [
+                                      //     Checkbox(
+                                      //       value: isChecked,
+                                      //       onChanged: (value) {
+                                      //         setStateDialog(() {
+                                      //           isChecked = value!;
+                                      //         });
+
+                                      //         if (value == true) {
+                                      //           blockusertoggle();
+                                      //         }
+                                      //       },
+                                      //     ),
+                                      //     const Text('Also Block the user?'),
+                                      //   ],
+                                      // ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(
+                                              context,
+                                              rootNavigator: true,
+                                            ).pop();
+                                          },
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          } else {
+                            showDialog(
+                              context: context,
+                              useRootNavigator: true,
+                              builder: (_) {
+                                return StatefulBuilder(
+                                  builder: (context, setStateDialog) {
+                                    return AlertDialog(
+                                      title: const Text(
+                                        'Block User',
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                      content: SizedBox(
+                                        height: 50,
+                                        child: Column(
+                                          children: [
+                                            const Text(
+                                              'Once User is blocked, you will no longer see their posts. Are you sure you want to block this user?',
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () async {
+                                            final abc =
+                                                await getDataFromLocalStorage(
+                                                  name: 'blockUser',
+                                                );
+                                            final aaa = jsonDecode(
+                                              abc.toString(),
+                                            );
+                                            print(
+                                              'block user list = ${aaa.toString()}',
+                                            );
+
+                                            removeDataFromLocalStorage(
+                                              name: 'blockUser',
+                                            );
+
+                                            Navigator.of(
+                                              context,
+                                              rootNavigator: true,
+                                            ).pop();
+                                          },
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            List<dynamic> blockUser = [];
+
+                                            final oldData =
+                                                await getDataFromLocalStorage(
+                                                  name: 'blockUser',
+                                                );
+
+                                            if (oldData != null &&
+                                                oldData.toString().isNotEmpty) {
+                                              blockUser = jsonDecode(
+                                                oldData.toString(),
+                                              );
+                                            }
+
+                                            if (!blockUser.contains(
+                                              post['user_id'],
+                                            )) {
+                                              blockUser.add(post['user_id']);
+                                            }
+
+                                            final blockuserdata = jsonEncode(
+                                              blockUser,
+                                            );
+
+                                            await addDataToLocalStorage(
+                                              name: 'blockUser',
+                                              value: blockuserdata,
+                                            );
+
+                                            // Navigator.of(
+                                            //   context,
+                                            //   rootNavigator: true,
+                                            // ).pop();
+                                            pushNamedAndRemoveUntilNavigate(
+                                              pageName:
+                                                  bottomNavigationBarRoute,
+                                              context: context,
+                                            );
+                                          },
+
+                                          // onPressed: () {
+                                          //   // print(
+                                          //   //   '${post['post_id']} and userid = ${post['user_id']}',
+                                          //   // );
+                                          //   List<dynamic> blockUser = [];
+                                          //   blockUser.add(post['user_id']);
+                                          //   final blockuserdata = jsonEncode(
+                                          //     blockUser,
+                                          //   );
+
+                                          //   addDataToLocalStorage(
+                                          //     name: 'blockUser',
+                                          //     value: blockuserdata,
+                                          //   );
+                                          //   Navigator.of(
+                                          //     context,
+                                          //     rootNavigator: true,
+                                          //   ).pop();
+                                          // },
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            );
                           }
                         },
                         itemBuilder:
@@ -489,39 +495,29 @@ class _PostCardState extends State<PostCard>
                                   ],
                                 ),
                               ),
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.block, color: Colors.red),
+                                    SizedBox(width: 8),
+                                    Text('Delete Post'),
+                                  ],
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'block',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.block, color: Colors.red),
+                                    SizedBox(width: 8),
+                                    Text('Block User'),
+                                  ],
+                                ),
+                              ),
                             ],
                       ),
 
-              // PopupMenuButton<String>(
-              //   icon: const Icon(Icons.more_horiz_rounded, size: 24),
-              //   onSelected: (value) {
-              //     if (value == 'report') {
-              //       showReportDialog(context);
-              //     }
-              //   },
-              //   itemBuilder:
-              //       (context) => [
-              //         const PopupMenuItem(
-              //           value: 'report',
-              //           child: Row(
-              //             children: [
-              //               Icon(Icons.flag, color: Colors.orange),
-              //               SizedBox(width: 8),
-              //               Text('Report'),
-              //             ],
-              //           ),
-              //         ),
-              //       ],
-              // ),
-
-              // : null,
-              // CustomButton(
-              //   onPressed: () {},
-              //   width: 100,
-              //   height: 30,
-              //   background: Palette.facebookColor,
-              //   text: 'Follow',
-              // ),
               leading: CircleAvatar(
                 radius: 24,
                 backgroundImage: NetworkImage(
@@ -591,19 +587,6 @@ class _PostCardState extends State<PostCard>
                   ),
                 ),
               )
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 18),
-            //   child: ClipRRect(
-            //     borderRadius: BorderRadius.circular(12),
-            //     child: Image.network(
-            //       videoUrl ?? post['image_url'],
-            //       fit: BoxFit.cover,
-            //       width: double.infinity,
-            //       height: 250,
-            //     ),
-            //   ),
-            // )
-            // const SizedBox(height: 8),
             else if (isVideoPost && videoUrl != null)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18),
