@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sportzstar/config/palette.dart';
+import 'package:sportzstar/helper/api.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/testing.dart';
@@ -18,15 +19,22 @@ class _StartedScreenState extends State<StartedScreen>
     with SingleTickerProviderStateMixin {
   bool _moveUp = false;
   bool _showContent = false;
-  @override
-  void initState() {
-    super.initState();
+ @override
+void initState() {
+  super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _showTermsDialog();
-      _whereToGo(); // dialog accept hone ke baad navigation logic
-    });
-  }
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    final prefs = await SharedPreferences.getInstance();
+    final isAccepted = prefs.getBool(kTermsAccepted) ?? false;
+
+    if (!isAccepted) {
+      await _showTermsDialog(); // 🔥 Sirf first time
+    }
+
+    _whereToGo(); // navigation logic
+  });
+}
+
 
   // @override
   // void initState() {
@@ -35,55 +43,58 @@ class _StartedScreenState extends State<StartedScreen>
   //   _whereToGo();
   // }
 
-  Future<void> _showTermsDialog() async {
-    await showDialog(
-      context: context,
-      barrierDismissible: false, // user dialog dismiss na kar sake
-      builder: (context) {
-        return WillPopScope(
-          onWillPop: () async => false, // back button disable
-          child: AlertDialog(
-            title: const Text(
-              'Terms of Use & Safety Notice',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+ Future<void> _showTermsDialog() async {
+  await showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return WillPopScope(
+        onWillPop: () async => false,
+        child: AlertDialog(
+          title: const Text(
+            'Terms of Use & Safety Notice',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
-            content: const SingleChildScrollView(
-              child: Text(
-                'This app has zero tolerance for objectionable or abusive content.\n\n'
-                'By continuing, you agree not to post harmful, hateful, sexual, or illegal material.\n\n'
-                'Reported content is reviewed within 24 hours, and violating accounts may be removed or permanently banned.',
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  if (Platform.isAndroid) {
-                    SystemNavigator.pop(); // ✅ Android
-                  } else if (Platform.isIOS) {
-                    exit(0); // ✅ iOS (Apple allows on user action)
-                  }
-                },
-                child: const Text(
-                  'Cancel',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context); // ✅ Accept → close dialog
-                },
-                child: const Text('Accept'),
-              ),
-            ],
           ),
-        );
-      },
-    );
-  }
+          content: const SingleChildScrollView(
+            child: Text(
+              'This app has zero tolerance for objectionable or abusive content.\n\n'
+              'By continuing, you agree not to post harmful, hateful, sexual, or illegal material.\n\n'
+              'Reported content is reviewed within 24 hours, and violating accounts may be removed or permanently banned.',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                if (Platform.isAndroid) {
+                  SystemNavigator.pop();
+                } else if (Platform.isIOS) {
+                  exit(0);
+                }
+              },
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setBool(kTermsAccepted, true); // ✅ save once
+
+                Navigator.pop(context);
+              },
+              child: const Text('Accept'),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
 
   Future<void> _whereToGo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

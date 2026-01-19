@@ -118,7 +118,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         messageType: AlertMessageType.success,
       );
     } catch (e) {
-      print('error in logut function ---->>>$e');
+      print('error in logut function --profile-->>>$e');
       alertNotification(
         context: context,
         message: 'User Not logout, Try again Later',

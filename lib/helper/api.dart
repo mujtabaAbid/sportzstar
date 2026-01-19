@@ -92,3 +92,4 @@ const addGuestInEventApi = '${apiUrl}add-event-guests/';
 //others
 const joinEventApi = '${apiUrl}join-event/';
 const getSportsApi = '${apiUrl}sports/'; //get
+const String kTermsAccepted = 'terms_accepted';

@@ -246,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
         context: context,
       );
     } catch (e) {
-      print('error in logut function ---->>>$e');
+      print('error in logut function home---->>>$e');
       alertNotification(
         context: context,
         message: 'User Not logout, Try again Later',
