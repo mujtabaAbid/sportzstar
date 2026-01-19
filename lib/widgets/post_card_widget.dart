@@ -388,7 +388,7 @@ class _PostCardState extends State<PostCard>
                                         style: TextStyle(color: Colors.black),
                                       ),
                                       content: SizedBox(
-                                        height: 50,
+                                        height: 70,
                                         child: Column(
                                           children: [
                                             const Text(
@@ -497,7 +497,7 @@ class _PostCardState extends State<PostCard>
                                 value: 'block',
                                 child: Row(
                                   children: [
-                                    Icon(Icons.block, color: Colors.red),
+                                    Icon(Icons.person_off_outlined, color: Colors.red),
                                     SizedBox(width: 8),
                                     Text('Block User'),
                                   ],
