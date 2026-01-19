@@ -327,14 +327,32 @@ class _PostCardState extends State<PostCard>
                                   builder: (context, setStateDialog) {
                                     return AlertDialog(
                                       title: const Text(
-                                        'Post Deleted',
+                                        'Delete Post',
                                         style: TextStyle(color: Colors.black),
                                       ),
                                       content: Text(
-                                        'Post deleted successfully.',
+                                        'Are you sure you want to delete this post?',
                                       ),
                                       actions: [
                                         TextButton(
+                                          onPressed: () {
+                                            Navigator.of(
+                                              context,
+                                              rootNavigator: true,
+                                            ).pop();
+                                            removeDataFromLocalStorage(
+                                              // name: 'blockUser',
+                                              name: 'deletePost',
+                                            );
+                                            removeDataFromLocalStorage(
+                                              name: 'blockUser',
+                                              // name: 'deletePost',
+                                            );
+                                          },
+                                          child: Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          child: const Text('OK'),
                                           onPressed: () async {
                                             List<dynamic> deletePost = [];
 
@@ -367,7 +385,6 @@ class _PostCardState extends State<PostCard>
                                               context: context,
                                             );
                                           },
-                                          child: const Text('OK'),
                                         ),
                                       ],
                                     );
@@ -497,7 +514,10 @@ class _PostCardState extends State<PostCard>
                                 value: 'block',
                                 child: Row(
                                   children: [
-                                    Icon(Icons.person_off_outlined, color: Colors.red),
+                                    Icon(
+                                      Icons.person_off_outlined,
+                                      color: Colors.red,
+                                    ),
                                     SizedBox(width: 8),
                                     Text('Block User'),
                                   ],
