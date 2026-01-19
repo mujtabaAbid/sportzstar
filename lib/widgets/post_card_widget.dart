@@ -321,6 +321,7 @@ class _PostCardState extends State<PostCard>
                             showDialog(
                               context: context,
                               useRootNavigator: true,
+                              barrierDismissible: false,
                               builder: (_) {
                                 return StatefulBuilder(
                                   builder: (context, setStateDialog) {
@@ -332,30 +333,39 @@ class _PostCardState extends State<PostCard>
                                       content: Text(
                                         'Post deleted successfully.',
                                       ),
-                                      // Row(
-                                      //   children: [
-                                      //     Checkbox(
-                                      //       value: isChecked,
-                                      //       onChanged: (value) {
-                                      //         setStateDialog(() {
-                                      //           isChecked = value!;
-                                      //         });
-
-                                      //         if (value == true) {
-                                      //           blockusertoggle();
-                                      //         }
-                                      //       },
-                                      //     ),
-                                      //     const Text('Also Block the user?'),
-                                      //   ],
-                                      // ),
                                       actions: [
                                         TextButton(
-                                          onPressed: () {
-                                            Navigator.of(
-                                              context,
-                                              rootNavigator: true,
-                                            ).pop();
+                                          onPressed: () async {
+                                            List<dynamic> deletePost = [];
+
+                                            final oldData =
+                                                await getDataFromLocalStorage(
+                                                  name: 'deletePost',
+                                                );
+                                            if (oldData != null &&
+                                                oldData.toString().isNotEmpty) {
+                                              deletePost = jsonDecode(
+                                                oldData.toString(),
+                                              );
+                                            }
+                                            if (!deletePost.contains(
+                                              post['post_id'],
+                                            )) {
+                                              deletePost.add(post['post_id']);
+                                            }
+
+                                            final deletePostdata = jsonEncode(
+                                              deletePost,
+                                            );
+                                            await addDataToLocalStorage(
+                                              name: 'deletePost',
+                                              value: deletePostdata,
+                                            );
+                                            pushNamedAndRemoveUntilNavigate(
+                                              pageName:
+                                                  bottomNavigationBarRoute,
+                                              context: context,
+                                            );
                                           },
                                           child: const Text('OK'),
                                         ),
@@ -389,30 +399,37 @@ class _PostCardState extends State<PostCard>
                                       ),
                                       actions: [
                                         TextButton(
+                                          child: const Text('Cancel'),
                                           onPressed: () async {
-                                            final abc =
+                                            final pref =
                                                 await getDataFromLocalStorage(
                                                   name: 'blockUser',
                                                 );
-                                            final aaa = jsonDecode(
-                                              abc.toString(),
+                                            final pref2 =
+                                                await getDataFromLocalStorage(
+                                                  name: 'deletePost',
+                                                );
+                                            final data = jsonDecode(
+                                              pref.toString(),
+                                            );
+                                            final data2 = jsonDecode(
+                                              pref2.toString(),
                                             );
                                             print(
-                                              'block user list = ${aaa.toString()}',
+                                              'block user list = ${data.toString()} === delete post list = ${data2.toString()}',
                                             );
-
-                                            removeDataFromLocalStorage(
-                                              name: 'blockUser',
-                                            );
-
+                                            // removeDataFromLocalStorage(
+                                            //   // name: 'blockUser',
+                                            //   name: 'deletePost',
+                                            // );
                                             Navigator.of(
                                               context,
                                               rootNavigator: true,
                                             ).pop();
                                           },
-                                          child: const Text('Cancel'),
                                         ),
                                         TextButton(
+                                          child: const Text('OK'),
                                           onPressed: () async {
                                             List<dynamic> blockUser = [];
 
@@ -420,14 +437,12 @@ class _PostCardState extends State<PostCard>
                                                 await getDataFromLocalStorage(
                                                   name: 'blockUser',
                                                 );
-
                                             if (oldData != null &&
                                                 oldData.toString().isNotEmpty) {
                                               blockUser = jsonDecode(
                                                 oldData.toString(),
                                               );
                                             }
-
                                             if (!blockUser.contains(
                                               post['user_id'],
                                             )) {
@@ -437,43 +452,16 @@ class _PostCardState extends State<PostCard>
                                             final blockuserdata = jsonEncode(
                                               blockUser,
                                             );
-
                                             await addDataToLocalStorage(
                                               name: 'blockUser',
                                               value: blockuserdata,
                                             );
-
-                                            // Navigator.of(
-                                            //   context,
-                                            //   rootNavigator: true,
-                                            // ).pop();
                                             pushNamedAndRemoveUntilNavigate(
                                               pageName:
                                                   bottomNavigationBarRoute,
                                               context: context,
                                             );
                                           },
-
-                                          // onPressed: () {
-                                          //   // print(
-                                          //   //   '${post['post_id']} and userid = ${post['user_id']}',
-                                          //   // );
-                                          //   List<dynamic> blockUser = [];
-                                          //   blockUser.add(post['user_id']);
-                                          //   final blockuserdata = jsonEncode(
-                                          //     blockUser,
-                                          //   );
-
-                                          //   addDataToLocalStorage(
-                                          //     name: 'blockUser',
-                                          //     value: blockuserdata,
-                                          //   );
-                                          //   Navigator.of(
-                                          //     context,
-                                          //     rootNavigator: true,
-                                          //   ).pop();
-                                          // },
-                                          child: const Text('OK'),
                                         ),
                                       ],
                                     );

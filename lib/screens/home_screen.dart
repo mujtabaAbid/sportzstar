@@ -188,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
           await Provider.of<HomeProvider>(context, listen: false).getAllPosts();
 
       print('type=====>>> ${response.runtimeType}');
-      
+
 
       if (response is Map<String, dynamic>) {
         if (response['detail'] ==
@@ -372,9 +372,6 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
 
-  Future<void> blockUserOrPost() async {
-    try {} catch (e) {}
-  }
 
   @override
   Widget build(BuildContext context) {

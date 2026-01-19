@@ -101,17 +101,27 @@ class HomeProvider with ChangeNotifier {
       );
       final firstResponse = json.decode(response.body);
       print('initial print =11111=====token=====dd=>>>>$authToken');
-      final pref = await getDataFromLocalStorage(name: 'blockUser');
+      final blockUserPref = await getDataFromLocalStorage(name: 'blockUser');
+      final deletePostPref = await getDataFromLocalStorage(name: 'deletePost');
 
-      dynamic responseData;
-      if (pref != null) {
-        final blockUser = jsonDecode(pref);
+      dynamic responseData = firstResponse;
+
+      // Block user filter
+      if (blockUserPref != null && blockUserPref.toString().isNotEmpty) {
+        final blockUser = jsonDecode(blockUserPref);
         responseData =
-            firstResponse
+            responseData
                 .where((post) => !blockUser.contains(post['user_id']))
                 .toList();
-      } else {
-        responseData = firstResponse;
+      }
+
+      // Delete post filter
+      if (deletePostPref != null && deletePostPref.toString().isNotEmpty) {
+        final deletePost = jsonDecode(deletePostPref);
+        responseData =
+            responseData
+                .where((post) => !deletePost.contains(post['post_id']))
+                .toList();
       }
 
       if (response.statusCode == 200) {
