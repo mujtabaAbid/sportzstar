@@ -166,9 +166,12 @@ class _AddFriendsListState extends State<AddFriendsList>
       // 1. Backup important values
       final deletePost = preference.getString('deletePost');
       final blockUser = preference.getString('blockUser');
+      final oldUserId = preference.getString('oldUserId');
       // 2. Clear all
       await preference.clear();
-      // 3. Restore only these two
+      // 3. Restore
+      preference.setString('oldUserId', oldUserId!);
+      // 2. Clear all
       if (deletePost != null) {
         await preference.setString('deletePost', deletePost);
       }
