@@ -208,10 +208,28 @@ class UserProvider with ChangeNotifier {
       final responseData = json.decode(response.body);
       final SharedPreferences provider = await SharedPreferences.getInstance();
 
-      await provider.clear();
+      final oldUserId = provider.getString('oldUserId');
+      if (responseData['user']['id'].toString() == oldUserId) {
+        final deletePost = provider.getString('deletePost');
+        final blockUser = provider.getString('blockUser');
+        await provider.clear();
+        if (deletePost != null) {
+          await provider.setString('deletePost', deletePost);
+        }
+        if (blockUser != null) {
+          await provider.setString('blockUser', blockUser);
+        }
+      } else {
+        await provider.clear();
+      }
+
       provider.setString('userData', json.encode(responseData['user']));
       await provider.setString('refresh', responseData['refresh']);
       await provider.setString('access', responseData['access']);
+      await provider.setString(
+        'oldUserId',
+        responseData['user']['id'].toString(),
+      );
       refresh = responseData['refresh'];
       access = responseData['access'];
 
