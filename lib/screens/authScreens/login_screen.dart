@@ -16,7 +16,6 @@ import 'package:sportzstar/screens/bottom_navigation_bar.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
-
 import '../../widgets/alerts/alert_notification_widget.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -28,8 +27,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
-  // final TextEditingController emailController = TextEditingController();
-  // final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final Map<String, String> _formData = {};
 
@@ -237,16 +234,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-
-              // TextButton(
-              //   onPressed: () {
-              //     pushNamedNavigate(
-              //       context: context,
-              //       pageName: resetPasswordScreenRoute,
-              //     );
-              //   },
-              //   child: Text('Reset Password'),
-              // ),
             ],
           ),
         ),
