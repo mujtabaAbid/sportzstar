@@ -94,7 +94,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   void logoutFunction() async {
     try {
       final preference = await SharedPreferences.getInstance();
+      // 1. Backup important values
+      final deletePost = preference.getString('deletePost');
+      final blockUser = preference.getString('blockUser');
+      final oldUserId = preference.getString('oldUserId');
+      // 2. Clear all
       await preference.clear();
+      // 3. Restore only these two
+      preference.setString('oldUserId', oldUserId!);
+      if (deletePost != null) {
+        await preference.setString('deletePost', deletePost);
+      }
+      if (blockUser != null) {
+        await preference.setString('blockUser', blockUser);
+      }
       pushNamedAndRemoveUntilNavigate(
         pageName: loginScreenRoute,
         context: context,

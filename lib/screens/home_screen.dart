@@ -189,7 +189,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
       print('type=====>>> ${response.runtimeType}');
 
-
       if (response is Map<String, dynamic>) {
         if (response['detail'] ==
             'Authentication credentials were not provided or are invalid.') {
@@ -228,12 +227,24 @@ class _HomeScreenState extends State<HomeScreen> {
   void logoutFunction() async {
     try {
       final preference = await SharedPreferences.getInstance();
+      // 1. Backup important values
+      final deletePost = preference.getString('deletePost');
+      final blockUser = preference.getString('blockUser');
+      final oldUserId = preference.getString('oldUserId');
+      // 2. Clear all
       await preference.clear();
+      // 3. Restore
+      preference.setString('oldUserId', oldUserId!);
+      if (deletePost != null) {
+        await preference.setString('deletePost', deletePost);
+      }
+      if (blockUser != null) {
+        await preference.setString('blockUser', blockUser);
+      }
       pushNamedAndRemoveUntilNavigate(
         pageName: loginScreenRoute,
         context: context,
       );
-
     } catch (e) {
       print('error in logut function ---->>>$e');
       alertNotification(
@@ -259,7 +270,6 @@ class _HomeScreenState extends State<HomeScreen> {
       );
 
       if (response['total_stories'] == 0) {
-
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => BottomNavigationBarScreen(pageIndex: 1),
@@ -370,8 +380,6 @@ class _HomeScreenState extends State<HomeScreen> {
       'isOwn': false,
     },
   ];
-
-
 
   @override
   Widget build(BuildContext context) {
