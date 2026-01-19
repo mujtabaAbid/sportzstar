@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sportzstar/helper/basic_enum.dart';
+import 'package:sportzstar/helper/local_storage.dart';
 import 'package:sportzstar/helper/page_navigate.dart';
 import 'package:sportzstar/provider/friends_provider.dart';
 import 'package:sportzstar/routing/routing_constrants.dart';
@@ -38,54 +39,142 @@ class _AddFriendsListState extends State<AddFriendsList>
   List<Map<String, dynamic>> filteredOtherUsers = [];
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+
   Future<void> allUsers() async {
     setState(() {
       _isLoading = true;
     });
+
     try {
       final usersData =
           await Provider.of<HomeProvider>(context, listen: false).usersList();
 
-      print('get all users data:----------------------->> $usersData');
       if (usersData['detail'] ==
           'Authentication credentials were not provided or are invalid.') {
         logoutFunction();
+        return;
       }
+
+      final pref = await getDataFromLocalStorage(name: 'blockUser');
+      final List blockedUsers = pref != null ? jsonDecode(pref) : [];
+      print('BLOCKED USERS IDS: $blockedUsers');
 
       // Clear previous data
       friends.clear();
       sendRequestsUsers.clear();
       recievedRequestUsers.clear();
       otherUsers.clear();
-      friends.addAll(List<Map<String, dynamic>>.from(usersData['friends']));
+
+      friends.addAll(
+        List<Map<String, dynamic>>.from(
+          usersData['friends'],
+        ).where((u) => !blockedUsers.contains(u['id'])).toList(),
+      );
+
       sendRequestsUsers.addAll(
-        List<Map<String, dynamic>>.from(usersData['send_requests_users']),
+        List<Map<String, dynamic>>.from(
+          usersData['send_requests_users'],
+        ).where((u) => !blockedUsers.contains(u['id'])).toList(),
       );
+
       recievedRequestUsers.addAll(
-        List<Map<String, dynamic>>.from(usersData['recieved_request_users']),
+        List<Map<String, dynamic>>.from(
+          usersData['recieved_request_users'],
+        ).where((u) => !blockedUsers.contains(u['id'])).toList(),
       );
+
       otherUsers.addAll(
-        List<Map<String, dynamic>>.from(usersData['other_users']),
+        List<Map<String, dynamic>>.from(
+          usersData['other_users'],
+        ).where((u) => !blockedUsers.contains(u['id'])).toList(),
       );
-      // Set filtered lists initially equal to full lists
+
+      // Filtered lists
       filteredFriends = List.from(friends);
       filteredSendRequests = List.from(sendRequestsUsers);
       filteredReceivedRequests = List.from(recievedRequestUsers);
       filteredOtherUsers = List.from(otherUsers);
-      print('Final FRIENDS list: ${friends.length} users');
-      print('Final OTHERS list: ${otherUsers.toList()} users');
+
+      print('FINAL FRIENDS: ${friends.length}');
+      print('FINAL OTHERS: ${otherUsers.length}');
     } catch (e) {
-      print('from screen use list------->>>>>> Error: $e');
+      print('from screen user list ERROR ---> $e');
     }
+
     setState(() {
       _isLoading = false;
     });
   }
 
+  // Future<void> allUsers() async {
+  //   setState(() {
+  //     _isLoading = true;
+  //   });
+  //   try {
+  //     final usersData =
+  //         await Provider.of<HomeProvider>(context, listen: false).usersList();
+
+  //     print('get all users data:----------------------->> $usersData');
+  //     if (usersData['detail'] ==
+  //         'Authentication credentials were not provided or are invalid.') {
+  //       logoutFunction();
+  //     }
+  //      final pref = await getDataFromLocalStorage(name: 'blockUser');
+  //       dynamic responseData;
+  //     if (pref != null) {
+  //       final blockUser = jsonDecode(pref);
+  //       responseData =
+  //           usersData
+  //               .where((post) => !blockUser.contains(post['user_id']))
+  //               .toList();
+  //     } else {
+  //       responseData = usersData;
+  //     }
+  //     // Clear previous data
+  //     friends.clear();
+  //     sendRequestsUsers.clear();
+  //     recievedRequestUsers.clear();
+  //     otherUsers.clear();
+  //     friends.addAll(List<Map<String, dynamic>>.from(usersData['friends']));
+  //     sendRequestsUsers.addAll(
+  //       List<Map<String, dynamic>>.from(usersData['send_requests_users']),
+  //     );
+  //     recievedRequestUsers.addAll(
+  //       List<Map<String, dynamic>>.from(usersData['recieved_request_users']),
+  //     );
+  //     otherUsers.addAll(
+  //       List<Map<String, dynamic>>.from(usersData['other_users']),
+  //     );
+  //     // Set filtered lists initially equal to full lists
+  //     filteredFriends = List.from(friends);
+  //     filteredSendRequests = List.from(sendRequestsUsers);
+  //     filteredReceivedRequests = List.from(recievedRequestUsers);
+  //     filteredOtherUsers = List.from(otherUsers);
+  //     print('Final FRIENDS list: ${friends.length} users');
+  //     print('Final OTHERS list: ${otherUsers.toList()} users');
+  //   } catch (e) {
+  //     print('from screen use list------->>>>>> Error: $e');
+  //   }
+  //   setState(() {
+  //     _isLoading = false;
+  //   });
+  // }
+
   void logoutFunction() async {
     try {
       final preference = await SharedPreferences.getInstance();
+      // 1. Backup important values
+      final deletePost = preference.getString('deletePost');
+      final blockUser = preference.getString('blockUser');
+      // 2. Clear all
       await preference.clear();
+      // 3. Restore only these two
+      if (deletePost != null) {
+        await preference.setString('deletePost', deletePost);
+      }
+      if (blockUser != null) {
+        await preference.setString('blockUser', blockUser);
+      }
       pushNamedAndRemoveUntilNavigate(
         pageName: loginScreenRoute,
         context: context,
@@ -206,9 +295,9 @@ class _AddFriendsListState extends State<AddFriendsList>
       ).unFriendFunction(friendId: friendId);
       final responseData = json.decode(response.body);
       if (response.statusCode == 200) {
-         setState(() {
-        filteredFriends.removeWhere((user) => user['id'] == friendId);
-      });
+        setState(() {
+          filteredFriends.removeWhere((user) => user['id'] == friendId);
+        });
         alertNotification(
           context: context,
           message:
@@ -474,39 +563,40 @@ class _AddFriendsListState extends State<AddFriendsList>
       ),
     );
   }
-    Widget _buildTabView(List<Map<String, dynamic>> userList) {
-  if (userList.isEmpty) {
-    return RefreshIndicator(
-      onRefresh: allUsers, // ✅ Pull down refresh when no data
-      child: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        children: const [
-          SizedBox(
-            height: 300,
-            child: Center(
-              child: Text(
-                "No data found",
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+
+  Widget _buildTabView(List<Map<String, dynamic>> userList) {
+    if (userList.isEmpty) {
+      return RefreshIndicator(
+        onRefresh: allUsers, // ✅ Pull down refresh when no data
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: const [
+            SizedBox(
+              height: 300,
+              child: Center(
+                child: Text(
+                  "No data found",
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: RefreshIndicator(
+        onRefresh: allUsers, // ✅ Call API again
+        child: ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: userList.length,
+          itemBuilder: (_, index) => _buildUserTile(userList[index]),
+        ),
       ),
     );
   }
-
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: RefreshIndicator(
-      onRefresh: allUsers, // ✅ Call API again
-      child: ListView.builder(
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: userList.length,
-        itemBuilder: (_, index) => _buildUserTile(userList[index]),
-      ),
-    ),
-  );
-}
 
   // Widget _buildTabView(List<Map<String, dynamic>> userList) {
   //   if (userList.isEmpty) {
