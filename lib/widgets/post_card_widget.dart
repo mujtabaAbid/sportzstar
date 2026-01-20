@@ -340,14 +340,14 @@ class _PostCardState extends State<PostCard>
                                               context,
                                               rootNavigator: true,
                                             ).pop();
-                                            removeDataFromLocalStorage(
-                                              // name: 'blockUser',
-                                              name: 'deletePost',
-                                            );
-                                            removeDataFromLocalStorage(
-                                              name: 'blockUser',
-                                              // name: 'deletePost',
-                                            );
+                                            // removeDataFromLocalStorage(
+                                            //   // name: 'blockUser',
+                                            //   name: 'deletePost',
+                                            // );
+                                            // removeDataFromLocalStorage(
+                                            //   name: 'blockUser',
+                                            //   // name: 'deletePost',
+                                            // );
                                           },
                                           child: Text('Cancel'),
                                         ),
