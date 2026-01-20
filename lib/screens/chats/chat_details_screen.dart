@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sportzstar/helper/local_storage.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
 import 'package:intl/intl.dart';
+
+import '../../helper/page_navigate.dart';
+import '../../routing/routing_constrants.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final String receiverId; // 👈 sirf ye pass karna hai
@@ -191,6 +197,72 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       ),
                     ),
                   ],
+                ),
+                const Spacer(),
+                Container(
+                  padding: EdgeInsets.only(right: 12),
+                  child: PopupMenuButton<String>(
+                    color: const Color.fromARGB(224, 28, 72, 159),
+                    icon: Icon(
+                      Icons.more_vert_outlined,
+                      size: 24,
+                      color: Colors.white,
+                    ),
+                    onSelected: (String value) async {
+                      if (value == 'blockUser') {
+                        print('user id =====> ${userData['userId']}');
+                        List<dynamic> blockUser = [];
+
+                        final oldData = await getDataFromLocalStorage(
+                          name: 'blockUser',
+                        );
+                        if (oldData != null && oldData.toString().isNotEmpty) {
+                          blockUser = jsonDecode(oldData.toString());
+                        }
+                        if (!blockUser.contains(userData['userId'])) {
+                          blockUser.add(userData['userId']);
+                        }
+
+                        final blockuserdata = jsonEncode(blockUser);
+                        await addDataToLocalStorage(
+                          name: 'blockUser',
+                          value: blockuserdata,
+                        );
+                        pushNamedAndRemoveUntilNavigate(
+                          pageName: bottomNavigationBarRoute,
+                          context: context,
+                        );
+
+                        // pushNamedNavigate(
+                        //   context: context,
+                        //   pageName: editProfileScreenRoute,
+                        // );
+
+                        print('---edit post function call button--------');
+                      } else {
+                        print('---Nothing call--------');
+                      }
+                    },
+                    itemBuilder:
+                        (BuildContext context) => [
+                          PopupMenuItem<String>(
+                            value: 'blockUser',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.person_off_outlined,
+                                  color: Colors.red,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Block User',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                  ),
                 ),
               ],
             );

@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sportzstar/helper/local_storage.dart';
 import 'package:sportzstar/provider/friends_provider.dart';
 import 'package:sportzstar/screens/chats/chat_details_screen.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
@@ -64,8 +67,20 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
       List<dynamic> ids = data['friends_list'];
 
+      final blockUserPref = await getDataFromLocalStorage(name: 'blockUser');
+
       setState(() {
-        allowedFriendIds = ids.map((e) => int.parse(e.toString())).toList();
+        final allowedFriend = ids.map((e) => int.parse(e.toString())).toList();
+        List<int> aaa = [];
+        if (blockUserPref != null && blockUserPref.toString().isNotEmpty) {
+          final blockUser = jsonDecode(blockUserPref);
+          aaa = allowedFriend.where((id) => !blockUser.contains(id)).toList();
+          print("✅ block users: $blockUser");
+          print("✅ block users aaa: $aaa");
+          allowedFriendIds = aaa;
+        } else {
+          allowedFriendIds = allowedFriend;
+        }
       });
 
       print("✅ Allowed friends list: $allowedFriendIds");
@@ -100,7 +115,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
           }
 
           final users = snapshot.data!.docs;
-          final filteredUsers =
+          dynamic filteredUsers =
               users.where((user) {
                 final backendId =
                     user['userId']; // Firebase doc me stored backend userId
