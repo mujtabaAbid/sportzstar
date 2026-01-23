@@ -42,12 +42,14 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _isLoading = true;
       });
-
+      dynamic response;
       try {
-        final response = await Provider.of<UserProvider>(
+        response = await Provider.of<UserProvider>(
           context,
           listen: false,
         ).loginFunction(formData: _formData);
+        // print('all response -fgdrgfd-ss1-> ${response['message']}');
+
         if (response.statusCode == 200) {
           print('all response -fgdrgfd--> ${response.body}');
           alertNotification(
@@ -92,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 );
               }
             } catch (e) {
-              print('error---------> ${e.toString()}');
+              print('error---------11> ${e.toString()}');
               alertNotification(
                 context: context,
                 message:
@@ -110,6 +112,18 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       } catch (e) {
         print('error---------> ${e.toString()}');
+        if (response['message'] ==
+            'This Account has been deleted. Contact admin.') {
+          alertNotification(
+            context: context,
+            message: response['message'],
+            messageType: AlertMessageType.error,
+          );
+          setState(() {
+            _isLoading = false;
+          });
+          return;
+        }
         alertNotification(
           context: context,
           message: 'Something Went wrong.\nTry again later.',

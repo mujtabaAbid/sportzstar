@@ -58,7 +58,10 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
           pushNamedNavigate(
             pageName: otpScreenRoute,
-            argument:  {'email' :_formData['email'].toString(), 'route': 'forgetPassword'},
+            argument: {
+              'email': _formData['email'].toString(),
+              'route': 'forgetPassword',
+            },
             context: context,
           );
         } else {
@@ -71,7 +74,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           );
         }
       } catch (e) {
-        print('error---------> ${e.toString()}');
+        print('error----11-----> ${e.toString()}');
       }
     } else {
       print('Form is not valid');

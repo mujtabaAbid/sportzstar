@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,7 @@ import 'package:sportzstar/routing/routing_constrants.dart';
 import 'package:sportzstar/screens/userScreens/edit_profile_screen.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/alerts/alert_notification_widget.dart';
+import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/post_card_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -794,6 +797,118 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                 ),
                                               ),
                                             ),
+                                            const SizedBox(height: 30),
+                                            CustomButton(
+                                              gradient: LinearGradient(
+                                                colors: [
+                                                  Colors.red,
+                                                  Colors.purple,
+                                                ],
+                                              ),
+                                              onPressed: () {
+                                                print('object');
+                                                // Show the alert dialog properly
+                                                showDialog(
+                                                  context: context,
+                                                  barrierDismissible:
+                                                      false, // User cannot dismiss by tapping outside
+                                                  builder:
+                                                      (context) => WillPopScope(
+                                                        onWillPop:
+                                                            () async =>
+                                                                false, // Disable back button
+                                                        child: AlertDialog(
+                                                          title: const Text(
+                                                            'Terms of Use & Safety Notice',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                                          content: const SingleChildScrollView(
+                                                            child: Text(
+                                                              'Are you sure you want to delete your account? '
+                                                              'This action is irreversible and will permanently remove all your data from our platform. '
+                                                              'If you have any concerns or need assistance, please contact our support team before proceeding.',
+                                                            ),
+                                                          ),
+                                                          actions: [
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                  context,
+                                                                ); // Close dialog
+                                                              },
+                                                              child: const Text(
+                                                                'Cancel',
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      Colors
+                                                                          .red,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            ElevatedButton(
+                                                              onPressed: () async {
+                                                                try {
+                                                                  final currentUserId =
+                                                                      FirebaseAuth
+                                                                          .instance
+                                                                          .currentUser!
+                                                                          .uid;
+                                                                  await FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                        'users',
+                                                                      )
+                                                                      .doc(
+                                                                        currentUserId,
+                                                                      )
+                                                                      .update({
+                                                                        "disable":
+                                                                            true,
+                                                                      });
+
+                                                                  Navigator.pop(
+                                                                    context,
+                                                                  ); // Close dialog
+
+                                                                  ScaffoldMessenger.of(
+                                                                    context,
+                                                                  ).showSnackBar(
+                                                                    const SnackBar(
+                                                                      content: Text(
+                                                                        'Account has been deleted successfully',
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                  logoutFunction();
+                                                                } catch (e) {
+                                                                  ScaffoldMessenger.of(
+                                                                    context,
+                                                                  ).showSnackBar(
+                                                                    SnackBar(
+                                                                      content: Text(
+                                                                        'Error disabling user: $e',
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                }
+                                                              },
+                                                              child: const Text(
+                                                                'Agree',
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                );
+                                              },
+                                              text: 'Delete Account',
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -1080,6 +1195,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                               ],
                                             ),
                                           ),
+
                                           // Positioned(
                                           //   top: 0,
                                           //   right: 0,

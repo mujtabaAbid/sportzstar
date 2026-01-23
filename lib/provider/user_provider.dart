@@ -238,27 +238,86 @@ class UserProvider with ChangeNotifier {
       );
 
       // ==== FIREBASE AUTH ====
+      // final firebaseAuth = FirebaseAuth.instance;
+      // final firestore = FirebaseFirestore.instance;
+
+      // try {
+      //   // Try firebase login
+      //   UserCredential userCred = await firebaseAuth.signInWithEmailAndPassword(
+      //     email: responseData['user']['email'],
+      //     password: formData['password']!,
+      //   );
+
+      //   await provider.setString('firebaseUid', userCred.user!.uid);
+      // } on FirebaseAuthException catch (e) {
+      //   // 🔥 yahan par turant return kar do
+      //   return {
+      //     "success": false,
+      //     "message": "Firebase login/signup error",
+      //     "firebase_error": e.code,
+      //     "firebase_message": e.message,
+      //   };
+      // }
+      // ==== FIREBASE AUTH ====
       final firebaseAuth = FirebaseAuth.instance;
       final firestore = FirebaseFirestore.instance;
 
+      UserCredential userCred;
+
       try {
-        // Try firebase login
-        UserCredential userCred = await firebaseAuth.signInWithEmailAndPassword(
+        // 🔹 Try Login
+        userCred = await firebaseAuth.signInWithEmailAndPassword(
           email: responseData['user']['email'],
           password: formData['password']!,
         );
-
-        await provider.setString('firebaseUid', userCred.user!.uid);
       } on FirebaseAuthException catch (e) {
-        // 🔥 yahan par turant return kar do
-        return {
-          "success": false,
-          "message": "Firebase login/signup error",
-          "firebase_error": e.code,
-          "firebase_message": e.message,
-        };
+        // 🔹 If user not found → Create Account
+        if (e.code == 'user-not-found') {
+          userCred = await firebaseAuth.createUserWithEmailAndPassword(
+            email: responseData['user']['email'],
+            password: formData['password']!,
+          );
+
+          final uid = userCred.user!.uid;
+
+          // 🔥 Create Firestore Document
+          await firestore.collection('users').doc(uid).set({
+            "email": responseData['user']['email'],
+            "disable": false,
+            "role": "user",
+            "createdAt": FieldValue.serverTimestamp(),
+          });
+        } else {
+          return {
+            "success": false,
+            "message": "Firebase error",
+            "firebase_error": e.code,
+            "firebase_message": e.message,
+          };
+        }
       }
 
+      // 🔥 Now check disable field
+      final uid = userCred.user!.uid;
+      await provider.setString('firebaseUid', uid);
+
+      final userDoc = await firestore.collection('users').doc(uid).get();
+      final data = userDoc.data();
+
+      bool isDisabled = false;
+      if (data != null && data.containsKey('disable')) {
+        isDisabled = data['disable'] == true;
+      }
+
+      if (isDisabled) {
+        await firebaseAuth.signOut();
+        return {
+          "success": false,
+          "message": "This Account has been deleted. Contact admin.",
+          "code": "USER_DISABLED",
+        };
+      }
+      print(' slkfhsofh=========>>>>>. ${data!['disable']}');
       // Agar firebase success hoga tab hi ye chalega
       return response;
     } catch (e) {
