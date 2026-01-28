@@ -712,6 +712,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         ),
                                       ),
                                       SizedBox(height: 10),
+
                                       Container(
                                         width: double.infinity,
                                         padding: EdgeInsets.all(12),
@@ -798,121 +799,232 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                               ),
                                             ),
                                             const SizedBox(height: 30),
-                                            CustomButton(
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  Colors.red,
-                                                  Colors.purple,
-                                                ],
-                                              ),
-                                              onPressed: () {
-                                                print('object');
-                                                // Show the alert dialog properly
-                                                showDialog(
-                                                  context: context,
-                                                  barrierDismissible:
-                                                      false, // User cannot dismiss by tapping outside
-                                                  builder:
-                                                      (context) => WillPopScope(
-                                                        onWillPop:
-                                                            () async =>
-                                                                false, // Disable back button
-                                                        child: AlertDialog(
-                                                          title: const Text(
-                                                            'Terms of Use & Safety Notice',
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color:
-                                                                  Colors.black,
-                                                            ),
-                                                          ),
-                                                          content: const SingleChildScrollView(
-                                                            child: Text(
-                                                              'Are you sure you want to delete your account? '
-                                                              'This action is irreversible and will permanently remove all your data from our platform. '
-                                                              'If you have any concerns or need assistance, please contact our support team before proceeding.',
-                                                            ),
-                                                          ),
-                                                          actions: [
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                  context,
-                                                                ); // Close dialog
-                                                              },
-                                                              child: const Text(
-                                                                'Cancel',
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      Colors
-                                                                          .red,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            ElevatedButton(
-                                                              onPressed: () async {
-                                                                try {
-                                                                  final currentUserId =
-                                                                      FirebaseAuth
-                                                                          .instance
-                                                                          .currentUser!
-                                                                          .uid;
-                                                                  await FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                        'users',
-                                                                      )
-                                                                      .doc(
-                                                                        currentUserId,
-                                                                      )
-                                                                      .update({
-                                                                        "disable":
-                                                                            true,
-                                                                      });
 
-                                                                  Navigator.pop(
-                                                                    context,
-                                                                  ); // Close dialog
+                                            // CustomButton(
+                                            //   gradient: LinearGradient(
+                                            //     colors: [
+                                            //       Colors.red,
+                                            //       Colors.purple,
+                                            //     ],
+                                            //   ),
+                                            //   onPressed: () {
+                                            //     print('object');
+                                            //     // Show the alert dialog properly
+                                            //     showDialog(
+                                            //       context: context,
+                                            //       barrierDismissible:
+                                            //           false, // User cannot dismiss by tapping outside
+                                            //       builder:
+                                            //           (context) => WillPopScope(
+                                            //             onWillPop:
+                                            //                 () async =>
+                                            //                     false, // Disable back button
+                                            //             child: AlertDialog(
+                                            //               title: const Text(
+                                            //                 'Terms of Use & Safety Notice',
+                                            //                 style: TextStyle(
+                                            //                   fontWeight:
+                                            //                       FontWeight
+                                            //                           .bold,
+                                            //                   color:
+                                            //                       Colors.black,
+                                            //                 ),
+                                            //               ),
+                                            //               content: const SingleChildScrollView(
+                                            //                 child: Text(
+                                            //                   'Are you sure you want to delete your account? '
+                                            //                   'This action is irreversible and will permanently remove all your data from our platform. '
+                                            //                   'If you have any concerns or need assistance, please contact our support team before proceeding.',
+                                            //                 ),
+                                            //               ),
+                                            //               actions: [
+                                            //                 TextButton(
+                                            //                   onPressed: () {
+                                            //                     Navigator.pop(
+                                            //                       context,
+                                            //                     ); // Close dialog
+                                            //                   },
+                                            //                   child: const Text(
+                                            //                     'Cancel',
+                                            //                     style: TextStyle(
+                                            //                       color:
+                                            //                           Colors
+                                            //                               .red,
+                                            //                     ),
+                                            //                   ),
+                                            //                 ),
+                                            //                 ElevatedButton(
+                                            //                   onPressed: () async {
+                                            //                     try {
+                                            //                       final currentUserId =
+                                            //                           FirebaseAuth
+                                            //                               .instance
+                                            //                               .currentUser!
+                                            //                               .uid;
+                                            //                       await FirebaseFirestore
+                                            //                           .instance
+                                            //                           .collection(
+                                            //                             'users',
+                                            //                           )
+                                            //                           .doc(
+                                            //                             currentUserId,
+                                            //                           )
+                                            //                           .update({
+                                            //                             "disable":
+                                            //                                 true,
+                                            //                           });
 
-                                                                  ScaffoldMessenger.of(
-                                                                    context,
-                                                                  ).showSnackBar(
-                                                                    const SnackBar(
-                                                                      content: Text(
-                                                                        'Account has been deleted successfully',
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                  logoutFunction();
-                                                                } catch (e) {
-                                                                  ScaffoldMessenger.of(
-                                                                    context,
-                                                                  ).showSnackBar(
-                                                                    SnackBar(
-                                                                      content: Text(
-                                                                        'Error disabling user: $e',
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                }
-                                                              },
-                                                              child: const Text(
-                                                                'Agree',
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                );
-                                              },
-                                              text: 'Delete Account',
-                                            ),
+                                            //                       Navigator.pop(
+                                            //                         context,
+                                            //                       ); // Close dialog
+
+                                            //                       ScaffoldMessenger.of(
+                                            //                         context,
+                                            //                       ).showSnackBar(
+                                            //                         const SnackBar(
+                                            //                           content: Text(
+                                            //                             'Account has been deleted successfully',
+                                            //                           ),
+                                            //                         ),
+                                            //                       );
+                                            //                       logoutFunction();
+                                            //                     } catch (e) {
+                                            //                       ScaffoldMessenger.of(
+                                            //                         context,
+                                            //                       ).showSnackBar(
+                                            //                         SnackBar(
+                                            //                           content: Text(
+                                            //                             'Error disabling user: $e',
+                                            //                           ),
+                                            //                         ),
+                                            //                       );
+                                            //                     }
+                                            //                   },
+                                            //                   child: const Text(
+                                            //                     'Agree',
+                                            //                   ),
+                                            //                 ),
+                                            //               ],
+                                            //             ),
+                                            //           ),
+                                            //     );
+                                            //   },
+                                            //   text: 'Delete Account',
+                                            // ),
                                           ],
                                         ),
                                       ),
                                     ],
+                                    // Text(
+                                    //   'datadfgdgdsdsadds1111f',
+                                    //   style: TextStyle(
+                                    //     color: Colors.white,
+                                    //     fontSize: 20,
+                                    //   ),
+                                    // ),
+                                    CustomButton(
+                                      gradient: LinearGradient(
+                                        colors: [Colors.red, Colors.purple],
+                                      ),
+                                      onPressed: () {
+                                        print('object');
+                                        // Show the alert dialog properly
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible:
+                                              false, // User cannot dismiss by tapping outside
+                                          builder:
+                                              (context) => WillPopScope(
+                                                onWillPop:
+                                                    () async =>
+                                                        false, // Disable back button
+                                                child: AlertDialog(
+                                                  title: const Text(
+                                                    'Terms of Use & Safety Notice',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  content: const SingleChildScrollView(
+                                                    child: Text(
+                                                      'Are you sure you want to delete your account? '
+                                                      'This action is irreversible and will permanently remove all your data from our platform. '
+                                                      'If you have any concerns or need assistance, please contact our support team before proceeding.',
+                                                    ),
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(
+                                                          context,
+                                                        ); // Close dialog
+                                                      },
+                                                      child: const Text(
+                                                        'Cancel',
+                                                        style: TextStyle(
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    ElevatedButton(
+                                                      onPressed: () async {
+                                                        try {
+                                                          final currentUserId =
+                                                              FirebaseAuth
+                                                                  .instance
+                                                                  .currentUser!
+                                                                  .uid;
+                                                          await FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                'users',
+                                                              )
+                                                              .doc(
+                                                                currentUserId,
+                                                              )
+                                                              .update({
+                                                                "disable": true,
+                                                              });
+
+                                                          Navigator.pop(
+                                                            context,
+                                                          ); // Close dialog
+
+                                                          ScaffoldMessenger.of(
+                                                            context,
+                                                          ).showSnackBar(
+                                                            const SnackBar(
+                                                              content: Text(
+                                                                'Account has been deleted successfully',
+                                                              ),
+                                                            ),
+                                                          );
+                                                          logoutFunction();
+                                                        } catch (e) {
+                                                          ScaffoldMessenger.of(
+                                                            context,
+                                                          ).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text(
+                                                                'Error disabling user: $e',
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+                                                      },
+                                                      child: const Text(
+                                                        'Agree',
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                        );
+                                      },
+                                      text: 'Delete Account',
+                                    ),
                                   ],
                                 ),
                               )
