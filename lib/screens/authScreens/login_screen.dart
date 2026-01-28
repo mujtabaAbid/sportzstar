@@ -112,6 +112,14 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       } catch (e) {
         print('error---------> ${e.toString()}');
+        if (e is Map) {
+          print('error message---------> ${e['message']}');
+          alertNotification(
+            context: context,
+            message: e['message'],
+            messageType: AlertMessageType.error,
+          );
+        }
         if (response['message'] ==
             'This Account has been deleted. Contact admin.') {
           alertNotification(

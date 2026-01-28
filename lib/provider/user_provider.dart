@@ -238,27 +238,7 @@ class UserProvider with ChangeNotifier {
       );
 
       // ==== FIREBASE AUTH ====
-      // final firebaseAuth = FirebaseAuth.instance;
-      // final firestore = FirebaseFirestore.instance;
 
-      // try {
-      //   // Try firebase login
-      //   UserCredential userCred = await firebaseAuth.signInWithEmailAndPassword(
-      //     email: responseData['user']['email'],
-      //     password: formData['password']!,
-      //   );
-
-      //   await provider.setString('firebaseUid', userCred.user!.uid);
-      // } on FirebaseAuthException catch (e) {
-      //   // 🔥 yahan par turant return kar do
-      //   return {
-      //     "success": false,
-      //     "message": "Firebase login/signup error",
-      //     "firebase_error": e.code,
-      //     "firebase_message": e.message,
-      //   };
-      // }
-      // ==== FIREBASE AUTH ====
       final firebaseAuth = FirebaseAuth.instance;
       final firestore = FirebaseFirestore.instance;
 
@@ -272,20 +252,24 @@ class UserProvider with ChangeNotifier {
         );
       } on FirebaseAuthException catch (e) {
         // 🔹 If user not found → Create Account
-        if (e.code == 'user-not-found') {
+        print('skjfhsufh=======>>>>${e.code}');
+        if (e.code == 'user-not-found' || e.code == 'invalid-credential') {
           userCred = await firebaseAuth.createUserWithEmailAndPassword(
             email: responseData['user']['email'],
             password: formData['password']!,
           );
-
-          final uid = userCred.user!.uid;
-
-          // 🔥 Create Firestore Document
-          await firestore.collection('users').doc(uid).set({
+          await firestore.collection("users").doc(userCred.user!.uid).set({
+            "id": userCred.user!.uid,
+            "userId": responseData['user']['id'],
             "email": responseData['user']['email'],
+            "fullName": responseData['user']['full_name'],
+            "userName": responseData['user']['username'],
             "disable": false,
-            "role": "user",
-            "createdAt": FieldValue.serverTimestamp(),
+            "profileImage": responseData['user']['profile_picture'],
+            "dataOther": 'owjefjsoejhfods',
+            "createdAt": DateTime.now().toIso8601String(),
+            "isOnline": false, // Default offline
+            "lastSeen": DateTime.now(),
           });
         } else {
           return {
