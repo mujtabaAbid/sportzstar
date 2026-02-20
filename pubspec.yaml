@@ -63,7 +63,6 @@ flutter_launcher_icons:
   remove_alpha_ios: true
   image_path: "assets/images/start.png"
 
-
 dev_dependencies:
   flutter_launcher_icons: ^0.14.4
   flutter_test:
