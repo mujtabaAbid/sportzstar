@@ -321,10 +321,7 @@ class UserProvider with ChangeNotifier {
         Uri.parse(getCodeApi),
         headers: {'Accept': 'application/json'},
         body: formData,
-      ); 
-      // final rep = 'manamil kutta hai ';
-      // final rep2 = ' munashir bhi kuta hai ';
-      // final rep3 = rep + rep2;
+      );
 
       // final responseData = json.decode(response.body);
       final responseData = json.decode(response.body);
