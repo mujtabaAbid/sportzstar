@@ -13,7 +13,6 @@ import 'package:sportzstar/provider/user_provider.dart';
 import 'package:sportzstar/widgets/Layout/main_layout_widget.dart';
 import 'package:sportzstar/widgets/custom_button.dart';
 import 'package:sportzstar/widgets/input_widget.dart';
-
 import '../../helper/basic_enum.dart';
 import '../../helper/close_keyboard.dart';
 import '../../provider/home_provider.dart';
@@ -111,14 +110,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       }
     }
   }
-  // Future<void> _pickImage() async {
-  //   final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
-  //   if (picked != null) {
-  //     setState(() {
-  //       _image = File(picked.path);
-  //     });
-  //   }
-  // }
 
   @override
   void dispose() {
@@ -168,22 +159,107 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() {
       _isLoading = true;
     });
+
     try {
-      // final preferance = await SharedPreferences.getInstance();
-      // final data = preferance.getString('userData');
       final pref = await getDataFromLocalStorage(name: 'userData');
-      setState(() {
-        userData = json.decode(pref);
-      });
+      userData = json.decode(pref);
+
       print('userData =====>>>$userData');
-      // _selectedGender = userData['gender'];
+
+      // ====== BASIC FIELDS ======
+      _usernameController.text = userData['full_name'] ?? '';
+      _bioController.text = userData['bio'] ?? '';
+      _medalController.text = userData['medals'] ?? '';
+      _ageController.text = userData['age']?.toString() ?? '';
+      dobController.text = userData['start_year']?.toString() ?? '';
+
+      // ====== CAREER HISTORY ======
+      List careerHistory = userData['career_history'] ?? [];
+
+      if (careerHistory.isNotEmpty) {
+        // Clear default initial empty one
+        selectCareerHistoryItems.clear();
+        titleControllers.clear();
+        clubNameControllers.clear();
+        descriptionControllers.clear();
+        startDateControllers.clear();
+        endDateControllers.clear();
+        startDates.clear();
+        endDates.clear();
+
+        for (var item in careerHistory) {
+          selectCareerHistoryItems.add('');
+
+          titleControllers.add(
+            TextEditingController(text: item['title'] ?? ''),
+          );
+
+          clubNameControllers.add(
+            TextEditingController(text: item['clubName'] ?? ''),
+          );
+
+          descriptionControllers.add(
+            TextEditingController(text: item['description'] ?? ''),
+          );
+
+          // Start Date
+          if (item['start_date'] != null &&
+              item['start_date'].toString().isNotEmpty) {
+            DateTime start = DateTime.parse(item['start_date']);
+            startDates.add(start);
+            startDateControllers.add(
+              TextEditingController(text: formatDate(start)),
+            );
+          } else {
+            startDates.add(null);
+            startDateControllers.add(TextEditingController());
+          }
+
+          // End Date
+          if (item['end_date'] != null &&
+              item['end_date'].toString().isNotEmpty) {
+            DateTime end = DateTime.parse(item['end_date']);
+            endDates.add(end);
+            endDateControllers.add(
+              TextEditingController(text: formatDate(end)),
+            );
+          } else {
+            endDates.add(null);
+            endDateControllers.add(TextEditingController());
+          }
+        }
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
     } catch (e) {
       print('error in getting user data------>>>>>>>$e');
+      setState(() {
+        _isLoading = false;
+      });
     }
-    // setState(() {
-    //   _isLoading = false;
-    // });
   }
+  // Future<void> getUserData() async {
+  //   setState(() {
+  //     _isLoading = true;
+  //   });
+  //   try {
+  //     // final preferance = await SharedPreferences.getInstance();
+  //     // final data = preferance.getString('userData');
+  //     final pref = await getDataFromLocalStorage(name: 'userData');
+  //     setState(() {
+  //       userData = json.decode(pref);
+  //     });
+  //     print('userData =====>>>$userData');
+  //     // _selectedGender = userData['gender'];
+  //   } catch (e) {
+  //     print('error in getting user data------>>>>>>>$e');
+  //   }
+  //   // setState(() {
+  //   //   _isLoading = false;
+  //   // });
+  // }
 
   Future<void> getSports() async {
     try {
@@ -239,31 +315,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     });
   }
 
-  // List<String> getRemainingOptionsCareerHistory(int index) {
-  //   final used =
-  //       selectCareerHistoryItems
-  //           .where((item) => item != null)
-  //           .cast<String>()
-  //           .toList();
-  //   if (selectCareerHistoryItems[index] != null) {
-  //     used.remove(
-  //       selectCareerHistoryItems[index],
-  //     ); // Allow re-selecting the current
-  //   }
-  //   return allCareerHistoryOptions
-  //       .where((item) => !used.contains(item))
-  //       .toList();
-  // }
-
   @override
   void initState() {
-    // TODO: implement initState
-    getUserData();
-    getSports();
-    addNewItem(); // show first dropdown initially
-    addNewItemCareerHistory();
     super.initState();
+
+    getUserData(); // this will auto create career history
+    getSports();
+    addNewItem(); // social link dropdown only
   }
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   getUserData();
+  //   getSports();
+  //   addNewItem(); // show first dropdown initially
+  //   addNewItemCareerHistory();
+  //   super.initState();
+  // }
 
   String handleSave(String type, String value) {
     return _formData[type] = value;
@@ -400,164 +468,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  // void handleSubmit() async {
-  //   String startYear =
-  //       dobController.text.isNotEmpty
-  //           ? dobController.text
-  //           : userData['start_year'] != null
-  //           ? userData['start_year'].toString()
-  //           : "";
-  //   if (startYear.isNotEmpty) {
-  //     final form = _formKey.currentState;
-  //     if (form != null && form.validate()) {
-  //       form.save();
-
-  //       // Prepare social_links array
-  //       List<Map<String, dynamic>> socialLinks = [];
-  //       for (int i = 0; i < selectedItems.length; i++) {
-  //         if (selectedItems[i] != null && controllers[i].text.isNotEmpty) {
-  //           socialLinks.add({
-  //             "platform": selectedItems[i],
-  //             "link": controllers[i].text,
-  //           });
-  //         }
-  //       }
-
-  //       if (socialLinks.isEmpty) {
-  //         print(
-  //           'social links are empty -------------------${userData['social_links']}',
-  //         );
-  //       } else if (socialLinks == []) {
-  //         print('social links are empty []-------------- $socialLinks');
-  //       } else {
-  //         print('social links are ---->$socialLinks');
-  //       }
-
-  //       // Prepare career_history array
-  //       List<Map<String, dynamic>> careerHistory = [];
-  //       for (int i = 0; i < selectCareerHistoryItems.length; i++) {
-  //         careerHistory.add({
-  //           // "game_name":
-  //           //     userData["player_category"] ??
-  //           //     "", // or a separate field if needed
-  //           "clubName": clubNameControllers[i].text,
-  //           "title": titleControllers[i].text,
-  //           "start_date":
-  //               startDates[i] != null
-  //                   ? startDates[i]!.toIso8601String().split('T')[0]
-  //                   : "",
-  //           "end_date":
-  //               endDates[i] != null
-  //                   ? endDates[i]!.toIso8601String().split('T')[0]
-  //                   : "",
-  //           "description": descriptionControllers[i].text,
-  //         });
-  //       }
-
-  //       // Clean career history (remove maps with all empty/null fields)
-  //       List<Map<String, dynamic>> cleanedCareerHistory =
-  //           careerHistory
-  //               .where(
-  //                 (entry) => entry.values.any(
-  //                   (value) =>
-  //                       value != null && value.toString().trim().isNotEmpty,
-  //                 ),
-  //               )
-  //               .toList();
-
-  //       // Clean social links (same approach)
-  //       List<Map<String, dynamic>> cleanedSocialLinks =
-  //           socialLinks
-  //               .where(
-  //                 (entry) => entry.values.any(
-  //                   (value) =>
-  //                       value != null && value.toString().trim().isNotEmpty,
-  //                 ),
-  //               )
-  //               .toList();
-
-  //       Map<String, dynamic> rawData = {
-  //         "email": _formData['email'],
-  //         "full_name": _formData['full_name'],
-  //         "age": int.tryParse(_formData['age'].toString()) ?? 0,
-  //         "gender": _formData['gender'] ?? 'male',
-  //         "player_category":
-  //             _formData['player_category'] ?? userData["player_category"],
-  //         "bio": _formData['bio'],
-  //         "start_year": startYear,
-  //         "medals": _formData['medals'],
-  //         "social_links":
-  //             cleanedSocialLinks.isNotEmpty
-  //                 ? cleanedSocialLinks
-  //                 : userData['social_links'] ?? [],
-  //         "career_history": cleanedCareerHistory,
-  //       };
-
-  //       // Remove top-level keys with null, empty strings, or empty lists
-  //       Map<String, dynamic> finalData = Map.fromEntries(
-  //         rawData.entries.where((entry) {
-  //           final value = entry.value;
-  //           if (value == null) return false;
-  //           if (value is String && value.trim().isEmpty) return false;
-  //           if (value is List && value.isEmpty) return false;
-  //           return true;
-  //         }),
-  //       );
-
-  //       print('Final JSON to send:------->>>> $finalData');
-
-  //       // final response = await Provider.of<UserProvider>(
-  //       //   context,
-  //       //   listen: false,
-  //       // ).updateUserProfile(formData: _formData, file: _image);
-  //       final stringifiedFinalData = finalData.map((key, value) {
-  //         if (value is List || value is Map) {
-  //           return MapEntry(key, jsonEncode(value));
-  //         }
-  //         return MapEntry(key, value.toString());
-  //       });
-
-  //       final response = await Provider.of<UserProvider>(
-  //         context,
-  //         listen: false,
-  //       ).updateUserProfile(formData: stringifiedFinalData, file: _image);
-
-  //       if (response.statusCode == 200) {
-  //         final responseData = json.decode(response.body);
-  //         //On success function first show success message
-  //         alertNotification(
-  //           context: context,
-  //           message: responseData['detail'],
-  //           messageType: AlertMessageType.success,
-  //         );
-
-  //         //then update local storage
-  //         final data = json.encode(responseData['user']);
-  //         addDataToLocalStorage(name: 'userData', value: data);
-
-  //         //then send to profile screen
-  //         Navigator.of(context).push(
-  //           MaterialPageRoute(
-  //             builder: (context) => BottomNavigationBarScreen(pageIndex: 4),
-  //           ),
-  //         );
-  //       } else {
-  //         alertNotification(
-  //           context: context,
-  //           message: 'Something wrong, try again later',
-  //           messageType: AlertMessageType.error,
-  //         );
-  //       }
-  //     }
-  //   } else {
-  //     alertNotification(
-  //       context: context,
-  //       message: 'Start Year field is required',
-  //       messageType: AlertMessageType.error,
-  //     );
-  //   }
-  // }
-
   Future<void> pickDate(BuildContext context, int index, bool isStart) async {
     final picked = await showDatePicker(
       context: context,
@@ -570,15 +480,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       setState(() {
         if (isStart) {
           startDates[index] = picked;
-          onSaved:
-          handleSave('start_date', picked.toString());
+          startDateControllers[index].text = formatDate(picked);
         } else {
           endDates[index] = picked;
-          handleSave('end_date', picked.toString());
+          endDateControllers[index].text = formatDate(picked);
         }
       });
     }
   }
+
+  // Future<void> pickDate(BuildContext context, int index, bool isStart) async {
+  //   final picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: DateTime.now(),
+  //     firstDate: DateTime(2000),
+  //     lastDate: DateTime(2100),
+  //   );
+
+  //   if (picked != null) {
+  //     setState(() {
+  //       if (isStart) {
+  //         startDates[index] = picked;
+  //         onSaved:
+  //         handleSave('start_date', picked.toString());
+  //       } else {
+  //         endDates[index] = picked;
+  //         handleSave('end_date', picked.toString());
+  //       }
+  //     });
+  //   }
+  // }
 
   String formatDate(DateTime date) {
     return "${date.day}/${date.month}/${date.year}";
@@ -695,45 +626,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                //gender
-                // DropdownButtonFormField<String>(
-                //   initialValue: capitalize(userData['gender'] ?? 'Male'),
-                //   // borderRadius: BorderRadius.all(Radius.circular(12),),
-                //   decoration: InputDecoration(
-                //     labelStyle: TextStyle(color: Colors.white),
-                //     filled: true,
-                //     fillColor: Color.fromARGB(51, 224, 224, 224),
-                //     // labelText: 'Gender',
-                //     // border: OutlineInputBorder(),
-                //     border: OutlineInputBorder(
-                //       borderRadius: BorderRadius.circular(16),
-                //       borderSide: BorderSide(color: Colors.transparent),
-                //     ),
-                //     enabledBorder: OutlineInputBorder(
-                //       borderRadius: BorderRadius.circular(16),
-                //       borderSide: BorderSide(color: Colors.transparent),
-                //     ),
-                //     focusedBorder: OutlineInputBorder(
-                //       borderRadius: BorderRadius.circular(16),
-                //       borderSide: BorderSide(color: Palette.facebookColor),
-                //     ),
-                //   ),
-                //   items:
-                //       ['Male', 'Female']
-                //           .map(
-                //             (gender) => DropdownMenuItem(
-                //               value: gender,
-                //               child: Text(gender),
-                //             ),
-                //           )
-                //           .toList(),
-                //   onChanged: (value) {
-                //     handleSave('gender', value!.toLowerCase());
-                //     // setState(() {
-                //     //   _selectedGender = value!;
-                //     // });
-                //   },
-                // ),
+
                 DropdownButtonFormField<String>(
                   dropdownColor:
                       Colors.black, // optional: dropdown background color
@@ -859,18 +752,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 const SizedBox(height: 16),
                 //bios
                 InputWidget(
-                  // controller: _bioController,
+                  controller: _bioController,
                   highlightErrorBorder: true,
                   noValidator: true,
                   onSaved: (value) {
                     handleSave(
                       'bio',
-                      value.isNotEmpty ? value : userData['bio'],
+                      value != null && value.isNotEmpty
+                          ? value
+                          : userData['bio'] ?? '',
                     );
                   },
                   heading: 'Bio',
-                  label: userData['bio'] ?? 'Bio',
+                  label: 'Bio',
                 ),
+                // InputWidget(
+                //   // controller: _bioController,
+                //   highlightErrorBorder: true,
+                //   noValidator: true,
+                //   onSaved: (value) {
+                //     handleSave(
+                //       'bio',
+                //       value.isNotEmpty ? value : userData['bio'],
+                //     );
+                //   },
+                //   heading: 'Bio',
+                //   label: userData['bio'] ?? 'Bio',
+                // ),
                 const SizedBox(height: 16),
                 //start year
                 Row(
@@ -1252,10 +1160,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: const Color.fromARGB(51, 224, 224, 224),
-                            hintText:
-                                startDates[index] != null
-                                    ? formatDate(startDates[index]!)
-                                    : "Select Start Date",
+                            hintText: "Select Start Date",
+                            // hintText:
+                            //     startDates[index] != null
+                            //         ? formatDate(startDates[index]!)
+                            //         : "Select Start Date",
                             hintStyle: const TextStyle(color: Colors.white),
                             labelStyle: const TextStyle(color: Colors.white),
                             border: const OutlineInputBorder(),
